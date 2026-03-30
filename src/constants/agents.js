@@ -8,6 +8,7 @@ export const AGENTS = [
     carClass: "card-observer",
     borderColor: "#3b5bdb",
     numColor: "#3b5bdb",
+    badge: "ACTIVE"
   },
   {
     id: "rca",
@@ -18,6 +19,7 @@ export const AGENTS = [
     carClass: "card-rca",
     borderColor: "#e67700",
     numColor: "#e67700",
+    badge: "ANALYSING"
   },
   {
     id: "decision",
@@ -28,6 +30,7 @@ export const AGENTS = [
     carClass: "card-decision",
     borderColor: "#9c36b5",
     numColor: "#9c36b5",
+    badge: "AUTO-ROUTING"
   },
   {
     id: "selfhealing",
@@ -38,6 +41,7 @@ export const AGENTS = [
     carClass: "card-healing",
     borderColor: "#2f9e44",
     numColor: "#2f9e44",
+    badge: "HEALING"
   },
   {
     id: "dataquality",
@@ -48,6 +52,7 @@ export const AGENTS = [
     carClass: "card-quality",
     borderColor: "#2f9e44",
     numColor: "#2f9e44",
+    badge: "MONITORING"
   },
   {
     id: "selfservice",
@@ -58,6 +63,7 @@ export const AGENTS = [
     carClass: "card-selfservice",
     borderColor: "#c2255c",
     numColor: "#c2255c",
+    badge: "ACTIVE"
   },
   {
     id: "governance",
@@ -68,6 +74,7 @@ export const AGENTS = [
     carClass: "card-governance",
     borderColor: "#c2255c",
     numColor: "#c2255c",
+    badge: "ALERT"
   },
   {
     id: "approval",
