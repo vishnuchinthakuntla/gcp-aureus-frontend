@@ -1,0 +1,215 @@
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.score-card {
+  position: relative;
+  text-align: left;
+  background: var(--acc-grad, var(--bg-card));
+  padding: 20px 16px 14px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(14, 23, 38, 0.04), 0 4px 20px rgba(14, 23, 38, 0.07);
+  border: 1px solid #dde3ee;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s, border-color 0.3s, background 0.35s;
+  animation: card-in 0.5s ease both;
+}
+
+.score-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: radial-gradient(ellipse at 20% 115%, var(--acc-glow, transparent) 0%, transparent 62%);
+  pointer-events: none;
+  opacity: 0.55;
+  transition: opacity 0.3s;
+}
+
+.score-card:hover::after {
+  opacity: 1;
+}
+
+.score-card:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.score-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.score-card:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.score-card:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+.score-card:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+.score-card:nth-child(6) {
+  animation-delay: 0.3s;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.score-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--acc), color-mix(in srgb, var(--acc) 40%, transparent));
+  border-radius: 8px 8px 0 0;
+}
+
+.card-observer {
+  --acc: var(--observer);
+  --acc-lt: var(--observer-lt);
+  --acc-glow: var(--observer-glow);
+  --acc-grad: var(--observer-grad);
+}
+
+.card-rca {
+  --acc: var(--rca);
+  --acc-lt: var(--rca-lt);
+  --acc-glow: var(--rca-glow);
+  --acc-grad: var(--rca-grad);
+}
+
+.card-decision {
+  --acc: var(--decision);
+  --acc-lt: var(--decision-lt);
+  --acc-glow: var(--decision-glow);
+  --acc-grad: var(--decision-grad);
+}
+
+.card-healing {
+  --acc: var(--healing);
+  --acc-lt: var(--healing-lt);
+  --acc-glow: var(--healing-glow);
+  --acc-grad: var(--healing-grad);
+}
+
+.card-quality {
+  --acc: var(--quality);
+  --acc-lt: var(--quality-lt);
+  --acc-glow: var(--quality-glow);
+  --acc-grad: var(--quality-grad);
+}
+
+.card-governance {
+  --acc: var(--governance);
+  --acc-lt: var(--governance-lt);
+  --acc-glow: var(--governance-glow);
+  --acc-grad: var(--governance-grad);
+}
+
+.card-selfservice {
+  --acc: var(--selfservice);
+  --acc-lt: var(--selfservice-lt);
+  --acc-glow: var(--selfservice-glow);
+  --acc-grad: var(--selfservice-grad);
+}
+
+.score-card:hover {
+  transform: translateY(-8px) scale(1.025);
+  box-shadow: var(--acc-glow) 0 20px 50px 0, var(--acc) 0 0 0 1.5px;
+  border-color: var(--acc);
+}
+
+.score-card.active {
+  border-color: var(--acc);
+  background: var(--acc-lt);
+  box-shadow: 0 0 0 1.5px var(--acc), 0 10px 36px var(--acc-glow);
+}
+
+.card-icon {
+  font-size: 22px;
+  margin-bottom: 10px;
+  display: block;
+  transition: transform 0.3s;
+  position: relative;
+  z-index: 1;
+}
+
+.score-card:hover .card-icon {
+  font-size: 23px;
+}
+
+.score-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-sub);
+  margin-bottom: 4px;
+  position: relative;
+  z-index: 1;
+  transition: color 0.35s;
+}
+
+.score-value {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--acc);
+  line-height: 1;
+  transition: transform 0.2s;
+  position: relative;
+  z-index: 1;
+  animation: num-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes num-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.7) translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.score-card:hover .score-value {
+  transform: scale(1.07);
+}
+
+.score-delta {
+  font-size: 11px;
+  color: var(--text-sub);
+  margin-top: 5px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  transition: color 0.35s;
+}
+
+.score-delta.up {
+  color: #10d9a0;
+}
+
+.score-delta.down {
+  color: #f43f5e;
+}

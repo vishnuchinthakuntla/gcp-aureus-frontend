@@ -1,0 +1,39 @@
+.charts-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 10px;
+    animation: slide-up 0.6s 0.2s ease both;
+}
+
+.chart-box {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: var(--chart-shadow);
+    border: 1px solid #dde3ee;
+    transition: background 0.35s, box-shadow 0.35s, border-color 0.35s;
+    overflow: auto;
+}
+
+.chart-box h3 {
+    font-size: 12px;
+    font-weight: 700;
+    color: #0c58b7;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    margin-bottom: 16px;
+    transition: color 0.35s;
+}
+
+@keyframes slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}

@@ -1,0 +1,164 @@
+/* ── App.css ── */
+/* .app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+} */
+
+:root {
+  --nav-h: 50px;
+  --sidebar-w: 240px;
+  --nav-bg: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #1e3a8a 100%);
+  --nav-border: rgba(59, 130, 246, 0.3);
+  --nav-shadow: 0 1px 0 rgba(59, 130, 246, 0.2), 0 4px 20px rgba(29, 78, 216, 0.25);
+  --nav-icon: rgba(255, 255, 255, 0.5);
+  --text-heading: #000000;
+  --text-primary: #cbd8ea;
+  --text-secondary: #5e748a;
+  --text-sub: #3d5470;
+  --text-muted: #253650;
+  --text-feed: #a8c0d8;
+  --text-feed-time: #3d5470;
+  --text-ticker-b: #7a9ab8;
+  --text-ticker-val: #d0e4f8;
+  --sidebar-bg: #080f1c;
+  --sidebar-link: #4a6580;
+  --sidebar-link-hover-bg: rgba(79, 142, 247, 0.09);
+  --sidebar-link-hover: #c8dcf0;
+  --sidebar-section: #213248;
+  --card-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 4px 24px rgba(0, 0, 0, 0.5);
+  --panel-shadow: 0 4px 28px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --col-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+  --chart-shadow: 0 4px 24px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --panel-close-hover-bg: rgba(255, 255, 255, 0.07);
+  --panel-close-hover: #d0e4f8;
+  --col-header-border: rgba(255, 255, 255, 0.05);
+  --ticker-counts-bg: rgba(0, 0, 0, 0.25);
+  --hamburger-hover: rgba(255, 255, 255, 0.07);
+  --observer: #4f8ef7;
+  --observer-lt: rgba(79, 142, 247, 0.13);
+  --observer-glow: rgba(79, 142, 247, 0.28);
+  --observer-grad: linear-gradient(140deg, rgba(79, 142, 247, 0.17) 0%, rgba(79, 142, 247, 0.04) 100%);
+  --rca: #f5a524;
+  --rca-lt: rgba(245, 165, 36, 0.13);
+  --rca-glow: rgba(245, 165, 36, 0.28);
+  --rca-grad: linear-gradient(140deg, rgba(245, 165, 36, 0.17) 0%, rgba(245, 165, 36, 0.04) 100%);
+  --decision: #a78bfa;
+  --decision-lt: rgba(167, 139, 250, 0.13);
+  --decision-glow: rgba(167, 139, 250, 0.28);
+  --decision-grad: linear-gradient(140deg, rgba(167, 139, 250, 0.17) 0%, rgba(167, 139, 250, 0.04) 100%);
+  --healing: #10d9a0;
+  --healing-lt: rgba(16, 217, 160, 0.13);
+  --healing-glow: rgba(16, 217, 160, 0.28);
+  --healing-grad: linear-gradient(140deg, rgba(16, 217, 160, 0.17) 0%, rgba(16, 217, 160, 0.04) 100%);
+  --quality: #22d3ee;
+  --quality-lt: rgba(34, 211, 238, 0.13);
+  --quality-glow: rgba(34, 211, 238, 0.28);
+  --quality-grad: linear-gradient(140deg, rgba(34, 211, 238, 0.17) 0%, rgba(34, 211, 238, 0.04) 100%);
+  --governance: #f43f5e;
+  --governance-lt: rgba(244, 63, 94, 0.13);
+  --governance-glow: rgba(244, 63, 94, 0.28);
+  --governance-grad: linear-gradient(140deg, rgba(244, 63, 94, 0.17) 0%, rgba(244, 63, 94, 0.04) 100%);
+  --selfservice: #a14572;
+  --selfservice-lt: rgba(236, 72, 153, 0.13);
+  --selfservice-glow: rgba(236, 72, 153, 0.28);
+  --selfservice-grad: linear-gradient(140deg, rgba(236, 72, 153, 0.17) 0%, rgba(236, 72, 153, 0.04) 100%);
+  --bg-base: #fafcff;
+  --bg-surface: #fafbff;
+  --bg-card: #ffffff;
+  --bg-elevated: #eef2fa;
+  --border: #dde3ee;
+  --border-med: #c8d1e4;
+}
+
+/* ══ ENTERPRISE LIGHT THEME ══ */
+html[data-theme="light"] {
+  --bg-base: #fafcff;
+  --bg-surface: #fafbff;
+  --bg-card: #ffffff;
+  --bg-elevated: #eef2fa;
+  --border: #dde3ee;
+  --border-med: #c8d1e4;
+  --text-heading: #0e1726;
+  --text-primary: #1c2b3a;
+  --text-secondary: #4a5568;
+  --text-sub: #64748b;
+  --text-muted: #94a3b8;
+  --text-feed: #2d3748;
+  --text-feed-time: #94a3b8;
+  --text-ticker-b: #1c2b3a;
+  --text-ticker-val: #0e1726;
+  --sidebar-bg: #fafbff;
+  --sidebar-link: #4a5568;
+  --sidebar-link-hover-bg: #eef2ff;
+  --sidebar-link-hover: #0e1726;
+  --sidebar-section: #94a3b8;
+  --card-shadow: 0 1px 3px rgba(14, 23, 38, 0.04), 0 4px 20px rgba(14, 23, 38, 0.07);
+  --panel-shadow: 0 2px 20px rgba(14, 23, 38, 0.09);
+  --col-shadow: 0 1px 8px rgba(14, 23, 38, 0.06);
+  --chart-shadow: 0 1px 3px rgba(14, 23, 38, 0.04), 0 4px 20px rgba(14, 23, 38, 0.07);
+  --panel-close-hover-bg: #eef2ff;
+  --panel-close-hover: #0e1726;
+  --col-header-border: #dde3ee;
+  --ticker-counts-bg: #fffbfa;
+  --hamburger-hover: rgba(14, 23, 38, 0.06);
+  --observer: #2563eb;
+  --observer-lt: #eef4ff;
+  --observer-glow: rgba(37, 99, 235, 0.18);
+  --observer-grad: linear-gradient(140deg, #eef4ff 0%, #fafcff 100%);
+  --rca: #b45309;
+  --rca-lt: #fff8e6;
+  --rca-glow: rgba(180, 83, 9, 0.18);
+  --rca-grad: linear-gradient(140deg, #fff8e6 0%, #fffdf5 100%);
+  --decision: #6d28d9;
+  --decision-lt: #f4f0ff;
+  --decision-glow: rgba(109, 40, 217, 0.18);
+  --decision-grad: linear-gradient(140deg, #f4f0ff 0%, #fafafe 100%);
+  --healing: #047857;
+  --healing-lt: #eefbf5;
+  --healing-glow: rgba(4, 120, 87, 0.18);
+  --healing-grad: linear-gradient(140deg, #eefbf5 0%, #f6fdf9 100%);
+  --quality: #0776a4;
+  --quality-lt: #e8f7fc;
+  --quality-glow: rgba(7, 118, 164, 0.18);
+  --quality-grad: linear-gradient(140deg, #e8f7fc 0%, #f4fbfe 100%);
+  --governance: #c41e3a;
+  --governance-lt: #fff0f3;
+  --governance-glow: rgba(196, 30, 58, 0.18);
+  --governance-grad: linear-gradient(140deg, #fff0f3 0%, #fff7f8 100%);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  background: #fafcff;
+  color: #1c2b3a;
+  min-height: 100vh;
+  transition: background 0.35s, color 0.35s;
+}
+
+
+/* ── MAIN ── */
+.main {
+  padding: calc(var(--nav-h) + 0px) 20px 20px;
+  transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main.shifted {
+  margin-left: var(--sidebar-w);
+}
