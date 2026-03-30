@@ -210,8 +210,9 @@ const useAgentStore = create((set, get) => ({
     set((s) => ({ panel: { ...s.panel, loading: true } }));
 
     // Single API call instead of 4
+    let data = null;
     if (id !== "approval") {
-      const data = await safeFetch(`/api/agents/${id}/panel`, null);
+      data = await safeFetch(`/api/agents/${id}/panel`, null);
     }
 
     if (!data) {
