@@ -27,6 +27,24 @@
   --text-feed-time: #3d5470;
   --text-ticker-b: #7a9ab8;
   --text-ticker-val: #d0e4f8;
+  --text3: #7a8ea8;
+  --green: #0d8c5c;
+  --green-lt: #e5f7f0;
+  --purple: #6d3bbf;
+  --red: #e02d46;
+  --red-lt: #fde8eb;
+  --border: #dde3ee;
+  --navy: #0f2040;
+  --blue: #1d6ef5;
+  --blue-lt: #e8f0fe;
+  --teal: #0aa8a0;
+  --teal-lt: #e4f6f5;
+  --yellow: #c98d00;
+  --yellow-lt: #fdf6de;
+  --text: #0f2040;
+  --text2: #3d5278;
+  --text3: #7a8ea8;
+  --text4: #aab8cc;
   --sidebar-bg: #080f1c;
   --sidebar-link: #4a6580;
   --sidebar-link-hover-bg: rgba(79, 142, 247, 0.09);
@@ -132,6 +150,42 @@ html[data-theme="light"] {
   --governance-lt: #fff0f3;
   --governance-glow: rgba(196, 30, 58, 0.18);
   --governance-grad: linear-gradient(140deg, #fff0f3 0%, #fff7f8 100%);
+}
+
+html[data-theme="light"] .score-card {
+  background: var(--acc-grad);
+}
+
+html[data-theme="light"] .col-count {
+  color: #fff;
+}
+
+html[data-theme="light"] .ticker-event.p1-event {
+  color: #be123c;
+}
+
+html[data-theme="light"] .ticker-event.p1-event b {
+  color: #9b0f2a;
+}
+
+html[data-theme="light"] .ticker-event.p2-event {
+  color: #92400e;
+}
+
+html[data-theme="light"] .ticker-event.p2-event b {
+  color: #78350f;
+}
+
+html[data-theme="light"] .aging-crit {
+  background: #fff0f3;
+  color: #c41e3a;
+  border-color: #fbbdd1;
+}
+
+html[data-theme="light"] .aging-warn {
+  background: #fff8e6;
+  color: #92400e;
+  border-color: #f5d282;
 }
 
 *,

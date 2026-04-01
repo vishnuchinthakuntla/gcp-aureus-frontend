@@ -9,6 +9,7 @@ import TicketsTable from '../components/TicketsTable/TicketsTable'
 import TicketsDrawer from '../components/TicketsTable/TicketsDrawer'
 import Charts from '../components/Charts/Charts'
 import Ticker from '../components/Ticker'
+import PipelinesTable from '../components/Pipeline/PipelinesTable';
 import '../App.css'
 
 const Dashboard = () => {
@@ -50,6 +51,8 @@ const Dashboard = () => {
             isActive={agent.status === 'active'}
             onClose={closePanel}
           />
+        ) : selectedAgent === "pipelines" ? (
+          <PipelinesTable />
         ) : (
           <TicketsTable />
         )}

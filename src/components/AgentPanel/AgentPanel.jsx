@@ -6,6 +6,10 @@ import SelfServicePanel from './SelfServicePanel';
 import GovernancePanel from './GovernancePanel';
 import ApprovalAgent from './ApprovalAgent';
 
+function toTitleCase(str) {
+  return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+}
+/*
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -19,9 +23,7 @@ function timeAgo(isoString) {
   return `${Math.floor(seconds / 86400)}d ago`
 }
 
-function toTitleCase(str) {
-  return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
-}
+
 
 // ── RunTile ───────────────────────────────────────────────────────────────────
 
@@ -86,6 +88,8 @@ const FeedItem = ({ item }) => {
     </div>
   )
 }
+
+*/
 
 // ── Shimmer ───────────────────────────────────────────────────────────────────
 
@@ -172,7 +176,7 @@ function AgentPanel() {
   const panel = useAgentStore(s => s.panel);
   const selectedAgent = useAgentStore(s => s.selectedAgent);
   const selectAgent = useAgentStore(s => s.selectAgent);
-
+  
   const { queued, inProgress, processed, liveFeed, loading } = panel;
   const config = AGENTS.find((a) => a.id === selectedAgent);
   if (!config) return null;

@@ -59,7 +59,7 @@
 .ticker-inner {
     display: flex;
     gap: 0;
-    animation: ticker-scroll 16s linear infinite;
+    animation: ticker-scroll 24s linear infinite;
     white-space: nowrap;
     padding: 5px 0;
 }
@@ -74,7 +74,7 @@
     }
 
     to {
-        transform: translateX(-100%);
+        transform: translateX(-160%);
     }
 }
 

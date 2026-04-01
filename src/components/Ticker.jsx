@@ -47,7 +47,23 @@ function Ticker() {
                         const dotColor = isP1 ? '#f43f5e' : '#f59e0b';
                         const agingClass = ticket.sla_breach === 'YES' ? 'aging-crit' : 'aging-warn';
                         return (
-                            <span key={i} className={`ticker-event ${priorityClass}`}>
+                            <span key={`a-${i}`} className={`ticker-event ${priorityClass}`}>
+                                <span className="dot" style={{ background: dotColor }}></span>
+                                <b>{ticket.title}</b>({ticket.severity})
+                                <span className={`aging-badge ${agingClass}`}>
+                                    ⏱ {formatElapsedTime(ticket.created_at)}
+                                </span>
+                                Owner: {ticket.assignedTo ?? 'Unassigned'}
+                            </span>
+                        );
+                    })}
+                    {tickerTickets.map((ticket, i) => {
+                        const isP1 = ticket.severity === 'P1';
+                        const priorityClass = isP1 ? 'p1-event' : 'p2-event';
+                        const dotColor = isP1 ? '#f43f5e' : '#f59e0b';
+                        const agingClass = ticket.sla_breach === 'YES' ? 'aging-crit' : 'aging-warn';
+                        return (
+                            <span key={`b-${i}`} className={`ticker-event ${priorityClass}`}>
                                 <span className="dot" style={{ background: dotColor }}></span>
                                 <b>{ticket.title}</b>({ticket.severity})
                                 <span className={`aging-badge ${agingClass}`}>

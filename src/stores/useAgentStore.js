@@ -195,8 +195,12 @@ const useAgentStore = create((set, get) => ({
   // ── Agent Panel (Kanban) — single call ────────────────────────────────────
 
   selectAgent: (agentId) => {
+    if (agentId === "pipelines") {
+      set({ selectedAgent: agentId, panel: { ...EMPTY_PANEL, loading: false } });
+      return;
+    }
     set({ selectedAgent: agentId, panel: { ...EMPTY_PANEL, loading: true } });
-    if (agentId) get().fetchPanel(agentId);
+    if (agentId ) get().fetchPanel(agentId);
   },
 
   closePanel: () => {
