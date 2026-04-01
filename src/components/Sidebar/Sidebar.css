@@ -11,6 +11,11 @@
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.35s, border-color 0.35s;
     z-index: 90;
     overflow-y: auto;
+     scrollbar-width: none;       
+    -ms-overflow-style: none; 
+}
+.sidebar::-webkit-scrollbar {
+    display: none;               
 }
 
 .sidebar.open {

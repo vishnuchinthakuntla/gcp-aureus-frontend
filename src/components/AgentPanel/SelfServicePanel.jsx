@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import useAgentStore from '../../stores/useAgentStore';
 import './AgentPanel.css';
 
-const SELF_SERVICE_BASE_URL = 'https://covalense-genai-vm-self-service-mcp.ngrok-free.dev';
+const SELF_SERVICE_BASE_URL = 'https://6059-175-101-6-106.ngrok-free.app'; // Replace with your actual backend URL
 
 export default function SelfServicePanel() {
     const selectedAgent = useAgentStore((s) => s.selectedAgent);
