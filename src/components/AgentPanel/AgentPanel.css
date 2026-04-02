@@ -348,6 +348,7 @@
     transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s, background 0.2s, opacity 0.2s;
     cursor: default;
     animation: feed-in 0.45s ease both;
+    text-wrap: wrap;
 }
 
 .feed-item:last-child {
