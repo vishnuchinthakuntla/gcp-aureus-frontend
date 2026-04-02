@@ -4,27 +4,6 @@ import React, { useMemo } from "react";
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-const sampleData = {
-  agentPerformances: [
-    { name: "Observer", icon: "👁️", totalCount: 0, failedCount: 0 },
-    { name: "RCA", icon: "🔍", totalCount: 0, failedCount: 0 },
-    { name: "Decision", icon: "🧠", totalCount: 0, failedCount: 0 },
-    { name: "Self-Healing", icon: "🔧", totalCount: 0, failedCount: 0 },
-  ],
-  failurePatterns: [
-    { patternName: "SCHEMA_CHANGE",    category: "Data",       hits: 160, percentOfFailures: 66.9 },
-    { patternName: "FILE_AVAILABILITY", category: "Dependency", hits: 79,  percentOfFailures: 33.1 },
-  ],
-  rcaConfidences: [
-    { confidenceRange: "<50%",   rca_Count: 25 },
-    { confidenceRange: "50-60%", rca_Count: 0 },
-    { confidenceRange: "60-70%", rca_Count: 0 },
-    { confidenceRange: "70-80%", rca_Count: 25 },
-    { confidenceRange: "80-90%", rca_Count: 25 },
-    { confidenceRange: ">90%",   rca_Count: 25 },
-  ],
-};
-
 const AgentTrack = ({track}) => {
     const successPct = track.totalCount === 0
           ? 0
@@ -66,6 +45,7 @@ const AgentFailurePatterns = ({pattern}) => {
 export default function GovernancePanel() {
     const selectedAgent = useAgentStore((s) => s.selectedAgent);
     const selectAgent = useAgentStore((s) => s.selectAgent);
+    const governanceData = useAgentStore((s) => s.governanceData);
 
     const confidenceChartOptions = useMemo(() => ({
       chart: {
@@ -75,7 +55,7 @@ export default function GovernancePanel() {
       },
       title: { text: undefined },
       xAxis: {
-        categories: sampleData.rcaConfidences.map((x) => x.confidenceRange),
+        categories: governanceData?.rcaConfidences.map((x) => x.confidenceRange),
         gridLineWidth: 0,
         lineWidth: 0
       },
@@ -117,16 +97,16 @@ export default function GovernancePanel() {
       },
       series: [{
         name: 'RCA Analyses',
-        data: sampleData.rcaConfidences.map((x) => x.rca_Count),
+        data: governanceData?.rcaConfidences.map((x) => x.rca_Count),
         borderColor: ['#e02d46', '#e0620a', '#c98d00', '#1d6ef5', '#0aa8a0', '#0d8c5c']
       }],
       credits: { enabled: false }
-    }), []);
+    }), [governanceData]);
 
     let total = 0;
     let high = 0;
     let low = 0;
-    sampleData.rcaConfidences.forEach((x) => {
+    governanceData?.rcaConfidences.forEach((x) => {
       total += x.rca_Count;
       if(x.confidenceRange.includes("90")) {
         high += x.rca_Count;
@@ -155,7 +135,7 @@ export default function GovernancePanel() {
             <span style={{ fontSize: 10, color: 'var(--text3)' }}>Today · success rate</span>
           </div>
           <div className="card-body" id="pnlGovernanceAgentMetrics">
-            {sampleData.agentPerformances.map((x) => <AgentTrack key={x.name} track={x} />)}
+            {governanceData?.agentPerformances.map((x) => <AgentTrack key={x.name} track={x} />)}
           </div>
         </div>
         <div className="panel-col-governance">
@@ -164,7 +144,7 @@ export default function GovernancePanel() {
             <span style={{ fontSize: 10, color: 'var(--text3)' }}>Last 30 days · hits</span>
           </div>
           <div className="card-body" id="pnlGovernanceFailurePatterns">
-            {sampleData.failurePatterns.map((x) => <AgentFailurePatterns key={x.patternName} pattern={x} />)}
+            {governanceData?.failurePatterns.map((x) => <AgentFailurePatterns key={x.patternName} pattern={x} />)}
           </div>
         </div>
         <div className="panel-col-governance">

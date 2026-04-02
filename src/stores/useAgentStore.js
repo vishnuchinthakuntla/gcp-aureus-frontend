@@ -160,6 +160,7 @@ const useAgentStore = create((set, get) => ({
   selectedTicket: null,
   activeFilter: "all",
   approvals: [],
+  governanceData: null,
 
   // Internal refs (not reactive)
   _ws: null,
@@ -215,6 +216,11 @@ const useAgentStore = create((set, get) => ({
 
     // Single API call instead of 4
     let data = null;
+    if(id === "governance") {
+      data = await safeFetch(`/api/governance/dashboard?window_days=30`, null);
+      set({ governanceData: data });
+      return;
+    }
     if (id !== "approval") {
       data = await safeFetch(`/api/agents/${id}/panel`, null);
     }
