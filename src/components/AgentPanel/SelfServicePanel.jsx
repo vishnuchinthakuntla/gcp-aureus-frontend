@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import useAgentStore from "../../stores/useAgentStore";
 import "./AgentPanel.css";
 
-const SELF_SERVICE_BASE_URL = "https://ec2c-175-101-6-106.ngrok-free.app";
+const SELF_SERVICE_BASE_URL = "https://1efc-175-101-6-106.ngrok-free.app";
 
 export default function SelfServicePanel() {
   const selectedAgent = useAgentStore((s) => s.selectedAgent);

@@ -56,12 +56,12 @@ export default function Sidebar({ open }) {
                     
                 );
             })}
-             <div className="sidebar-section">Admin</div>
+             {/* <div className="sidebar-section">Admin</div>
 
             <button onClick={() => selectAgent("pipelines")}>
                 <span className="icon">🚀</span>
                 Pipelines
-            </button>
+            </button> */}
         </aside>
     );
 }
