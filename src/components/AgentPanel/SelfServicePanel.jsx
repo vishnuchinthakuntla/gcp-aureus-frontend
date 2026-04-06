@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import useAgentStore from "../../stores/useAgentStore";
 import "./AgentPanel.css";
+import toast from "react-hot-toast";
 
-const SELF_SERVICE_BASE_URL = "https://1efc-175-101-6-106.ngrok-free.app";
+const SELF_SERVICE_BASE_URL = "https://bb78-175-101-6-106.ngrok-free.app";
 
 export default function SelfServicePanel() {
   const selectedAgent = useAgentStore((s) => s.selectedAgent);
@@ -214,7 +215,13 @@ export default function SelfServicePanel() {
               ) : (
                 favourites.map((fav) => (
                   <li key={fav.id} className="fav-item">
-                    <span className="fav-text">{fav.question}</span>
+                    <span
+  className="fav-text"
+  style={{ cursor: "pointer" }}
+  onClick={() => setInput(fav.question)}
+>
+  {fav.question}
+</span>
 
                     <button
                       className="delete-btn"
@@ -261,7 +268,7 @@ export default function SelfServicePanel() {
                       const answer = messages[i + 1]?.text || "";
 
                       if (isAlreadyFavourite(question)) {
-                        alert("⚠️ Already in favourites");
+                        toast.error("Already in favourites");
                         return;
                       }
 
