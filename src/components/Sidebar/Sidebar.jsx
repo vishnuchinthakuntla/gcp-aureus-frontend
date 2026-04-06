@@ -31,6 +31,7 @@ const ICON_MAP = {
 export default function Sidebar({ open }) {
 
     const selectAgent = useAgentStore((s) => s.selectAgent);
+    const selectedAgent = useAgentStore((s) => s.selectedAgent);
 
     return (
         <aside className={`sidebar${open ? ' open' : ''}`}>
@@ -46,7 +47,7 @@ export default function Sidebar({ open }) {
                 return (
                     <button
                         key={agent.id}
-                        onClick={() => selectAgent(agent.id)}
+                        onClick={() => selectAgent(agent.id === selectedAgent ? null : agent.id)}
                     >
                         {/* <Icon className={`icon ${agent.id}`} size={18} /> */}
                         <span className="icon">{agent.icon}</span>

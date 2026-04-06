@@ -51,11 +51,11 @@ const Dashboard = () => {
             isActive={agent.status === 'active'}
             onClose={closePanel}
           />
-        ) : selectedAgent === "pipelines" ? (
+        ) : selectedAgent === "pipelines" && (
           <PipelinesTable />
-        ) : (
-          <TicketsTable />
         )}
+
+        <TicketsTable />
 
         {selectedTicket && <TicketsDrawer />}
         <Charts />
