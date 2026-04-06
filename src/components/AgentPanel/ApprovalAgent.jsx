@@ -2,6 +2,7 @@
 import React, { useState, useMemo } from "react";
 import "./ApprovalAgent.css";
 import useAgentStore from "../../stores/useAgentStore";
+import { toast } from "react-hot-toast";
 
 
 function ApprovalTable() {
@@ -44,9 +45,9 @@ function ApprovalTable() {
   const handleApprove = async (threadId) => {
     try {
       await approveTicket(threadId);
-      alert("Approved ✅");
+      toast.success("Approved ✅");
     } catch {
-      alert("Approval failed ❌");
+      toast.error("Approval failed ❌");
     }
   };
 
