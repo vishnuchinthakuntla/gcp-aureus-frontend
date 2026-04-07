@@ -3,7 +3,7 @@ import useAgentStore from "../../stores/useAgentStore";
 import "./AgentPanel.css";
 import toast from "react-hot-toast";
 
-const SELF_SERVICE_BASE_URL = "https://bb78-175-101-6-106.ngrok-free.app";
+const SELF_SERVICE_BASE_URL = "https://ed70-175-101-6-106.ngrok-free.app";
 
 export default function SelfServicePanel() {
   const selectedAgent = useAgentStore((s) => s.selectedAgent);
@@ -237,7 +237,7 @@ export default function SelfServicePanel() {
         </div>
 
         {/* CHAT */}
-        <div className="panel-col">
+        <div className="panel-col chat-panel">
           <div className="col-header">
             <h3>Chat</h3>
           </div>
@@ -291,11 +291,24 @@ export default function SelfServicePanel() {
           </div>
 
           <div className="chat-input-area">
-            <input
+            <textarea
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                setInput(e.target.value);
+                const ta = e.target;
+                ta.style.height = "auto";
+                const maxHeight = 66;
+                ta.style.height = Math.min(ta.scrollHeight, maxHeight) + "px";
+                ta.style.overflowY = ta.scrollHeight > maxHeight ? "auto" : "hidden";
+              }}
               placeholder="Type your message..."
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              rows={1}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  sendMessage();
+                }
+              }}
             />
             <button onClick={sendMessage}>Send</button>
           </div>
