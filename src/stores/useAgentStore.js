@@ -53,27 +53,20 @@ function normalizeFeed(items) {
   }));
 }
 
+function arrayToAgentMap(agents) {
+  if (!Array.isArray(agents)) return null;
+  return agents.reduce((acc, agent) => {
+    acc[agent.id] = agent;
+    return acc;
+  }, {});
+}
+
 function mergeAgents(data) {
-  if (data?.agents && Array.isArray(data.agents)) {
-    return AGENTS.map((sa) => {
-      const live = data.agents.find((a) => a.id === sa.id) || {};
-      const active = live.active ?? live.count ?? 0;
-      const processed = live.processed ?? 0;
-      const count = active > 0 ? active : processed; // ← show processed when idle
-      return {
-        ...sa,
-        count,
-        active,
-        queued: live.queued ?? 0,
-        processed,
-        status: active > 0 ? "active" : "idle",
-      };
-    });
-  }
+
   if (data?.items && typeof data.items === "object") {
     return AGENTS.map((sa) => {
       const live = data.items[sa.id] || {};
-      const active = live.active ?? 0;
+      const active = live.active ?? live.count ?? 0;
       const processed = live.processed ?? 0;
       const count = active > 0 ? active : processed; // ← show processed when idle
       return {
@@ -189,6 +182,11 @@ const useAgentStore = create((set, get) => ({
   fetchAgents: async () => {
     const data = await safeFetch("/api/agents", null);
     if (!data) return;
+
+    if (data?.agents && Array.isArray(data.agents)) {
+      data.items = arrayToAgentMap(data.agents);
+    }
+
     const merged = mergeAgents(data);
     if (merged) set({ agents: merged });
   },
@@ -343,7 +341,8 @@ const useAgentStore = create((set, get) => ({
           }
 
           if (data?.agents) {
-            const merged = mergeAgents({ items: data.agents });
+            const itemsMap = arrayToAgentMap(data.agents);
+            const merged = mergeAgents({ items: itemsMap });
             if (merged) set({ agents: merged });
           }
 

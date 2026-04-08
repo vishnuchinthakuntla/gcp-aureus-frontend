@@ -3,7 +3,7 @@ import AgentCard from './AgentCard'
 import useAgentStore from '../../stores/useAgentStore'
 import './AgentGrid.css'
 
-const AgentGrid = ({ selectedId, onSelect }) => {
+const AgentGrid = () => {
   const agents = useAgentStore(s => s.agents)
 
  return (
@@ -14,8 +14,6 @@ const AgentGrid = ({ selectedId, onSelect }) => {
         <AgentCard
           key={agent.id}
           agent={agent}
-          selected={agent.id === selectedId}
-          onClick={() => onSelect(agent.id === selectedId ? null : agent.id)}
         />
       ))}
   </div>

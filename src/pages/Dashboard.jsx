@@ -32,25 +32,16 @@ const Dashboard = () => {
   return (
     <div className="app">
       <Header open={isOpen} onMenuToggle={() => setIsOpen(!isOpen)} />
-      <Sidebar open={isOpen} onClickAgent={selectAgent} />
+      <Sidebar open={isOpen} />
 
       <main className={`main${isOpen ? ' shifted' : ''}`}>
         <PipelinesBar />
         <Ticker />
 
-        <AgentGrid
-          selectedId={selectedAgent}
-          onSelect={(id) => selectAgent(selectedAgent === id ? null : id)}
-        />
+        <AgentGrid />
 
         {selectedAgent && agent ? (
-          <AgentPanel
-            agentId={selectedAgent}
-            agentLabel={agent.label}
-            agentIcon={agent.icon}
-            isActive={agent.status === 'active'}
-            onClose={closePanel}
-          />
+          <AgentPanel />
         ) : selectedAgent === "pipelines" && (
           <PipelinesTable />
         )}

@@ -1,7 +1,6 @@
 import React from 'react'
 import useAgentStore from '../../stores/useAgentStore'
 import './AgentPanel.css'
-import { AGENTS } from '../../constants/agents';
 import SelfServicePanel from './SelfServicePanel';
 import GovernancePanel from './GovernancePanel';
 import ApprovalAgent from './ApprovalAgent';
@@ -176,9 +175,10 @@ function AgentPanel() {
   const panel = useAgentStore(s => s.panel);
   const selectedAgent = useAgentStore(s => s.selectedAgent);
   const selectAgent = useAgentStore(s => s.selectAgent);
+  const agents = useAgentStore(s => s.agents);
   
   const { queued, inProgress, processed, liveFeed, loading } = panel;
-  const config = AGENTS.find((a) => a.id === selectedAgent);
+  const config = agents.find((a) => a.id === selectedAgent);
   if (!config) return null;
 
   const isHealingOrQuality = selectedAgent === 'selfhealing' || selectedAgent === 'dataquality';

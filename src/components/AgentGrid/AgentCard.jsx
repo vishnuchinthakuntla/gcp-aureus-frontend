@@ -1,13 +1,17 @@
 import React from 'react'
+import useAgentStore from '../../stores/useAgentStore';
 
-const AgentCard = ({ agent, selected, onClick }) => {
+const AgentCard = ({ agent }) => {
+
+  const selectAgent = useAgentStore(s => s.selectAgent );
+  const selectedAgent = useAgentStore(s => s.selectedAgent );
   const { label, count, icon, bg, borderColor, numColor, status = 'idle', active = 0, processed = 0, carClass } = agent
 
   return (
     <div
-      className={`score-card ${carClass} ${selected ? 'active' : ''}`}
-      onClick={onClick}
-      aria-pressed={selected}
+      className={`score-card ${carClass} ${selectedAgent === agent.id ? 'active' : ''}`}
+      onClick={() => selectAgent(agent.id === selectedAgent ? null : agent.id)}
+      aria-pressed={agent.id === selectedAgent}
     >
       <span className="card-icon">{icon}</span>
       <div className="score-label">{label}</div>
