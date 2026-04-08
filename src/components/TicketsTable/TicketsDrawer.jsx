@@ -31,7 +31,7 @@ export default function TicketDrawer() {
   const normalized = useMemo(() => {
     if (!ticket) return null;
 
-    console.log(typeof ticket.description)
+    console.log(typeof ticket.description);
 
     return {
       id: ticket.ticket_id,
@@ -49,7 +49,7 @@ export default function TicketDrawer() {
   const age = useMemo(() => {
     if (!normalized?.createdAt) return "—";
     const diff = Math.floor(
-      (Date.now() - new Date(normalized.createdAt)) / 1000
+      (Date.now() - new Date(normalized.createdAt)) / 1000,
     );
     if (diff < 60) return `${diff}s`;
     if (diff < 3600) return `${Math.floor(diff / 60)}m`;
@@ -82,38 +82,146 @@ export default function TicketDrawer() {
   const workflow = pipelineData?.workflow || {};
   const run = pipelineData?.run || {};
 
+  const rcaConfidence = useMemo(() => {
+    const logs = pipelineData?.agent_logs || [];
+
+    for (let log of logs) {
+      const match = log.message?.match(/confidence\s*=\s*([0-9.]+)/i);
+      if (match) {
+        return match[1]; // "0.9"
+      }
+    }
+
+    return null;
+  }, [pipelineData]);
+
   return (
     <>
-      <div className={`ticket-drawer-overlay ${ticket ? "open" : ""}`} onClick={() => ticket && closeTicketDrawer()} />
+      <div
+        className={`ticket-drawer-overlay ${ticket ? "open" : ""}`}
+        onClick={() => ticket && closeTicketDrawer()}
+      />
 
       <div className={`ticket-drawer ${ticket ? "open" : ""}`}>
         {/* HEADER */}
         <div className="td-header">
           <div className="td-header-id">{normalized.id}</div>
           <div className="td-header-title">{normalized.title}</div>
-          <div className="td-close" onClick={closeTicketDrawer}>✕</div>
+          <div className="td-close" onClick={closeTicketDrawer}>
+            ✕
+          </div>
         </div>
 
         <div className="td-body">
           {/* HERO */}
           <div className="td-hero">
-            <span className={`td-prio-badge tdp-${normalized.prio?.toLowerCase()}`}>
+            <span
+              className={`td-prio-badge tdp-${normalized.prio?.toLowerCase()}`}
+            >
               {normalized.prio}
             </span>
 
             <div>
               <div className="td-hero-name">{normalized.title}</div>
-              <div className="td-hero-desc">{normalized.desc.split("\n").map(line => <>{line}<br /></>)}</div>
+
+              <div className="td-hero-desc">
+                {(() => {
+                  const lines = normalized.desc?.split("\n") || [];
+
+                  // ✅ Get error line
+                  const errorLine = lines.find((line) =>
+                    line.toLowerCase().startsWith("error"),
+                  );
+
+                  // ✅ Clean error (remove long java part)
+                  const cleanedError = errorLine
+                    ? errorLine.split(": java")[0] + ":"
+                    : null;
+
+                  // ✅ Only required lines
+                  const importantLines = lines.filter(
+                    (line) =>
+                      line.trim().startsWith("Pipeline") ||
+                      line.trim().startsWith("Run ID") ||
+                      line.trim().startsWith("Event"),
+                  );
+
+                  return (
+                    <>
+                      {/* ✅ Error Line */}
+                      {cleanedError && (
+                        <>
+                          {cleanedError}
+                          <br />
+                        </>
+                      )}
+
+                      {/* ✅ Only 3 required lines */}
+                      {importantLines.map((line, i) => (
+                        <React.Fragment key={i}>
+                          {line}
+                          <br />
+                        </React.Fragment>
+                      ))}
+                    </>
+                  );
+                })()}
+              </div>
             </div>
           </div>
 
           {/* TICKET DETAILS */}
           <div className="td-section-title">Ticket Details</div>
           <div className="td-grid">
-            <div className="td-field"><div className="td-field-label">Status</div><div className="td-field-val"><span className={`t-status ${STATUS_CLS[normalized.status] || 'ts-open'}`}>{normalized.status}</span></div></div>
-            <div className="td-field"><div className="td-field-label">Owner</div><div className="td-field-val" style={{ fontSize: 13 }}>{normalized.owner}</div></div>
-            <div className="td-field"><div className="td-field-label">Age</div><div className="td-field-val" style={{ color: normalized.ageCls === 'crit' ? '#f43f5e' : normalized.ageCls === 'warn' ? '#f59e0b' : 'var(--text-sub)' }}>{age}</div></div>
-            <div className="td-field"><div className="td-field-label">SLA</div><div className="td-field-val" style={{ color: normalized.sla === 'BREACHED' ? '#f43f5e' : normalized.sla === 'AT RISK' ? '#f59e0b' : '#10b981', fontWeight: normalized.sla === 'BREACHED' ? 800 : 700 }}>{normalized.prio}</div></div>
+            <div className="td-field">
+              <div className="td-field-label">Status</div>
+              <div className="td-field-val">
+                <span
+                  className={`t-status ${STATUS_CLS[normalized.status] || "ts-open"}`}
+                >
+                  {normalized.status}
+                </span>
+              </div>
+            </div>
+            <div className="td-field">
+              <div className="td-field-label">Owner</div>
+              <div className="td-field-val" style={{ fontSize: 13 }}>
+                {normalized.owner}
+              </div>
+            </div>
+            <div className="td-field">
+              <div className="td-field-label">Age</div>
+              <div
+                className="td-field-val"
+                style={{
+                  color:
+                    normalized.ageCls === "crit"
+                      ? "#f43f5e"
+                      : normalized.ageCls === "warn"
+                        ? "#f59e0b"
+                        : "var(--text-sub)",
+                }}
+              >
+                {age}
+              </div>
+            </div>
+            <div className="td-field">
+              <div className="td-field-label">SLA</div>
+              <div
+                className="td-field-val"
+                style={{
+                  color:
+                    normalized.sla === "BREACHED"
+                      ? "#f43f5e"
+                      : normalized.sla === "AT RISK"
+                        ? "#f59e0b"
+                        : "#10b981",
+                  fontWeight: normalized.sla === "BREACHED" ? 800 : 700,
+                }}
+              >
+                {normalized.prio}
+              </div>
+            </div>
             {/* <div className="td-field">
               <div>Status</div>
               <b>{normalized.status}</b>
@@ -134,21 +242,63 @@ export default function TicketDrawer() {
 
           {/* ROOT CAUSE */}
           <div className="td-section-title">Root Cause</div>
-          <div className="td-card">
-            {run.error_message || "No error info"}
-          </div>
+          <div className="td-card">{run.error_message || "No error info"}</div>
 
           {/* RCA DETAILS */}
           <div className="td-section-title">RCA Details</div>
           <div className="td-card scroll">
-            <p><b>Pipeline:</b> {run.pipeline_name}</p>
-            <p><b>Status:</b> {workflow.status}</p>
-            <p><b>Severity:</b> {workflow.severity}</p>
-            <p><b>Confidence:</b> {workflow.confidence}</p>
-            <p><b>SLA Breach:</b> {workflow.sla_breached ? "YES" : "NO"}</p>
+            <p>
+              <b>Pipeline:</b> {run.pipeline_name}
+            </p>
+            <p>
+              <b>Status:</b> {workflow.status}
+            </p>
+            <p>
+              <b>Severity:</b> {workflow.severity}
+            </p>
+            <p>
+              <b>Confidence:</b> {rcaConfidence ?? "N/A"}
+            </p>
+            <p>
+              <b>SLA Breach:</b> {workflow.sla_breached ? "YES" : "NO"}
+            </p>
+            <p>
+              <b>Immediate Recommendations</b>:{" "}
+              {workflow.recommendations?.immediate || "N/A"}
+            </p>
 
-            <p><b>Summary:</b></p>
-            <p>{workflow.observer_summary || "No summary"}</p>
+            <p>
+              <b>Recommended Actions:</b>
+            </p>
+
+            {(() => {
+              try {
+                const action = JSON.parse(workflow.recommended_action || "{}");
+
+                return (
+                  <div>
+                    <p>
+                      <b>Action:</b> {action.action || "N/A"}
+                    </p>
+                    <p>
+                      <b>Requires Approval:</b>{" "}
+                      {action.requires_approval ? "Yes" : "No"}
+                    </p>
+                    <p>
+                      <b>SLA Impact:</b> {action.sla_impact || "N/A"}
+                    </p>
+                    <p>
+                      <b>Business Impact:</b> {action.business_impact || "N/A"}
+                    </p>
+                    <p>
+                      <b>Reasoning:</b> {action.reasoning || "N/A"}
+                    </p>
+                  </div>
+                );
+              } catch (e) {
+                return <p>No recommended actions available</p>;
+              }
+            })()}
           </div>
 
           {/* 🔥 EXECUTION FLOW */}
@@ -173,15 +323,16 @@ export default function TicketDrawer() {
                       <span>{log.agent_node}</span>
                       <span>{time}</span>
                     </div>
-                    <div className={`flow-message ${level}`}>
-                      {log.message}
-                    </div>
+                    <div className={`flow-message ${level}`}>{log.message}</div>
                   </div>
                 </div>
               );
             })}
           </div>
-          <button className="td-action-btn" onClick={() => window.open(normalized.url, '_blank')}>
+          <button
+            className="td-action-btn"
+            onClick={() => window.open(normalized.url, "_blank")}
+          >
             VIEW TICKET
           </button>
         </div>

@@ -45,9 +45,9 @@ function TicketsTable() {
         owner: t.assigned_to || "Unassigned",
 
         pipeline: t.title,
+        slABreach: t.sla_breached ? "YES" : "NO",
 
-        sla: "OK",
-        slABreach: "NO",
+       
         ticketType: 0,
 
         raw: t, // keep original (useful for drawer)
@@ -90,7 +90,7 @@ function TicketsTable() {
       {/* Header */}
       <div className="tickets-section-header">
         <div className="tickets-section-title">OPEN TICKETS</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div className="tickets-filters">
             {filters.map((f) => (
               <button
