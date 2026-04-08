@@ -160,6 +160,7 @@ const useAgentStore = create((set, get) => ({
   _retryTimer: null,
   _fetchAgentsTimer: null,
   _fetchPanelTimer: null,
+  _approvalTimer: null,
 
   // ── Filter ──────────────────────────────────────────────────────────
 
@@ -397,11 +398,24 @@ const useAgentStore = create((set, get) => ({
   init: () => {
     get().fetchAgents();
     get().fetchHeader();
-    get().refreshApprovals();
+    
+    if (!get()._approvalTimer) {
+      const timer = setInterval(() => {
+        if (get().selectedAgent === "approval") {
+          get().refreshApprovals();
+        }
+      }, 3000);
+      set({ _approvalTimer: timer });
+    }
+
     get().connectWs();
   },
 
   destroy: () => {
+    if (get()._approvalTimer) {
+      clearInterval(get()._approvalTimer);
+      set({ _approvalTimer: null });
+    }
     get().disconnectWs();
   },
 }));
