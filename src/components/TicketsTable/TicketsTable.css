@@ -597,7 +597,7 @@
 }
 
 .td-card.scroll {
-    min-height: 10rem;
+    max-height: 10rem;
     overflow-y: auto;
     background: linear-gradient(145deg, #f8fafc, #f1f5f9);
     border: 1px solid #dde3ee;
@@ -606,6 +606,7 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
+    flex: 0 0 auto;
 }
 
 .td-card.scroll::-webkit-scrollbar {

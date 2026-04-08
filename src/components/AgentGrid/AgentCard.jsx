@@ -16,10 +16,10 @@ const AgentCard = ({ agent }) => {
       <span className="card-icon">{icon}</span>
       <div className="score-label">{label}</div>
       <div className="score-value" style={{ color: numColor }}>{agent.id === "selfservice" || agent.id === "governance" ? "" : count}</div>
-      {/* <div className="agent-card__status">
+      {agent.id !== "governance" && agent.id !== "selfservice" && <div className="agent-card__status">
         <span className={`agent-card__status-dot agent-card__status-dot--${status}`} />
         {active > 0 ? `${active} ACTIVE` : processed > 0 ? `${processed} DONE` : 'IDLE'}
-      </div> */}
+      </div>}
     </div>
   )
 }
