@@ -210,16 +210,11 @@ export default function TicketDrawer() {
               <div
                 className="td-field-val"
                 style={{
-                  color:
-                    normalized.sla === "BREACHED"
-                      ? "#f43f5e"
-                      : normalized.sla === "AT RISK"
-                        ? "#f59e0b"
-                        : "#10b981",
-                  fontWeight: normalized.sla === "BREACHED" ? 800 : 700,
+                  color: workflow?.sla_breached ? "#f43f5e" : "#10b981",
+                  fontWeight: workflow?.sla_breached ? 800 : 700,
                 }}
               >
-                {normalized.prio}
+                {workflow?.sla_breached ? "BREACHED" : "OK"}
               </div>
             </div>
             {/* <div className="td-field">
@@ -242,7 +237,9 @@ export default function TicketDrawer() {
 
           {/* ROOT CAUSE */}
           <div className="td-section-title">Root Cause</div>
-          <div className="td-card scroll">{run.error_message || "No error info"}</div>
+          <div className="td-card scroll">
+            {run.error_message || "No error info"}
+          </div>
 
           {/* RCA DETAILS */}
           <div className="td-section-title">RCA Details</div>
@@ -259,13 +256,23 @@ export default function TicketDrawer() {
             <p>
               <b>Confidence:</b> {rcaConfidence ?? "N/A"}
             </p>
-            <p>
+            {/* <p>
               <b>SLA Breach:</b> {workflow.sla_breached ? "YES" : "NO"}
-            </p>
+            </p> */}
             <p>
-              <b>Immediate Recommendations</b>:{" "}
-              {workflow.recommendations?.immediate || "N/A"}
-            </p>
+  <b>Immediate Recommendations:</b>{" "}
+  {(() => {
+    try {
+      const factors = JSON.parse(workflow.contributing_factors || "[]");
+
+      return factors.length > 0
+        ? factors.join(", ")
+        : "N/A";
+    } catch (e) {
+      return "N/A";
+    }
+  })()}
+</p>
 
             <p>
               <b>Recommended Actions:</b>

@@ -78,7 +78,7 @@ export const AGENTS = [
   },
   {
     id: "approval",
-    label: "APPROVAL AGENT",
+    label: "HUMAN APPROVAL",
     count: 0,
     icon: "🧑‍⚖️",
     bg: "#f0fff4",
