@@ -160,7 +160,7 @@ const useAgentStore = create((set, get) => ({
   _retryTimer: null,
   _fetchAgentsTimer: null,
   _fetchPanelTimer: null,
-  _approvalTimer: null,
+  // _approvalTimer: null,
 
   // ── Filter ──────────────────────────────────────────────────────────
 
@@ -222,6 +222,9 @@ const useAgentStore = create((set, get) => ({
     }
     if (id !== "approval") {
       data = await safeFetch(`/api/agents/${id}/panel`, null);
+    } 
+    if(id === "approval") {
+      get().refreshApprovals();
     }
 
     if (!data) {
@@ -398,7 +401,9 @@ const useAgentStore = create((set, get) => ({
   init: () => {
     get().fetchAgents();
     get().fetchHeader();
+    get().refreshApprovals();
     
+    /*      Interval based approvals refresh
     if (!get()._approvalTimer) {
       const timer = setInterval(() => {
         if (get().selectedAgent === "approval") {
@@ -406,16 +411,17 @@ const useAgentStore = create((set, get) => ({
         }
       }, 3000);
       set({ _approvalTimer: timer });
-    }
+    }  */
 
     get().connectWs();
   },
 
   destroy: () => {
+    /*      Interval based approvals refresh
     if (get()._approvalTimer) {
       clearInterval(get()._approvalTimer);
       set({ _approvalTimer: null });
-    }
+    } */
     get().disconnectWs();
   },
 }));
