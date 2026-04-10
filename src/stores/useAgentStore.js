@@ -265,23 +265,21 @@ const useAgentStore = create((set, get) => ({
   fetchHeader: async () => {
     console.log("🔥 Calling ALL APIs");
 
-    const [pipeline, headerTickets, ticketsRes, info] = await Promise.all([
-      safeFetch("/api/header/pipeline", INITIAL_HEADER.pipeline),
-      safeFetch("/api/header/tickets", INITIAL_HEADER.tickets),
+    const [headerData, ticketsRes] = await Promise.all([
+      safeFetch("/api/header", INITIAL_HEADER),
       safeFetch("/api/tickets", {}),
-      safeFetch("/api/header/info", INITIAL_HEADER.info),
     ]);
 
-    console.log("✅ header tickets:", headerTickets);
+    console.log("✅ header tickets:", headerData.tickets);
     console.log("✅ table tickets (/api/tickets):", ticketsRes);
 
     set((s) => ({
       header: {
         ...s.header,
-        pipeline,
-        tickets: headerTickets || s.header.tickets,
+        pipeline: headerData.pipeline,
+        tickets: headerData.tickets,
         ticketsData: ticketsRes?.items || [],
-        info,
+        info: headerData.info,
       },
     }));
   },
@@ -367,6 +365,10 @@ const useAgentStore = create((set, get) => ({
           const timer = setTimeout(() => get().fetchPanel(), 300);
           set({ _fetchPanelTimer: timer });
         }
+
+        if (get().selectedAgent === "approval" && type === "approval_request") {
+          get().refreshApprovals();
+        }
       } catch {
         /* ignore malformed */
       }
@@ -381,7 +383,30 @@ const useAgentStore = create((set, get) => ({
     ws.onerror = () => ws.close();
   },
 
-  disconnectWs: () => {
+  // ── Init / Destroy ────────────────────────────────────────────────────────
+
+  init: () => {
+    get().connectWs();
+    // get().refreshApprovals();
+    
+    /*      Interval based approvals refresh
+    if (!get()._approvalTimer) {
+      const timer = setInterval(() => {
+        if (get().selectedAgent === "approval") {
+          get().refreshApprovals();
+        }
+      }, 3000);
+      set({ _approvalTimer: timer });
+    }  */
+
+  },
+
+  destroy: () => {
+    /*      Interval based approvals refresh
+    if (get()._approvalTimer) {
+      clearInterval(get()._approvalTimer);
+      set({ _approvalTimer: null });
+    } */
     const { _ws, _retryTimer, _fetchAgentsTimer, _fetchPanelTimer } = get();
     if (_retryTimer) clearTimeout(_retryTimer);
     if (_fetchAgentsTimer) clearTimeout(_fetchAgentsTimer);
@@ -394,35 +419,6 @@ const useAgentStore = create((set, get) => ({
       _fetchPanelTimer: null,
       wsConnected: false,
     });
-  },
-
-  // ── Init / Destroy ────────────────────────────────────────────────────────
-
-  init: () => {
-    get().fetchAgents();
-    get().fetchHeader();
-    get().refreshApprovals();
-    
-    /*      Interval based approvals refresh
-    if (!get()._approvalTimer) {
-      const timer = setInterval(() => {
-        if (get().selectedAgent === "approval") {
-          get().refreshApprovals();
-        }
-      }, 3000);
-      set({ _approvalTimer: timer });
-    }  */
-
-    get().connectWs();
-  },
-
-  destroy: () => {
-    /*      Interval based approvals refresh
-    if (get()._approvalTimer) {
-      clearInterval(get()._approvalTimer);
-      set({ _approvalTimer: null });
-    } */
-    get().disconnectWs();
   },
 }));
 

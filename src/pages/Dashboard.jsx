@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Header from '../components/Header/Header'
 import AgentGrid from '../components/AgentGrid/AgentGrid'
 import AgentPanel from '../components/AgentPanel/AgentPanel'
@@ -18,14 +18,22 @@ const Dashboard = () => {
   const selectedAgent = useAgentStore(s => s.selectedAgent)
   const selectedTicket = useAgentStore(s => s.selectedTicket)
   const agents = useAgentStore(s => s.agents)
-  const selectAgent = useAgentStore(s => s.selectAgent)
-  const closePanel = useAgentStore(s => s.closePanel)
   const [isOpen, setIsOpen] = useState(false)
+  const initialized = useRef(false);
 
   useEffect(() => {
-    init()
-    return () => destroy()
-  }, [init, destroy])
+    if (!initialized.current) {
+      initialized.current = true;
+      init();
+    }
+
+    return () => {
+      if (initialized.current) {
+        initialized.current = false;
+        destroy();
+      }
+    };
+  }, [])
 
   const agent = agents.find(a => a.id === selectedAgent)
 
