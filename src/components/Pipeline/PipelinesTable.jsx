@@ -13,11 +13,15 @@ const pipelines = [
 export default function PipelinesTable() {
   return (
     <div className="pipeline-container">
-      
+
       {/* HEADER */}
       <div className="pipeline-header">
-        <span className="bar"></span>
-        ACTIVE PIPELINES
+        <div className="left">
+          <span className="bar"></span>
+          <span className="title">ACTIVE PIPELINES</span>
+        </div>
+
+        <button className="run-all-btn">▶ Run All Pipelines</button>
       </div>
 
       {/* TABLE */}

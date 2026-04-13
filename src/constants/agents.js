@@ -65,6 +65,17 @@ export const AGENTS = [
     numColor: "#c2255c",
     badge: "ACTIVE"
   },
+  
+  {
+    id: "approval",
+    label: "HUMAN APPROVAL",
+    count: 0,
+    icon: "🧑‍⚖️",
+    bg: "#f0fff4",
+    carClass: "card-approval",
+    borderColor: "#c22566",
+    numColor: "#c2255c",
+  },
   {
     id: "governance",
     label: "GOVERNANCE AGENT",
@@ -75,15 +86,5 @@ export const AGENTS = [
     borderColor: "#c2255c",
     numColor: "#c2255c",
     badge: "ALERT"
-  },
-  {
-    id: "approval",
-    label: "HUMAN APPROVAL",
-    count: 0,
-    icon: "🧑‍⚖️",
-    bg: "#f0fff4",
-    carClass: "card-approval",
-    borderColor: "#c22566",
-    numColor: "#c2255c",
   },
 ];

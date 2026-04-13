@@ -69,6 +69,9 @@ function Charts() {
     const pieChartData = [
         { name: 'P1', y: ticketStats.P1, color: '#F43F5E' },
         { name: 'P2', y: ticketStats.P2, color: '#F5A524' },
+        { name: 'P3', y: ticketStats.P3, color: '#4F8EF7' },
+        { name: 'P4', y: ticketStats.P4, color: '#10D9A0' },
+        
     ]
 
     const trendData = buildTrendData(ticketsData);

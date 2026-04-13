@@ -1,68 +1,94 @@
 import { AGENTS } from "../../constants/agents";
-import './Sidebar.css';
+import { useNavigate, useLocation } from "react-router-dom";
+import "./Sidebar.css";
 import {
-    LayoutDashboard,
-    Eye,
-    Search,
-    Brain,
-    Wrench,
-    CheckCircle,
-    MessageSquare,
-    Shield
-} from 'lucide-react';
-import useAgentStore from '../../stores/useAgentStore';
-import React from 'react';
+  LayoutDashboard,
+  Eye,
+  Search,
+  Brain,
+  Wrench,
+  CheckCircle,
+  MessageSquare,
+  Shield,
+} from "lucide-react";
+import useAgentStore from "../../stores/useAgentStore";
+import React from "react";
 
 function toTitleCase(str) {
-    return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+  return str.replace(
+    /\w\S*/g,
+    (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(),
+  );
 }
 
 const ICON_MAP = {
-    'observer': Eye,
-    'rca': Search,
-    'decision': Brain,
-    'selfhealing': Wrench,
-    'dataquality': CheckCircle,
-    'selfservice': MessageSquare,
-    'governance': Shield,
-    'approval': CheckCircle,
+  observer: Eye,
+  rca: Search,
+  decision: Brain,
+  selfhealing: Wrench,
+  dataquality: CheckCircle,
+  selfservice: MessageSquare,
+  governance: Shield,
+  approval: CheckCircle,
 };
 
 export default function Sidebar({ open }) {
+  // ✅ MOVE HOOKS INSIDE COMPONENT
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const selectAgent = useAgentStore((s) => s.selectAgent);
-    const selectedAgent = useAgentStore((s) => s.selectedAgent);
+  const selectAgent = useAgentStore((s) => s.selectAgent);
+  const selectedAgent = useAgentStore((s) => s.selectedAgent);
 
-    return (
-        <aside className={`sidebar${open ? ' open' : ''}`}>
-            <button onClick={() => selectAgent(null)}>
-                <LayoutDashboard size={18} />
-                Overview
-            </button>
+  return (
+    <aside className={`sidebar${open ? " open" : ""}`}>
+      {/* ✅ OVERVIEW BUTTON */}
+      <button
+        className={location.pathname === "/dashboard" ? "active" : ""}
+        onClick={() => navigate("/dashboard")}
+      >
+        <LayoutDashboard size={18} />
+        Overview
+      </button>
 
-            <div className="sidebar-section">Agents</div>
+      <div className="sidebar-section">Agents</div>
 
-            {AGENTS.map((agent) => {
-                const Icon = ICON_MAP[agent.id] || Eye;
-                return (
-                    <button
-                        key={agent.id}
-                        onClick={() => selectAgent(agent.id === selectedAgent ? null : agent.id)}
-                    >
-                        {/* <Icon className={`icon ${agent.id}`} size={18} /> */}
-                        <span className="icon">{agent.icon}</span>
-                        {toTitleCase(agent.label)}
-                    </button>
+      {AGENTS.filter((agent) => agent.id !== "governance").map((agent) => {
+        return (
+          <button
+            key={agent.id}
+            onClick={() =>
+              selectAgent(agent.id === selectedAgent ? null : agent.id)
+            }
+          >
+            <span className="icon">{agent.icon}</span>
+            {toTitleCase(agent.label)}
+          </button>
+        );
+      })}
+      <div className="sidebar-section">DASHBOARD</div>
 
-                    
-                );
-            })}
-             {/* <div className="sidebar-section">Admin</div>
+      {/* ✅ GOVERNANCE BUTTON */}
+     <button
+  className={
+    location.pathname === "/governance-dashboard" ? "active" : ""
+  }
+  onClick={() => navigate("/governance-dashboard")}
+>
+  <span className="icon">🛡️</span>
+  Governance Agent
+</button>
 
-            <button onClick={() => selectAgent("pipelines")}>
-                <span className="icon">🚀</span>
-                Pipelines
-            </button> */}
-        </aside>
-    );
+      <div className="sidebar-section">Admin</div>
+
+      {/* ✅ PIPELINES BUTTON */}
+      <button
+        className={location.pathname === "/pipelines" ? "active" : ""}
+        onClick={() => navigate("/pipelines")}
+      >
+        <span className="icon">🚀</span>
+        Pipelines
+      </button>
+    </aside>
+  );
 }
