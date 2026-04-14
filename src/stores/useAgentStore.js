@@ -134,7 +134,7 @@ const INITIAL_HEADER = {
   },
   tickets: { P1: 0, P2: 0, P3: 0, P4: 0, total: 0, sla_breach: 0, human: 0 },
   ticketsData: [],
-  info: { date: "", agent_count: 7, is_live: false, last_refresh: "" },
+  info: { date: "", agent_count: 7, is_live: false, last_refresh: "", user_name: "" },
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
