@@ -5,17 +5,18 @@ import ComplianceCard from "../components/GovernanceDashboard/ComplianceCard";
 import InsightsDashboard from "../components/GovernanceDashboard/InsightsDashboard";
 
 import KnowledgeGrowth from "../components/GovernanceDashboard/KnowledgeGrowth";
+import "../App.css";
 
 const GovernancePage = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div>
+    <div className="app">
       {/* ✅ HEADER */}
       <TopNav open={menuOpen} onMenuToggle={() => setMenuOpen(!menuOpen)} />
 
       {/* ✅ CONTENT */}
-      <div className="page-container">
+      <main className={`main${menuOpen ? ' shifted' : ''}`}>
 
         {/* TOP SECTION (2 columns) */}
         <div className="gov-layout">
@@ -33,7 +34,7 @@ const GovernancePage = () => {
 
         <KnowledgeGrowth />
 
-      </div>
+      </main>
     </div>
   );
 };

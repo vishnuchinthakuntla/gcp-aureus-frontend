@@ -1,5 +1,7 @@
-import React from "react";
+
+import React, { useState } from "react";
 import "./GovernanceDashboard.css";
+import LifecycleModal from "./LifecycleModal";
 
 const data = [
   {
@@ -46,24 +48,37 @@ const data = [
     assigned: "narendra.mamilla@covalenseglobal.com",
     eta: "25668 min",
     status: "BREACHED",
-  },
+  }
 ];
 
 export default function GovernanceDashboard() {
+  const [selectedRow, setSelectedRow] = useState(null);
+
+  const handleRowClick = (item) => {
+    setSelectedRow(item);
+  };
+
+  const closeModal = () => {
+    setSelectedRow(null);
+  };
+
   return (
     <div className="gov-container">
-      
+
       {/* Header */}
       <div className="gov-header">
         <div className="title">ACTIVE TICKET LIFECYCLES</div>
+
         <div className="header-right">
           <span className="view-text">Click row to view pipeline</span>
-          <span className="badge">4 active</span>
+          <span className="badge">{data.length} active</span>
         </div>
       </div>
 
       {/* Table */}
       <div className="gov-table">
+
+        {/* Header Row */}
         <div className="table-header">
           <span>LIFECYCLE</span>
           <span>TICKET</span>
@@ -74,8 +89,13 @@ export default function GovernanceDashboard() {
           <span>STATUS</span>
         </div>
 
+        {/* Data Rows */}
         {data.map((item, index) => (
-          <div className="table-row" key={index}>
+          <div
+            className="table-row"
+            key={index}
+            onClick={() => handleRowClick(item)} // ✅ FIXED
+          >
             <span>{item.lifecycle}</span>
             <span>{item.ticket}</span>
 
@@ -98,6 +118,15 @@ export default function GovernanceDashboard() {
           </div>
         ))}
       </div>
+
+      {/* Modal */}
+      {selectedRow && (
+        <LifecycleModal
+          data={selectedRow}
+          onClose={closeModal}
+        />
+      )}
     </div>
   );
 }
+
