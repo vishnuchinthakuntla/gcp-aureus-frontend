@@ -13,7 +13,7 @@ function App() {
         <Route path="/" element={<Navigate to="/dashboard" />} />
         <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/pipelines" element={<Pipelines />} />
-           <Route path="/governancedashboard" element={<Maincard />} />
+           <Route path="/governance-dashboard" element={<Maincard />} />
 
       </Routes>
     </Router>
