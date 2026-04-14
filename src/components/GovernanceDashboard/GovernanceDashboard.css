@@ -1,0 +1,229 @@
+.gov-container {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Header */
+.gov-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #3b5bdb;
+  letter-spacing: 1px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.view-text {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.badge {
+  background: #e7f5ff;
+  color: #1c7ed6;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+/* Table */
+.gov-table {
+  width: 100%;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: 12px;
+  color: #adb5bd;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 14px 0;
+  border-bottom: 1px solid #f1f3f5;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.table-row:hover {
+  background: #f8f9fa;
+}
+
+/* Priority */
+.priority {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.priority.P1 {
+  background: #fff5f5;
+  color: #fa5252;
+}
+
+.priority.P2 {
+  background: #fff4e6;
+  color: #f08c00;
+}
+
+/* Stage */
+.stage {
+  background: #e7f5ff;
+  color: #228be6;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+/* Assigned */
+.assigned {
+  color: #495057;
+}
+
+/* Status */
+.status {
+  background: #fff5f5;
+  color: #fa5252;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+
+/* Compliance Card */
+
+.compliance-card {
+  width: 350px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* Header */
+.comp-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #495057;
+  border-bottom: 1px solid #eee;
+}
+
+.live {
+  color: #12b886;
+  font-weight: 600;
+}
+
+/* Score Section */
+.score-section {
+  background: #0f2f57;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.score-title {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.score {
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.score span {
+  font-size: 18px;
+  opacity: 0.6;
+}
+
+.trend {
+  margin-top: 6px;
+  color: #38d9a9;
+  font-size: 13px;
+}
+
+.trend span {
+  color: #adb5bd;
+}
+
+/* Progress */
+.progress-label {
+  margin-top: 12px;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-bar {
+  height: 6px;
+  background: #1c3f6e;
+  border-radius: 10px;
+  margin-top: 6px;
+}
+
+.progress-fill {
+  width: 92%;
+  height: 100%;
+  background: #38d9a9;
+  border-radius: 10px;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.stat {
+  padding: 16px;
+  border: 1px solid #f1f3f5;
+}
+
+.value {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.value span {
+  font-size: 12px;
+  color: #868e96;
+}
+
+.label {
+  font-size: 12px;
+  color: #6c757d;
+  margin-top: 4px;
+}
+
+.mini-bar {
+  height: 4px;
+  background: #dee2e6;
+  margin-top: 8px;
+  border-radius: 5px;
+}
+
+/* Colors */
+.green { border-left: 4px solid #12b886; }
+.red { border-left: 4px solid #fa5252; }
+.orange { border-left: 4px solid #f08c00; }
+.blue { border-left: 4px solid #228be6; }

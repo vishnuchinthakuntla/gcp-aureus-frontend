@@ -1,0 +1,156 @@
+.kg-container {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+/* LEFT CARD */
+.kg-left {
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+/* HEADER */
+.kg-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bar {
+  width: 4px;
+  height: 18px;
+  background: #16a34a;
+  border-radius: 2px;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.purple { background: #7c3aed; }
+.blue { background: #2563eb; }
+.orange { background: #ea580c; }
+
+.trend-btn {
+  background: #e2e8f0;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* CHART */
+.chart-box {
+  margin-top: 20px;
+}
+
+/* RIGHT CARD */
+.kg-right {
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+/* MILESTONES */
+.milestone {
+  margin-top: 16px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.progress {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 6px;
+  margin-top: 6px;
+}
+
+.progress span {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+}
+
+.progress.purple span {
+  background: #7c3aed;
+}
+
+.progress.orange span {
+  background: #ea580c;
+}
+
+/* STATUS */
+.status {
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.active {
+  color: green;
+  font-weight: 600;
+}
+
+/* maincard */
+.css.maincard-container {
+  padding: 16px;
+   margin-top: 12px;
+}
+
+.gov-layout {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.left-panel {
+  flex: 1;
+}
+
+.right-panel {
+  width: 360px;
+  position: sticky;
+  top: 20px;
+}
+/* PAGE CONTAINER */
+.page-container {
+  padding: 20px;
+  margin-top: 10px;
+}
+
+/* TOP SECTION (2 COLUMN) */
+.gov-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+}
+
+/* BOTTOM SECTION (3 CARDS) */
+.insights-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { Toaster } from "react-hot-toast"; 
 import Dashboard from "./pages/Dashboard";
 import Pipelines from "./pages/Pipelines";
+import Maincard from "./pages/GovernancePage";
 
 function App() {
   return (
@@ -12,6 +13,8 @@ function App() {
         <Route path="/" element={<Navigate to="/dashboard" />} />
         <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/pipelines" element={<Pipelines />} />
+           <Route path="/governancedashboard" element={<Maincard />} />
+
       </Routes>
     </Router>
   );

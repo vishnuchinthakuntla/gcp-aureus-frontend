@@ -6,7 +6,14 @@ import { STATUS_CLS } from "./TicketsDrawer";
 /* Helper: convert time → "2h 10m ago" */
 function timeAgo(dateStr) {
   if (!dateStr) return "—";
-  const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+
+  // ✅ Convert to IST
+  const utcDate = new Date(dateStr + "Z"); // force UTC
+  const istTime = new Date(
+    utcDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  );
+
+  const diff = Math.floor((Date.now() - istTime.getTime()) / 1000);
 
   if (diff < 60) return `${diff}s`;
   if (diff < 3600) return `${Math.floor(diff / 60)}m`;
