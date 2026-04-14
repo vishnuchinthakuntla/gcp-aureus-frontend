@@ -70,9 +70,9 @@ function TicketsTable() {
       return normalizedTickets.filter((t) => t.slABreach === "YES");
     }
 
-    if (activeFilter === "HUMAN") {
-      return normalizedTickets.filter((t) => t.ticketType === 1);
-    }
+    // if (activeFilter === "HUMAN") {
+    //   return normalizedTickets.filter((t) => t.ticketType === 1);
+    // }
 
     if (activeFilter === "SH") {
       return normalizedTickets.filter((t) => t.ticketType === 2);
@@ -88,7 +88,7 @@ function TicketsTable() {
     { key: "P3", label: "P3" },
     { key: "P4", label: "P4" },
     { key: "SLA", label: "SLA BREACH" },
-    { key: "HUMAN", label: "HUMAN" },
+    // { key: "HUMAN", label: "HUMAN" },
     { key: "SH", label: "SELF-HEALING" },
   ];
 

@@ -1,8 +1,8 @@
 import useAgentStore from "../../stores/useAgentStore";
-import "./AgentPanel.css";
+import './AgentPanel.css';
 import React, { useMemo } from "react";
-import Highcharts from "highcharts";
-import HighchartsReact from "highcharts-react-official";
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 
 const AgentTrack = ({ track }) => {
   const successPct =
@@ -279,5 +279,6 @@ export default function GovernancePanel() {
         </div>
       </div>
     </div>
-  );
+    );
 }
+

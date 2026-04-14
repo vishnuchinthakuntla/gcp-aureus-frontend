@@ -1,97 +1,125 @@
 import React from "react";
 import "./InsightsDashboard.css";
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+import { confidenceOptions, failurePatternsOptions, agentPerformanceOptions } from './chartOptions';
+import "highcharts/highcharts-more"
+
+const mockAgents = [
+  { Agent: "Observer",     TotalCount: 120, FailedCount: 8 },
+  { Agent: "RCA",          TotalCount: 95,  FailedCount: 15 },
+  { Agent: "Decision",     TotalCount: 80,  FailedCount: 20 },
+  { Agent: "Self-Healing", TotalCount: 60,  FailedCount: 12 },
+];
+
+const agentColors = {
+  "Observer":     "#0284c7",
+  "RCA":          "#b45309",
+  "Decision":     "#6d28d9",
+  "Self-Healing": "#047857",
+  "Data Quality": "#0776a4"
+};
 
 export default function InsightsDashboard() {
   return (
-    <div className="insights-container">
-
-      {/* CARD 1 */}
-      <div className="card">
-        <div className="card-header">
-          <span className="dot orange"></span>
-          <h3>RCA CONFIDENCE DISTRIBUTION</h3>
-          <button className="tag">analysis</button>
-        </div>
-
-        <div className="rca-boxes">
-          <div className="box green">
-            <h2>7 (100%)</h2>
-            <p>High ≥80%</p>
+    <div className="row-3">
+      <div className="panel">
+        <div className="ph">
+          <div className="ph-title">
+            <div className="ph-bar amber"></div>RCA Confidence Distribution
           </div>
-          <div className="box orange">
-            <h2>0 (0%)</h2>
-            <p>Medium 60–80%</p>
-          </div>
-          <div className="box red">
-            <h2>0 (0%)</h2>
-            <p>Low &lt;60%</p>
-          </div>
+          <div className="ph-tag">analysis</div>
         </div>
+        <div className="pb">
+          <div style={{display:"flex",gap:"8px",marginBottom:"14px"}}>
 
-        <div className="chart-placeholder">
-          {/* simple bar */}
-          <div className="bar"></div>
-        </div>
-      </div>
+            <div className="cs" style={{flex:1}}>
+                <div id="highVal" className="cs-val" style={{color:"var(--green)",fontSize:"18px"}}>7 (100%)</div>
+                <div className="cs-lbl">High ≥80%</div>
+            </div>
 
-      {/* CARD 2 */}
-      <div className="card">
-        <div className="card-header">
-          <span className="dot purple"></span>
-          <h3>TOP MATCHED FAILURE PATTERNS</h3>
-          <button className="tag">2 patterns</button>
-        </div>
+            <div className="cs" style={{flex:1}}>
+                <div id="mediumVal" className="cs-val" style={{color:"var(--amber)",fontSize:"18px"}}>0 (0%)</div>
+                <div className="cs-lbl">Medium 60–80%</div>
+            </div>
 
-        <div className="pattern-tags">
-          <span>FILE AVAILABILITY (5)</span>
-          <span>SCHEMA CHANGE (2)</span>
-        </div>
+            <div className="cs" style={{flex:1}}>
+                <div id="lowVal" className="cs-val" style={{color:"var(--red)",fontSize:"18px"}}>0 (0%)</div>
+                <div className="cs-lbl">Low &lt;60%</div>
+            </div>
 
-        <div className="pattern-bars">
-          <div className="row">
-            <label>FILE AVAILABILITY</label>
-            <div className="progress"><span style={{ width: "90%" }}></span></div>
           </div>
-
-          <div className="row">
-            <label>SCHEMA CHANGE</label>
-            <div className="progress"><span style={{ width: "40%" }}></span></div>
-          </div>
+          <HighchartsReact highcharts={Highcharts} options={confidenceOptions} />
         </div>
       </div>
 
-      {/* CARD 3 */}
-      <div className="card">
-        <div className="card-header">
-          <span className="dot blue"></span>
-          <h3>AGENT PERFORMANCE</h3>
-          <button className="tag">4 agents</button>
+      <div className="panel">
+        <div className="ph">
+          <div className="ph-title">
+            <div className="ph-bar purple"></div>Top Matched Failure Patterns
+          </div>
+          <div className="ph-tag">2 patterns</div>
         </div>
-
-        <div className="agent-list">
-          <div className="agent">
-            <span>Observer</span>
-            <b>100%</b>
+        <div className="pb">
+          <div id="patternLegend" className="pat-legend" style={{display:"flex",gap:"8px",marginBottom:"10px",flexWrap:"wrap"}}>
+            <span style={{
+              fontSize:"9px",padding:"3px 8px",borderRadius:"4px",
+              border:"1px solid #8b5cf6",color:"#6d28d9",
+              background:"rgba(139,92,246,0.08)",fontWeight:600,letterSpacing:"0.03em"
+            }}>FILE AVAILABILITY (5)</span>
+            <span style={{
+              fontSize:"9px",padding:"3px 8px",borderRadius:"4px",
+              border:"1px solid #8b5cf6",color:"#6d28d9",
+              background:"rgba(139,92,246,0.08)",fontWeight:600,letterSpacing:"0.03em"
+            }}>SCHEMA CHANGE (2)</span>
           </div>
-          <div className="agent">
-            <span>RCA</span>
-            <b>0%</b>
-          </div>
-          <div className="agent">
-            <span>Decision</span>
-            <b>100%</b>
-          </div>
-          <div className="agent">
-            <span>Self-Healing</span>
-            <b>0%</b>
-          </div>
-        </div>
-
-        <div className="radar-placeholder">
-          Radar Chart
+          <HighchartsReact highcharts={Highcharts} options={failurePatternsOptions} />
         </div>
       </div>
 
+      <div className="panel">
+        <div className="ph">
+          <div className="ph-title">
+            <div className="ph-bar cyan"></div>Agent Performance
+          </div>
+          <div className="ph-tag">5 agents</div>
+        </div>
+        <div className="pb" style={{display:"flex",gap:"12px",alignItems:"center",padding:"14px 16px"}}>
+          <div id="agentContainer" style={{flex:1,minWidth:0,display:"flex",flexDirection:"column",gap:"6px"}}>
+            {mockAgents.map(agent => {
+              const success = agent.TotalCount - agent.FailedCount;
+              const percent = agent.TotalCount
+                ? Math.round((success / agent.TotalCount) * 100)
+                : 0;
+              const color = agentColors[agent.Agent] || "#1d6ef5";
+              return (
+                <div key={agent.Agent} className="ins-agent-card">
+                  <div className="ins-agent-accent" style={{
+                    background: `linear-gradient(180deg, ${color}, ${color})`,
+                  }} />
+                  <div className="ins-agent-header">
+                    <span className="ins-agent-name">
+                      {agent.Agent}
+                    </span>
+                    <span className="ins-agent-pct" style={{ color }}>
+                      {percent}%
+                    </span>
+                  </div>
+                  <div className="ins-agent-track">
+                    <div className="ins-agent-fill" style={{
+                      width: `${percent}%`,
+                      background: `linear-gradient(90deg, ${color}, ${color})`,
+                    }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{width:"170px",height:"170px"}}>
+            <HighchartsReact highcharts={Highcharts} options={agentPerformanceOptions} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
