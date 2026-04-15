@@ -1,28 +1,36 @@
+.kg{
+  background: white !important;
+  padding: 16px;
+}
+
 .kg-container {
   display: grid;
-  grid-template-columns: 3fr 1fr;
+  grid-template-columns: auto 230px;
   gap: 16px;
-  margin-top: 24px;
 }
 
 /* LEFT CARD */
 .kg-left {
-  background: #f8fafc;
   border-radius: 14px;
-  padding: 16px;
+  height: 100%;   
 }
 
 /* HEADER */
 .kg-header {
+  padding-block: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.title {
+.kg-title {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-family: var(--display);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
 }
 
 .bar {
@@ -35,8 +43,21 @@
 .legend {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 12px;
+  gap: 16px;
+  font-size: 10px;
+  color: var(--t2);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.legend-item span:last-child {
+  font-family: var(--display);
+  font-size: 10px;
+  font-weight: 800;
 }
 
 .dot {
@@ -45,72 +66,143 @@
   border-radius: 50%;
 }
 
-.purple { background: #7c3aed; }
-.blue { background: #2563eb; }
-.orange { background: #ea580c; }
-
 .trend-btn {
-  background: #e2e8f0;
-  border: none;
-  padding: 4px 10px;
-  border-radius: 6px;
-}
-
-/* CHART */
-.chart-box {
-  margin-top: 20px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--edge2);
+  color: var(--t3);
+  background: var(--panel2);
 }
 
 /* RIGHT CARD */
 .kg-right {
-  background: #f8fafc;
-  border-radius: 14px;
-  padding: 16px;
+  font-size: 12px;
+  background: var(--panel2);
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  overflow: hidden;
+  flex: 0 0 auto;
+  height: fit-content;
 }
 
-/* MILESTONES */
-.milestone {
-  margin-top: 16px;
+/* MILESTONE CARD */
+
+.kg-milestone-header {
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--edge);
+  display: flex;
+  align-items: center;
+  gap: 7px;
 }
 
-.row {
+.kg-milestone-bar {
+  width: 3px;
+  height: 13px;
+  border-radius: 2px;
+  background: var(--purple);
+  flex-shrink: 0;
+}
+
+.kg-milestone-title {
+  font-family: var(--display);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--purple);
+}
+
+.kg-milestone-body {
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kg-milestone-row {
   display: flex;
   justify-content: space-between;
-  font-size: 13px;
+  align-items: baseline;
+  margin-bottom: 5px;
 }
 
-.progress {
-  height: 6px;
-  background: #e5e7eb;
-  border-radius: 6px;
-  margin-top: 6px;
+.kg-milestone-label {
+  font-size: 10px;
+  color: var(--t2);
 }
 
-.progress span {
-  display: block;
+.kg-milestone-value {
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.kg-color-purple { color: var(--purple); }
+.kg-color-amber  { color: var(--amber); }
+
+/* PROGRESS BAR */
+.kg-progress-track {
+  height: 4px;
+  background: var(--edge);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.kg-progress-fill {
   height: 100%;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
-.progress.purple span {
-  background: #7c3aed;
+.kg-fill-purple {
+  background: linear-gradient(90deg, #a78bfa, #6d28d9);
 }
 
-.progress.orange span {
-  background: #ea580c;
+.kg-fill-amber {
+  background: linear-gradient(90deg, #fbbf24, #b45309);
 }
 
-/* STATUS */
-.status {
-  margin-top: 18px;
+/* FOOTER / STATUS */
+.kg-milestone-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid var(--edge);
+  margin-top: 2px;
 }
 
-.active {
-  color: green;
+.kg-feedback-label {
+  font-size: 10px;
   font-weight: 600;
+  color: var(--t1);
+}
+
+.kg-active-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--display);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--green);
+  background: rgba(4, 120, 87, 0.09);
+  border: 1px solid rgba(4, 120, 87, 0.22);
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+
+.kg-active-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 4px #34d399;
+  display: inline-block;
+  animation: pulse 1.8s infinite;
 }
 
 /* maincard */

@@ -202,6 +202,71 @@ export const agentPerformanceOptions = {
   ]
 };
 
+export const knowledgeGrowthOptions = {
+  chart: {
+    type: 'area',
+    height: '200px'
+  },
+  title: {
+    text: null,
+  },
+  credits: {enabled: false},
+  xAxis: {
+    min: 0,
+    categories: ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Wk 5', 'Wk 6', 'Wk 7', 'Wk 8'],
+  },
+  yAxis: [
+    {
+      title: { text: 'Patterns / Rules' },
+      min: 160,
+    },
+    {
+      title: { text: '% Auto-resolve' },
+      opposite: true,
+      labels: { format: '{value}%' },
+      min: 45,
+      max: 65,
+    },
+  ],
+  legend: {
+    align: 'center',
+    verticalAlign: 'top',
+    layout: 'horizontal',
+    y: -15,
+  },
+  plotOptions: {
+    area: {
+      fillOpacity: 0.01,
+      marker: { radius: 4 },
+    },
+  },
+  series: [
+    {
+      name: 'Failure Patterns',
+      data: [170, 175, 180, 190, 195, 200, 210, 215],
+      color: '#8B5CF6',
+      fillColor: 'rgba(139, 92, 246, 0.1)',
+    },
+    {
+      name: 'Diagnostic Rules',
+      data: [168, 182, 178, 192, 198, 208, 215, 220],
+      color: '#3B82F6',
+      fillColor: 'rgba(59, 130, 246, 0.1)',
+    },
+    {
+      name: 'Auto-resolve %',
+      type: 'line',           // plain line, no area fill
+      dashStyle: 'Dash',      // dashed line
+      data: [50, 52, 54, 55, 56, 58, 60, 61],
+      color: '#F97316',
+      yAxis: 1,               // maps to the right-side axis
+      marker: { radius: 3 },
+    },
+  ],
+};
+
+
+
 // Separate coverage card (not a gauge, just text)
 const coverageOptions = {
   chart: {

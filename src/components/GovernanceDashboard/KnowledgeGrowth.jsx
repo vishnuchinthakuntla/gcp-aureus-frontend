@@ -1,13 +1,7 @@
 import React from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from "recharts";
+import HighchartsReact from "highcharts-react-official";
+import Highcharts from "highcharts";
+import { knowledgeGrowthOptions } from "./chartOptions";
 import "./KnowledgeGrowth.css";
 
 const data = [
@@ -21,97 +15,87 @@ const data = [
   { week: "Wk 8", patterns: 214, rules: 220, auto: 62 },
 ];
 
+function KnowledgeChart() {
+  return <HighchartsReact highcharts={Highcharts} options={knowledgeGrowthOptions} />
+}
+
 export default function KnowledgeGrowth() {
   return (
-    <div className="kg-container">
-
-      {/* LEFT */}
-      <div className="kg-left">
-        
-        <div className="kg-header">
-          <div className="title">
-            <span className="bar"></span>
-            <h3>KNOWLEDGE GROWTH & LEARNING</h3>
-          </div>
-
-          <div className="legend">
-            <span className="dot purple"></span> Failure Patterns 214
-            <span className="dot blue"></span> Diagnostic Rules 38
-            <span className="dot orange"></span> Auto-resolved 61%
-            <button className="trend-btn">8-week trend</button>
-          </div>
+    <div className="kg">
+      <div className="kg-header">
+        <div className="kg-title">
+          <span className="bar"></span>
+          <h3>KNOWLEDGE GROWTH & LEARNING</h3>
         </div>
 
-        {/* 🔥 REAL CHART */}
-        <div className="chart-box">
-          <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="week" />
-              <YAxis />
-              <Tooltip />
-
-              <Line
-                type="monotone"
-                dataKey="patterns"
-                stroke="#7c3aed"
-                strokeWidth={3}
-              />
-              <Line
-                type="monotone"
-                dataKey="rules"
-                stroke="#2563eb"
-                strokeWidth={3}
-              />
-              <Line
-                type="monotone"
-                dataKey="auto"
-                stroke="#ea580c"
-                strokeDasharray="5 5"
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+        <div className="legend">
+          <div className="legend-item">
+            <span className="dot" style={{ background: 'var(--purple)' }}></span> Failure Patterns <span style={{ color: 'var(--purple)' }}>214</span>
+          </div>
+          <div className="legend-item">
+            <span className="dot" style={{ background: 'var(--cyan)' }}></span> Diagnostic Rules <span style={{ color: 'var(--cyan)' }}>38</span>
+          </div>
+          <div className="legend-item">
+            <span className="dot" style={{ background: 'var(--amber)' }}></span> Auto-resolved <span style={{ color: 'var(--amber)' }}>61%</span>
+          </div>
+          <button className="trend-btn">8-week trend</button>
         </div>
       </div>
+      <div className="kg-container">
 
-      {/* RIGHT PANEL */}
-      <div className="kg-right">
-        <h4>L3 MILESTONE PROGRESS</h4>
-
-        <div className="milestone">
-          <div className="row">
-            <span>Pattern repo ≥ 250</span>
-            <b>214 / 250</b>
-          </div>
-          <div className="progress purple">
-            <span style={{ width: "85%" }}></span>
-          </div>
+        {/* LEFT */}
+        <div className="kg-left">
+          <KnowledgeChart />
         </div>
 
-        <div className="milestone">
-          <div className="row">
-            <span>Auto-resolve ≥ 70%</span>
-            <b>61% / 70%</b>
-          </div>
-          <div className="progress orange">
-            <span style={{ width: "70%" }}></span>
-          </div>
-        </div>
+        {/* RIGHT PANEL */}
+        <div className="kg-right">
+          <div className="kg-milestone-card">
+            <div className="kg-milestone-header">
+              <div className="kg-milestone-bar"></div>
+              <span className="kg-milestone-title">L3 Milestone Progress</span>
+            </div>
+            <div className="kg-milestone-body">
 
-        <div className="milestone">
-          <div className="row">
-            <span>Avg confidence ≥ 88%</span>
-            <b>84% / 88%</b>
-          </div>
-          <div className="progress orange">
-            <span style={{ width: "75%" }}></span>
-          </div>
-        </div>
+              <div className="kg-milestone-item">
+                <div className="kg-milestone-row">
+                  <span className="kg-milestone-label">Pattern repo ≥ 250</span>
+                  <span className="kg-milestone-value kg-color-purple">214 / 250</span>
+                </div>
+                <div className="kg-progress-track">
+                  <div className="kg-progress-fill kg-fill-purple" style={{ width: '85.6%' }}></div>
+                </div>
+              </div>
 
-        <div className="status">
-          <span>Feedback loop</span>
-          <span className="active">● ACTIVE</span>
+              <div className="kg-milestone-item">
+                <div className="kg-milestone-row">
+                  <span className="kg-milestone-label">Auto-resolve ≥ 70%</span>
+                  <span className="kg-milestone-value kg-color-amber">61% / 70%</span>
+                </div>
+                <div className="kg-progress-track">
+                  <div className="kg-progress-fill kg-fill-amber" style={{ width: '87.1%' }}></div>
+                </div>
+              </div>
+
+              <div className="kg-milestone-item">
+                <div className="kg-milestone-row">
+                  <span className="kg-milestone-label">Avg confidence ≥ 88%</span>
+                  <span className="kg-milestone-value kg-color-amber">84% / 88%</span>
+                </div>
+                <div className="kg-progress-track">
+                  <div className="kg-progress-fill kg-fill-amber" style={{ width: '95.5%' }}></div>
+                </div>
+              </div>
+
+              <div className="kg-milestone-footer">
+                <span className="kg-feedback-label">Feedback loop</span>
+                <span className="kg-active-badge">
+                  <span className="kg-active-dot"></span>ACTIVE ✓
+                </span>
+              </div>
+
+            </div>
+          </div>
         </div>
       </div>
     </div>

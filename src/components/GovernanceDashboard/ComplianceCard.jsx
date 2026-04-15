@@ -30,25 +30,25 @@ export default function ComplianceCard() {
       {/* Stats Grid */}
       <div className="stats-grid">
 
-        <div className="stat green">
+        <div className="stat st-green">
           <div className="value">91.4%</div>
           <div className="label">SLA Compliance</div>
           <div className="mini-bar"></div>
         </div>
 
-        <div className="stat red">
+        <div className="stat st-red">
           <div className="value">3 <span>of 35</span></div>
           <div className="label">SLA Breaches</div>
           <div className="mini-bar"></div>
         </div>
 
-        <div className="stat orange">
+        <div className="stat st-orange">
           <div className="value">2 <span>flagged</span></div>
           <div className="label">Policy Violations</div>
           <div className="mini-bar"></div>
         </div>
 
-        <div className="stat blue">
+        <div className="stat st-blue">
           <div className="value">35</div>
           <div className="label">Total Tickets</div>
           <div className="mini-bar"></div>
