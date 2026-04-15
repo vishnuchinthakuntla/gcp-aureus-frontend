@@ -5,11 +5,12 @@
 
 /* Layout */
 .gov-layout {
-  display: grid;
-  grid-template-columns: 5fr 1fr; 
+  /* display: grid; */
+  grid-template-columns: 1fr; 
   gap: 16px;
-  align-items: stretch;
-  width: 100%;
+  margin-bottom: 16px;
+  align-items: flex-start;
+ 
 }
 
 .left-panel,
@@ -29,6 +30,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   height: 100%;
   display: flex;
+  min-height: 0;
   flex-direction: column;
    width: 100%;
    
@@ -72,7 +74,7 @@
 .gov-table {
   width: 100%;
   flex-grow: 1;
-  max-height: 260px; /* ✅ 5 rows visible */
+  max-height: 305px; /* ✅ 5 rows visible */
   overflow-y: auto;
   scrollbar-width: thin;
 }

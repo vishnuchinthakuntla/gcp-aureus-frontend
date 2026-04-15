@@ -48,6 +48,42 @@ const data = [
     assigned: "narendra.mamilla@covalenseglobal.com",
     eta: "25668 min",
     status: "BREACHED",
+  },
+  {
+    lifecycle: "LC-1572",
+    ticket: "TKT-696",
+    priority: "P1",
+    stage: "DETECT",
+    assigned: "narendra.mamilla@covalenseglobal.com",
+    eta: "25683 min",
+    status: "BREACHED",
+  },
+  {
+    lifecycle: "LC-1575",
+    ticket: "TKT-698",
+    priority: "P1",
+    stage: "DETECT",
+    assigned: "narendra.mamilla@covalenseglobal.com",
+    eta: "25668 min",
+    status: "BREACHED",
+  },
+  {
+    lifecycle: "LC-1572",
+    ticket: "TKT-696",
+    priority: "P1",
+    stage: "DETECT",
+    assigned: "narendra.mamilla@covalenseglobal.com",
+    eta: "25683 min",
+    status: "BREACHED",
+  },
+  {
+    lifecycle: "LC-1575",
+    ticket: "TKT-698",
+    priority: "P1",
+    stage: "DETECT",
+    assigned: "narendra.mamilla@covalenseglobal.com",
+    eta: "25668 min",
+    status: "BREACHED",
   }
 ];
 

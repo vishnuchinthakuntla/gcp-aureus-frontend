@@ -141,11 +141,11 @@
 }
 
 /* TOP SECTION (2 COLUMN) */
-.gov-layout {
+/* .gov-layout {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 16px;
-}
+} */
 
 /* BOTTOM SECTION (3 CARDS) */
 .insights-container {
