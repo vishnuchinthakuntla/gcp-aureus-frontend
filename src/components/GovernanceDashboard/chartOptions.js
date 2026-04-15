@@ -1,3 +1,4 @@
+import { start } from "highcharts";
 
 
 export const confidenceOptions = {
@@ -15,14 +16,15 @@ export const confidenceOptions = {
     lineColor: '#e2e8f0',
     tickLength: 0,
     min: 0,
-    gridLineColor: '#e2e8f0'
+    // gridLineColor: '#e2e8f0'
   },
   yAxis: {
     title: { text: null },
     min: 0,
     tickInterval: 2,
-    gridLineColor: '#e2e8f0',
+    // gridLineColor: '#e2e8f0',
     lineColor: '#e2e8f0',
+    lineWidth: 1,
     labels: {
       style: { fontSize: '10px', color: '#7a8ea8' }
     }
@@ -70,7 +72,9 @@ export const failurePatternsOptions = {
     title: { text: null },
     min: 0,
     allowDecimals: false,
-    gridLineColor: '#e2e8f0',
+    lineColor: '#e2e8f0',
+    lineWidth: 1,
+    // gridLineColor: '#e2e8f0',
     labels: {
       style: { fontSize: '10px', color: '#7a8ea8' }
     }
@@ -205,20 +209,26 @@ export const agentPerformanceOptions = {
 export const knowledgeGrowthOptions = {
   chart: {
     type: 'area',
-    height: '200px'
+    height: '200px',
   },
   title: {
     text: null,
   },
   credits: {enabled: false},
   xAxis: {
-    min: 0,
     categories: ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Wk 5', 'Wk 6', 'Wk 7', 'Wk 8'],
+    tickStart: 0,
+    tickInterval: 1,
   },
   yAxis: [
     {
       title: { text: 'Patterns / Rules' },
-      min: 160,
+      min: 170,
+      max: 220,
+      tickStart: 170,
+      tickInterval: 10,
+      gridLineWidth: 1,
+      gridLineColor: '#e8edf5',
     },
     {
       title: { text: '% Auto-resolve' },
@@ -226,6 +236,7 @@ export const knowledgeGrowthOptions = {
       labels: { format: '{value}%' },
       min: 45,
       max: 65,
+      tickInterval: 5,
     },
   ],
   legend: {
@@ -246,6 +257,7 @@ export const knowledgeGrowthOptions = {
       data: [170, 175, 180, 190, 195, 200, 210, 215],
       color: '#8B5CF6',
       fillColor: 'rgba(139, 92, 246, 0.1)',
+      pointPlacement: 'on'
     },
     {
       name: 'Diagnostic Rules',

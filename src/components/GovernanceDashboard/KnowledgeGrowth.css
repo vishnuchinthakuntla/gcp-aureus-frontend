@@ -1,6 +1,7 @@
 .kg{
   background: white !important;
   padding: 16px;
+  border-radius: 14px;
 }
 
 .kg-container {
@@ -17,7 +18,7 @@
 
 /* HEADER */
 .kg-header {
-  padding-block: 12px;
+  padding-bottom: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -205,17 +206,11 @@
   animation: pulse 1.8s infinite;
 }
 
-/* maincard */
-.css.maincard-container {
-  padding: 16px;
-   margin-top: 12px;
-}
-
-.gov-layout {
+/* .gov-layout {
   display: flex;
   gap: 16px;
   align-items: flex-start;
-}
+} */
 
 .left-panel {
   flex: 1;
@@ -223,26 +218,4 @@
 
 .right-panel {
   width: 360px;
-  position: sticky;
-  top: 20px;
-}
-/* PAGE CONTAINER */
-.page-container {
-  padding: 20px;
-  margin-top: 10px;
-}
-
-/* TOP SECTION (2 COLUMN) */
-/* .gov-layout {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 16px;
-} */
-
-/* BOTTOM SECTION (3 CARDS) */
-.insights-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-top: 20px;
 }

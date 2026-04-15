@@ -57,8 +57,12 @@ export default function Sidebar({ open }) {
         return (
           <button
             key={agent.id}
-            onClick={() =>
+            onClick={() =>{
+              if(location.pathname === "/governance-dashboard"){
+                navigate("/dashboard")
+              }
               selectAgent(agent.id === selectedAgent ? null : agent.id)
+            }
             }
           >
             <span className="icon">{agent.icon}</span>

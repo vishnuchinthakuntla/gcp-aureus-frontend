@@ -18,7 +18,7 @@ const GovernancePage = () => {
       <Sidebar open={menuOpen} />
 
       {/* ✅ CONTENT */}
-      <main className={`main${menuOpen ? ' shifted' : ''}`}>
+      <main className={`gov-main${menuOpen ? ' shifted' : ''}`}>
 
         {/* TOP SECTION (2 columns) */}
         <div className="gov-layout">
