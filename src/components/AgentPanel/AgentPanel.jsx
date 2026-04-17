@@ -122,17 +122,35 @@ function EmptyState({ type }) {
 
 // ── JobList ───────────────────────────────────────────────────────────────────
 
-function JobList({ jobs, agent }) {
+function JobList({ jobs, agent, showButton }) {
+  const handleReprocess = (thread_id) => {
+    fetch(`/api/workflows/${thread_id}/reprocess`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        thread_id: thread_id,
+      }),
+    })
+      .then(response => response.json())
+      .catch(error => {
+        console.error('Error reprocessing job:', error);
+      });
+  };
   if (!jobs || jobs.length === 0) return <EmptyState type="queue" />;
   return (
     <>
       {jobs.map((job, i) => (
-        <div key={job.log_id || i} className="feed-item">
+        <div key={job.thread_id || i} className="feed-item">
           <div className="feed-name">{job.pipeline_name || job.jobName || job.JobName || '—'}</div>
           <div className="feed-meta">
             <span className={`badge b-${(job.status || 'queued').toLowerCase()}`}>{job.status || 'queued'}</span>
             <span className="feed-time">{toTitleCase(agent)}Id: {job.run_id || job.log_id || job.id || job.Id || '—'}</span>
           </div>
+          {showButton && (
+            <button className="job-action-btn" onClick={() => handleReprocess(job.thread_id)}>Reprocess</button>
+          )}
         </div>
       ))}
     </>
@@ -235,7 +253,7 @@ function AgentPanel() {
             {loading
               ? <Shimmer />
               : (inProgress?.items?.length > 0
-                ? <JobList jobs={inProgress.items} agent={selectedAgent} />
+                ? <JobList jobs={inProgress.items} agent={selectedAgent} showButton={true} />
                 : <EmptyState type="agent" />)
             }
           </div>

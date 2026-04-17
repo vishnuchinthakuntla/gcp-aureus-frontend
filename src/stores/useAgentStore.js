@@ -154,6 +154,7 @@ const useAgentStore = create((set, get) => ({
   activeFilter: "all",
   approvals: [],
   governanceData: null,
+  governanceDashData: null,
 
   // Internal refs (not reactive)
   _ws: null,
@@ -283,6 +284,13 @@ const useAgentStore = create((set, get) => ({
       },
     }));
   },
+
+  fetchGovernanceDashboard: async () => {
+    const data = await safeFetch("/api/governance/v2/dashboard", {});
+    if (!data) return;
+    set({ governanceDashData: data });
+  },
+
   // ── WebSocket ─────────────────────────────────────────────────────────────
 
   connectWs: () => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TopNav from "../components/Header/Header";
 import GovernanceDashboard from "../components/GovernanceDashboard/GovernanceDashboard";
 import ComplianceCard from "../components/GovernanceDashboard/ComplianceCard";
@@ -7,9 +7,15 @@ import InsightsDashboard from "../components/GovernanceDashboard/InsightsDashboa
 import KnowledgeGrowth from "../components/GovernanceDashboard/KnowledgeGrowth";
 import Sidebar from "../components/Sidebar/Sidebar";
 import "../App.css";
+import useAgentStore from "../stores/useAgentStore";
 
 const GovernancePage = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const fetchGovernanceDashboard = useAgentStore(s => s.fetchGovernanceDashboard);
+
+  useEffect(() => {
+    fetchGovernanceDashboard();
+  }, []);
 
   return (
     <div className="app">

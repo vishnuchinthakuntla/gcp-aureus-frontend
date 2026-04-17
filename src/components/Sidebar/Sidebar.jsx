@@ -39,6 +39,7 @@ export default function Sidebar({ open }) {
 
   const selectAgent = useAgentStore((s) => s.selectAgent);
   const selectedAgent = useAgentStore((s) => s.selectedAgent);
+  const fetchGovernanceDashboard = useAgentStore((s) => s.fetchGovernanceDashboard);
 
   return (
     <aside className={`sidebar${open ? " open" : ""}`}>
@@ -77,7 +78,9 @@ export default function Sidebar({ open }) {
   className={
     location.pathname === "/governance-dashboard" ? "active" : ""
   }
-  onClick={() => navigate("/governance-dashboard")}
+  onClick={() => {
+    navigate("/governance-dashboard")
+  }}
 >
   <span className="icon">🛡️</span>
   Governance Agent

@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import Dashboard from "./pages/Dashboard";
 import Pipelines from "./pages/Pipelines";
 import Maincard from "./pages/GovernancePage";
+import PipelineHistory from "./pages/PipelineHistory";
 
 function App() {
   return (
@@ -12,9 +13,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" />} />
         <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/pipelines" element={<Pipelines />} />
-           <Route path="/governance-dashboard" element={<Maincard />} />
-
+        <Route path="/pipelines" element={<Pipelines />} />
+        <Route path="/governance-dashboard" element={<Maincard />} />
+        <Route path="/pipeline-history" element={<PipelineHistory />} />
       </Routes>
     </Router>
   );

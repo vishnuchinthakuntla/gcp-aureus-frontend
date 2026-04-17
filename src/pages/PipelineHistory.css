@@ -1,0 +1,184 @@
+/* ══════════════════════════════════════════════
+   Pipeline History – Filter Row
+   ══════════════════════════════════════════════ */
+
+.ph-filter-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  padding: 16px 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(15, 32, 64, 0.06),
+              0 4px 14px rgba(15, 32, 64, 0.05);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+/* ── Filter group (label + control) ── */
+.ph-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+  flex: 1 1 180px;
+}
+
+.ph-filter-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #7a8ea8;
+}
+
+/* ── Shared Inputs ── */
+.ph-select, .ph-datepicker {
+  width: 100%;
+  height: 42px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text-heading, #0f2040);
+  background: var(--bg-elevated, #f8fafc);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.ph-select {
+  padding-right: 36px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a8ea8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 14px;
+}
+
+.ph-select:hover, .ph-datepicker:hover {
+  border-color: var(--blue, #1d6ef5);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(29, 110, 245, 0.08);
+  transform: translateY(-1px);
+}
+
+.ph-select:focus, .ph-datepicker:focus {
+  border-color: var(--blue, #1d6ef5);
+  box-shadow: 0 0 0 3px rgba(29, 110, 245, 0.15);
+  background: #ffffff;
+}
+
+/* ── react-datepicker theme overrides ── */
+
+/* Wrapper – make sure the input inherits full width */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container {
+  width: 100%;
+}
+
+/* Calendar popup */
+.react-datepicker {
+  font-family: "Open Sans", "Helvetica Neue", sans-serif;
+  border: 1px solid #dde3ee;
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(15, 32, 64, 0.12);
+  overflow: hidden;
+}
+
+.react-datepicker__header {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #1e3a8a 100%);
+  border-bottom: none;
+  padding: 12px 8px 8px;
+  border-radius: 0;
+}
+
+.react-datepicker__current-month {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.4px;
+  margin-bottom: 4px;
+}
+
+.react-datepicker__day-name {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  font-weight: 600;
+  width: 32px;
+  line-height: 32px;
+}
+
+.react-datepicker__day {
+  width: 32px;
+  line-height: 32px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #0f2040;
+  border-radius: 8px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.react-datepicker__day:hover {
+  background: #eef4ff;
+  color: #1d6ef5;
+  border-radius: 8px;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--in-selecting-range,
+.react-datepicker__day--in-range {
+  background: #1d6ef5 !important;
+  color: #ffffff !important;
+  border-radius: 8px;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background: rgba(29, 110, 245, 0.15);
+  color: #1d6ef5;
+  border-radius: 8px;
+}
+
+.react-datepicker__day--today {
+  font-weight: 700;
+  color: #1d6ef5;
+}
+
+.react-datepicker__day--disabled {
+  color: #c8d1e4;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.react-datepicker__navigation:hover *::before {
+  border-color: #ffffff;
+}
+
+/* Clear button styling */
+.react-datepicker__close-icon::after {
+  background-color: #7a8ea8;
+  font-size: 11px;
+  height: 16px;
+  width: 16px;
+  line-height: 1;
+  padding: 0;
+}
+
+.react-datepicker__close-icon:hover::after {
+  background-color: #e02d46;
+}
+
+/* Triangle arrow */
+.react-datepicker__triangle {
+  display: none;
+}

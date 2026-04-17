@@ -1,7 +1,11 @@
 import React from "react";
 import "./GovernanceDashboard.css";
+import useAgentStore from "../../stores/useAgentStore";
 
 export default function ComplianceCard() {
+
+  const complianceMetrics = useAgentStore((s) => s.governanceDashData?.complianceMetrics);
+
   return (
     <div className="compliance-card">
 
@@ -14,12 +18,12 @@ export default function ComplianceCard() {
       {/* Main Score */}
       <div className="score-section">
         <div className="score-title">GOVERNANCE INDEX</div>
-        <div className="score">92<span>/100</span></div>
+        <div className="score">{complianceMetrics?.governanceIndex?.score}<span>/100</span></div>
 
-        <div className="trend">▲ +1.4% <span>vs last wk</span></div>
+        <div className="trend">▲ {complianceMetrics?.governanceIndex?.trendPercent} <span>vs last wk</span></div>
 
         <div className="progress-label">
-          PROGRESS <span>92%</span>
+          PROGRESS <span>{complianceMetrics?.governanceIndex?.score}%</span>
         </div>
 
         <div className="progress-bar">
@@ -31,25 +35,25 @@ export default function ComplianceCard() {
       <div className="stats-grid">
 
         <div className="stat st-green">
-          <div className="value">91.4%</div>
+          <div className="value">{complianceMetrics?.slaCompliancePercent}%</div>
           <div className="label">SLA Compliance</div>
           <div className="mini-bar"></div>
         </div>
 
         <div className="stat st-red">
-          <div className="value">3 <span>of 35</span></div>
+          <div className="value">{complianceMetrics?.slaBreaches?.current} <span>of {complianceMetrics?.slaBreaches?.totalLimit}</span></div>
           <div className="label">SLA Breaches</div>
           <div className="mini-bar"></div>
         </div>
 
         <div className="stat st-orange">
-          <div className="value">2 <span>flagged</span></div>
+          <div className="value">{complianceMetrics?.policyViolationsFlagged} <span>flagged</span></div>
           <div className="label">Policy Violations</div>
           <div className="mini-bar"></div>
         </div>
 
         <div className="stat st-blue">
-          <div className="value">35</div>
+          <div className="value">{complianceMetrics?.totalTickets}</div>
           <div className="label">Total Tickets</div>
           <div className="mini-bar"></div>
         </div>
