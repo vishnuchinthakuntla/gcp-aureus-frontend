@@ -96,6 +96,13 @@ export default function Sidebar({ open }) {
         <span className="icon">🚀</span>
         Pipelines
       </button>
+      <button
+        className={location.pathname === "/pipeline-history" ? "active" : ""}
+        onClick={() => navigate("/pipeline-history")}
+      >
+        <span className="icon">🚀</span>
+        Pipeline History
+      </button>
     </aside>
   );
 }
