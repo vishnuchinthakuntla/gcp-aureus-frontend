@@ -47,6 +47,10 @@
   gap: 24px;
 }
 
+.gov-main.shifted {
+  margin-left: var(--sidebar-w);
+}
+
 /* Layout */
 /* .gov-layout {
   display: grid;

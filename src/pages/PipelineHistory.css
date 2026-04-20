@@ -182,3 +182,155 @@
 .react-datepicker__triangle {
   display: none;
 }
+
+/* ══════════════════════════════════════════════
+   Execution Flow (New styles from HTML mockup)
+   ══════════════════════════════════════════════ */
+
+.td-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-heading, #0f2040);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 12px;
+  margin-top: 24px;
+}
+
+/* Timeline Components */
+.timeline-container {
+  display: block;
+}
+
+.run-header { 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  padding: 10px 14px; 
+  background: var(--bg-card, #ffffff); 
+  border: 1px solid var(--border, #dde3ee); 
+  border-radius: 10px; 
+  margin-bottom: 4px; 
+  margin-top: 8px; 
+}
+.run-header:first-child { margin-top: 0; }
+.run-dot { 
+  width: 8px; 
+  height: 8px; 
+  border-radius: 50%; 
+  flex-shrink: 0; 
+  background: var(--text3, #7a8ea8);
+}
+.run-name { 
+  font-size: 12px; 
+  font-weight: 500; 
+  color: var(--text-primary, #1c2b3a); 
+  font-family: 'IBM Plex Mono', Consolas, monospace; 
+}
+.run-status { 
+  font-size: 10px; 
+  padding: 3px 9px; 
+  border-radius: 20px; 
+  font-weight: 500; 
+  font-family: 'IBM Plex Mono', Consolas, monospace; 
+  margin-left: auto; 
+  background: var(--bg-elevated, #eef2fa); 
+  color: var(--text-primary, #1c2b3a);
+}
+
+.tl-row { 
+  display: flex; 
+  align-items: flex-start; 
+  gap: 8px; 
+  padding: 7px 14px; 
+  border-radius: 8px; 
+  transition: background .12s; 
+  cursor: pointer; 
+  border-left: 2px solid transparent; 
+  margin-left: 4px; 
+}
+.tl-row:hover { background: var(--bg-elevated, #eef2fa); }
+
+.badge { 
+  font-size: 10px; 
+  font-family: 'IBM Plex Mono', Consolas, monospace; 
+  font-weight: 500; 
+  padding: 3px 8px; 
+  border-radius: 20px; 
+  white-space: nowrap; 
+  flex-shrink: 0; 
+}
+.err-badge { 
+  font-size: 10px; 
+  font-family: 'IBM Plex Mono', Consolas, monospace; 
+  font-weight: 500; 
+  padding: 3px 8px; 
+  border-radius: 20px; 
+  background: var(--red-lt, #fde8eb); 
+  color: var(--red, #e02d46); 
+  border: 1px solid var(--red, #e02d46); 
+  flex-shrink: 0; 
+}
+
+.tl-msg { 
+  font-size: 12px; 
+  color: var(--text-secondary, #4a5568); 
+  flex: 1; 
+  min-width: 0; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap; 
+  line-height: 1.5; 
+}
+.tl-msg.expanded { white-space: normal; overflow: visible; }
+
+.tl-time { 
+  font-size: 10px; 
+  color: var(--text-muted, #94a3b8); 
+  font-family: 'IBM Plex Mono', Consolas, monospace; 
+  white-space: nowrap; 
+  flex-shrink: 0; 
+  padding-top: 2px; 
+}
+
+/* Filters for Agents */
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.filter-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text3, #7a8ea8);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 4px;
+}
+
+.filter-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--text3, #7a8ea8);
+  color: var(--text-secondary, #4a5568);
+  background: var(--bg-card, #ffffff);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn:hover {
+  background: var(--bg-elevated, #eef2fa);
+  transform: translateY(-1px);
+}
+
+.filter-btn.active {
+  background: var(--navy, #0f2040);
+  color: #fff;
+  border-color: var(--navy, #0f2040);
+  box-shadow: 0 4px 12px rgba(15, 32, 64, 0.15);
+}

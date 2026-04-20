@@ -25,6 +25,8 @@ const PipelineHistory = () => {
     const [fromDate, setFromDate] = useState(new Date())
     const [toDate, setToDate] = useState(new Date())
     const [pipelineOptions, setPipelineOptions] = useState([])
+    const [expandedLogs, setExpandedLogs] = useState({})
+    const [collapsedThreads, setCollapsedThreads] = useState({})
 
     useEffect(() => {
         fetch('/api/pipelines')
@@ -71,6 +73,20 @@ const PipelineHistory = () => {
     }, 400)
     return () => clearTimeout(timer)
   }, [selectedPipeline, selectedAgent, fromDate, toDate])
+
+  const toggleLogExpansion = (id) => {
+    setExpandedLogs(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }))
+  }
+
+  const toggleThreadCollapse = (id) => {
+    setCollapsedThreads(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }))
+  }
   
   return (
     <div className="app">
@@ -96,21 +112,6 @@ const PipelineHistory = () => {
             </select>
           </div>
 
-          {/* Agent Dropdown */}
-          <div className="ph-filter-group">
-            <label className="ph-filter-label">Agent</label>
-            <select
-              className="ph-select"
-              value={selectedAgent}
-              onChange={(e) => setSelectedAgent(e.target.value)}
-            >
-              {AGENT_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
 
           {/* From Date */}
           <div className="ph-filter-group">
@@ -148,10 +149,24 @@ const PipelineHistory = () => {
           </div>
         </div>
 
-        {/* ── CONTENT BELOW (your execution flow) ── */}
-        <div className="td-section-title">Execution Flow</div>
+        {/* ── AGENT FILTER (Pills) ── */}
+        <div className="filter-row">
+          <span className="filter-label">Filter:</span>
+          {AGENT_OPTIONS.map(opt => (
+            <button 
+              key={opt.value} 
+              className={`filter-btn ${selectedAgent === opt.value ? 'active' : ''}`}
+              onClick={() => setSelectedAgent(opt.value)}
+            >
+              {opt.value === '' ? 'All' : opt.label.replace(' Agent', '')}
+            </button>
+          ))}
+        </div>
 
-        <div className="flow-container">
+        {/* ── CONTENT BELOW (your execution flow) ── */}
+        <div className="td-section-title">Execution Flow — Run Detail</div>
+
+        <div className="timeline-container">
           {!selectedPipeline ? (
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#666', fontSize: '14px', fontWeight: '500' }}>
               Please select a pipeline
@@ -161,29 +176,62 @@ const PipelineHistory = () => {
               Please change the parameters as there is no content to display with those parameters
             </div>
           ) : (
-            (pipelineData.agent_logs).map((log, i) => {
-              const level = (log.level || "info").toLowerCase();
-              const time = (new Date(log.logged_at).toLocaleDateString() + ' \t ' + new Date(log.logged_at).toLocaleTimeString());
-
+            Object.entries(
+              (pipelineData.agent_logs).reduce((acc, log) => {
+                const key = log.thread_id || log.run_id || 'Unknown Thread';
+                if (!acc[key]) acc[key] = [];
+                acc[key].push(log);
+                return acc;
+              }, {})
+            ).map(([groupKey, groupLogs]) => {
+              const isCollapsed = !!collapsedThreads[groupKey];
               return (
-                <div key={log.log_id} className={`flow-step ${level}`}>
-                  <div className="flow-line">
-                    <div className={`flow-dot ${level}`} />
-                    {i !== pipelineData.agent_logs.length - 1 && (
-                      <div className="flow-connector" />
-                    )}
-                  </div>
-
-                  <div className="flow-content">
-                    <div className="flow-header">
-                      <span>{log.agent_node}</span>
-                      <span>{time}</span>
-                    </div>
-                    <div className={`flow-message ${level}`}>{log.message}</div>
+              <React.Fragment key={groupKey}>
+                <div className="run-header" onClick={() => toggleThreadCollapse(groupKey)} style={{ cursor: 'pointer' }}>
+                  <div className="run-dot" />
+                  <div className="run-name">Thread: {groupKey}</div>
+                  <div className="run-status">
+                    {groupLogs.length} events
+                    <span style={{ marginLeft: '8px', fontSize: '9px', opacity: 0.7, paddingBottom: '2px', display: 'inline-block' }}>
+                      {isCollapsed ? '▼' : '▲'}
+                    </span>
                   </div>
                 </div>
-              );
-            })
+                {!isCollapsed && groupLogs.map((log, i) => {
+                  const level = (log.level || "info").toLowerCase();
+                  const isError = level === 'error' || level === 'critical';
+                  const time = (new Date(log.logged_at).toLocaleDateString() + ' \t ' + new Date(log.logged_at).toLocaleTimeString());
+                  
+                  let agentColorVar = 'var(--text-primary)';
+                  let agentBgVar = 'var(--bg-elevated)';
+                  const nodeLower = (log.agent_node || '').toLowerCase();
+                  if (nodeLower.includes('observer')) { agentColorVar = 'var(--observer)'; agentBgVar = 'var(--observer-lt)'; }
+                  else if (nodeLower.includes('rca')) { agentColorVar = 'var(--rca)'; agentBgVar = 'var(--rca-lt)'; }
+                  else if (nodeLower.includes('decision')) { agentColorVar = 'var(--decision)'; agentBgVar = 'var(--decision-lt)'; }
+                  else if (nodeLower.includes('heal') || nodeLower.includes('ticket')) { agentColorVar = 'var(--healing)'; agentBgVar = 'var(--healing-lt)'; }
+                  else if (nodeLower.includes('quality')) { agentColorVar = 'var(--quality)'; agentBgVar = 'var(--quality-lt)'; }
+                  else if (nodeLower.includes('gov')) { agentColorVar = 'var(--governance)'; agentBgVar = 'var(--governance-lt)'; }
+
+                  const id = log.log_id || `${groupKey}-${i}`;
+                  const isExpanded = !!expandedLogs[id];
+
+                  return (
+                    <div key={id} className="tl-row" style={{ borderLeft: `2px solid ${agentColorVar}`, marginBottom: '2px' }} onClick={() => toggleLogExpansion(id)}>
+                      <span 
+                        className={isError ? "err-badge" : "badge"} 
+                        style={!isError ? { color: agentColorVar, backgroundColor: agentBgVar, border: `1px solid ${agentColorVar}` } : {}}
+                      >
+                        {log.agent_node}
+                      </span>
+                      <span className={`tl-msg ${isExpanded ? 'expanded' : ''}`} title={!isExpanded ? log.message : ''}>
+                        {log.message}
+                      </span>
+                      <span className="tl-time">{time}</span>
+                    </div>
+                  );
+                })}
+              </React.Fragment>
+            )})
           )}
         </div>
       </main>
