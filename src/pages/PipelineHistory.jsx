@@ -3,6 +3,8 @@ import TopNav from '../components/Header/Header'
 import Sidebar from '../components/Sidebar/Sidebar'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 import '../App.css'
 import './PipelineHistory.css'
 
@@ -19,7 +21,7 @@ const AGENT_OPTIONS = [
 
 const PipelineHistory = () => {
     const [menuOpen, setMenuOpen] = useState(false)
-    const [pipelineData, setPipelineData] = useState([])
+    const [pipelineData, setPipelineData] = useState({})
     const [selectedPipeline, setSelectedPipeline] = useState('')
     const [selectedAgent, setSelectedAgent] = useState('')
     const [fromDate, setFromDate] = useState(new Date())
@@ -53,8 +55,12 @@ const PipelineHistory = () => {
             if (toDate) queryParams.append('end_date', toDate.toISOString().split('T')[0]);
             
             const queryString = queryParams.toString();
-            const url = `/api/pipelines/performance${queryString ? `?${queryString}` : ''}`;
+            const url = `/api/pipelines/performance/v2${queryString ? `?${queryString}` : ''}`;
 
+            if(selectedPipeline === ''){
+                setPipelineData({})
+                return
+            }
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -87,6 +93,85 @@ const PipelineHistory = () => {
       [id]: !prev[id]
     }))
   }
+
+  // Calculate Chart Options
+  let agentDistributionSeries = [];
+  if (pipelineData?.agent_step_distribution) {
+      const dataPoints = Object.entries(pipelineData.agent_step_distribution).map(([agent, count]) => {
+          let color = '#aab8cc';
+          const nodeLower = agent.toLowerCase();
+          if (nodeLower.includes('observer')) color = 'var(--observer, #4f8ef7)';
+          else if (nodeLower.includes('rca')) color = 'var(--rca, #f5a524)';
+          else if (nodeLower.includes('decision')) color = 'var(--decision, #a78bfa)';
+          else if (nodeLower.includes('ticket') || nodeLower.includes('heal')) color = 'var(--healing, #10d9a0)';
+          else if (nodeLower.includes('quality')) color = 'var(--quality, #22d3ee)';
+          else if (nodeLower.includes('gov')) color = 'var(--governance, #f43f5e)';
+          else if (nodeLower.includes('join')) color = '#D05090';
+
+          let name = agent.charAt(0).toUpperCase() + agent.slice(1);
+          if (agent === 'ticket_agent') name = 'Ticket';
+          return { name, y: count, color };
+      });
+      
+      agentDistributionSeries = [{
+          name: 'Events',
+          colorByPoint: true,
+          data: dataPoints
+      }];
+  }
+
+  const agentChartOptions = {
+    chart: { type: 'column', backgroundColor: 'transparent', height: 200 },
+    title: { text: null },
+    xAxis: { type: 'category' },
+    yAxis: { title: { text: null }, tickAmount: 4 },
+    legend: { enabled: false },
+    credits: { enabled: false },
+    series: agentDistributionSeries
+  };
+
+  let outcomeCategories = [];
+  let outcomeSeries = [];
+  if (pipelineData?.outcome_timeline && pipelineData.outcome_timeline.length > 0) {
+      const uniqueDates = [...new Set(pipelineData.outcome_timeline.map(item => item.run_date))].sort();
+      
+      outcomeCategories = uniqueDates.map(d => {
+          const date = new Date(d);
+          return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      });
+
+      outcomeSeries = [
+          {
+              name: 'Escalated',
+              color: 'var(--red, #e02d46)',
+              data: uniqueDates.map(date => pipelineData.outcome_timeline.filter(item => item.run_date === date && (item.outcome === 'escalate')).length)
+          },
+          {
+              name: 'Auto-healed',
+              color: 'var(--healing, #10d9a0)',
+              data: uniqueDates.map(date => pipelineData.outcome_timeline.filter(item => item.run_date === date && item.outcome === 'self_heal').length)
+          }
+      ];
+  }
+
+  const timelineChartOptions = {
+    chart: { type: 'column', backgroundColor: 'transparent', height: 200 },
+    title: { text: null },
+    xAxis: { categories: outcomeCategories },
+    yAxis: { title: { text: null }, tickAmount: 4 },
+    plotOptions: {
+      column: {
+        stacking: 'normal',
+        borderWidth: 0,
+        borderRadius: 2
+      }
+    },
+    legend: { enabled: false },
+    credits: { enabled: false },
+    series: outcomeSeries
+  };
+
+  console.log(pipelineData)
   
   return (
     <div className="app">
@@ -163,6 +248,46 @@ const PipelineHistory = () => {
           ))}
         </div>
 
+        {/* ── CHARTS ── */}
+        {(pipelineData?.summary && Object.keys(pipelineData?.summary).length > 0) && (
+          <div className="summary-grid">
+            <div className="summary-card">
+              <div className="summary-label">Total Runs</div>
+              <div className="summary-value">{pipelineData.summary.total_runs}</div>
+              <div className="summary-sub sub-amber">{pipelineData.summary.escalated_count} escalated</div>
+            </div>
+            <div className="summary-card">
+              <div className="summary-label">Avg Resolution</div>
+              <div className="summary-value">{pipelineData.summary.avg_resolution_label}</div>
+              <div className="summary-sub sub-green">{pipelineData.summary.sla_status}</div>
+            </div>
+            <div className="summary-card">
+              <div className="summary-label">Auto-Heal Rate</div>
+              <div className="summary-value">{pipelineData.summary.auto_heal_rate*100}%</div>
+              <div className="summary-sub sub-green">{pipelineData.summary.auto_healed_count} of {pipelineData.summary.total_runs} runs</div>
+            </div>
+            <div className="summary-card">
+              <div className="summary-label">RCA Confidence</div>
+              <div className="summary-value">{pipelineData.summary.avg_rca_confidence ?? 'N/A'}</div>
+              <div className="summary-sub sub-amber">{pipelineData.summary.low_confidence_count} low-conf incidents</div>
+            </div>
+          </div>
+        )}
+
+        {((pipelineData?.agent_step_distribution && Object.keys(pipelineData.agent_step_distribution).length > 0) || 
+          (pipelineData?.outcome_timeline && pipelineData.outcome_timeline.length > 0)) && (
+          <div className="charts-grid">
+            <div className="chart-card">
+              <div className="chart-label">Agent step distribution</div>
+              <HighchartsReact highcharts={Highcharts} options={agentChartOptions} />
+            </div>
+            <div className="chart-card">
+              <div className="chart-label">Outcome timeline</div>
+              <HighchartsReact highcharts={Highcharts} options={timelineChartOptions} />
+            </div>
+          </div>
+        )}
+
         {/* ── CONTENT BELOW (your execution flow) ── */}
         <div className="td-section-title">Execution Flow — Run Detail</div>
 
@@ -171,19 +296,15 @@ const PipelineHistory = () => {
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#666', fontSize: '14px', fontWeight: '500' }}>
               Please select a pipeline
             </div>
-          ) : (!pipelineData?.agent_logs || pipelineData.agent_logs.length === 0) ? (
+          ) : (!pipelineData?.threads || Object.keys(pipelineData.threads).length === 0) ? (
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#666', fontSize: '14px', fontWeight: '500' }}>
               Please change the parameters as there is no content to display with those parameters
             </div>
           ) : (
-            Object.entries(
-              (pipelineData.agent_logs).reduce((acc, log) => {
-                const key = log.thread_id || log.run_id || 'Unknown Thread';
-                if (!acc[key]) acc[key] = [];
-                acc[key].push(log);
-                return acc;
-              }, {})
-            ).map(([groupKey, groupLogs]) => {
+            Object.entries(pipelineData.threads).map(([groupKey, threadData]) => {
+              const groupLogs = threadData.agent_logs || [];
+              if (groupLogs.length === 0) return null;
+              
               const isCollapsed = !!collapsedThreads[groupKey];
               return (
               <React.Fragment key={groupKey}>
