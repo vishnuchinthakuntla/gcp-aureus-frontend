@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import PipelinesTable from "../components/Pipeline/PipelinesTable";
-import TopNav from "../components/Header/Header"; // ✅ adjust path if needed
+import TopNav from "../components/Header/Header";
+import Sidebar from "../components/Sidebar/Sidebar";
+import "../App.css";
 
 const Pipelines = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -10,16 +12,19 @@ const Pipelines = () => {
   };
 
   return (
-    <div>
+    <div className="app">
       {/* ✅ HEADER */}
       <TopNav open={menuOpen} onMenuToggle={handleMenuToggle} />
+      
+      {/* ✅ SIDEBAR */}
+      <Sidebar open={menuOpen} />
 
       {/* ✅ PAGE CONTENT */}
-      <div style={{ padding: "20px" }}>
+      <main className={`main${menuOpen ? ' shifted' : ''}`}>
         <PipelinesTable />
-      </div>
+      </main>
     </div>
   );
 };
 
-export default Pipelines;
+export default Pipelines;

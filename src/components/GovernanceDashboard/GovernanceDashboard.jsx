@@ -1,94 +1,54 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./GovernanceDashboard.css";
 import LifecycleModal from "./LifecycleModal";
 
-const data = [
-  {
-    lifecycle: "LC-1568",
-    ticket: "TKT-694",
-    priority: "P1",
-    stage: "DETECT",
-    assigned: "narendra.mamilla@covalenseglobal.com",
-    eta: "25751 min",
-    status: "BREACHED",
-  },
-  {
-    lifecycle: "LC-1574",
-    ticket: "TKT-697",
-    priority: "P2",
-    stage: "DETECT",
-    assigned: "narendra.mamilla@covalenseglobal.com",
-    eta: "25698 min",
-    status: "BREACHED",
-  },
-  {
-    lifecycle: "LC-1569",
-    ticket: "TKT-695",
-    priority: "P2",
-    stage: "DETECT",
-    assigned: "narendra.mamilla@covalenseglobal.com",
-    eta: "25691 min",
-    status: "BREACHED",
-  },
-  {
-    lifecycle: "LC-1572",
-    ticket: "TKT-696",
-    priority: "P1",
-    stage: "DETECT",
-    assigned: "narendra.mamilla@covalenseglobal.com",
-    eta: "25683 min",
-    status: "BREACHED",
-  },
-  {
-    lifecycle: "LC-1575",
-    ticket: "TKT-698",
-    priority: "P1",
-    stage: "DETECT",
-    assigned: "narendra.mamilla@covalenseglobal.com",
-    eta: "25668 min",
-    status: "BREACHED",
-  },
-  {
-    lifecycle: "LC-1572",
-    ticket: "TKT-696",
-    priority: "P1",
-    stage: "DETECT",
-    assigned: "narendra.mamilla@covalenseglobal.com",
-    eta: "25683 min",
-    status: "BREACHED",
-  },
-  {
-    lifecycle: "LC-1575",
-    ticket: "TKT-698",
-    priority: "P1",
-    stage: "DETECT",
-    assigned: "narendra.mamilla@covalenseglobal.com",
-    eta: "25668 min",
-    status: "BREACHED",
-  },
-  {
-    lifecycle: "LC-1572",
-    ticket: "TKT-696",
-    priority: "P1",
-    stage: "DETECT",
-    assigned: "narendra.mamilla@covalenseglobal.com",
-    eta: "25683 min",
-    status: "BREACHED",
-  },
-  {
-    lifecycle: "LC-1575",
-    ticket: "TKT-698",
-    priority: "P1",
-    stage: "DETECT",
-    assigned: "narendra.mamilla@covalenseglobal.com",
-    eta: "25668 min",
-    status: "BREACHED",
-  }
-];
-
 export default function GovernanceDashboard() {
+  const [data, setData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const response = await fetch("/api/governance/v2/dashboard");
+
+        if (!response.ok) {
+          throw new Error("API failed");
+        }
+
+        const result = await response.json();
+
+        const formattedData =
+          result?.activeTickets?.items?.map((item) => ({
+            lifecycle: item.lifecycle_id,
+            ticket: item.ticket_id,
+            priority: item.priority,
+            stage: item.stage,
+            assigned: item.assigned_to || "Unassigned",
+            eta: `${item.eta_minutes} min`,
+            status: item.status,
+            threadId: item.thread_id,
+            pipeline: item.pipeline_name,
+          })) || [];
+
+        setData(formattedData);
+      } catch (error) {
+        console.error("Error fetching dashboard:", error);
+        setData([]); // fallback
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboard();
+
+    // ✅ Safety timeout (prevents infinite loading)
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, []);
 
   const handleRowClick = (item) => {
     setSelectedRow(item);
@@ -125,34 +85,58 @@ export default function GovernanceDashboard() {
           <span>STATUS</span>
         </div>
 
-        {/* Data Rows */}
-        {data.map((item, index) => (
-          <div
-            className="table-row"
-            key={index}
-            onClick={() => handleRowClick(item)} // ✅ FIXED
-          >
-            <span>{item.lifecycle}</span>
-            <span>{item.ticket}</span>
-
-            <span>
-              <span className={`priority ${item.priority}`}>
-                • {item.priority}
-              </span>
-            </span>
-
-            <span>
-              <span className="stage">{item.stage}</span>
-            </span>
-
-            <span className="assigned">{item.assigned}</span>
-            <span>{item.eta}</span>
-
-            <span>
-              <span className="status">• {item.status}</span>
-            </span>
+        {/* ✅ Loading State INSIDE table */}
+        {loading ? (
+          <div className="table-row loading-row">
+            <span>Loading...</span>
+            <span>Loading...</span>
+            <span>Loading...</span>
+            <span>Loading...</span>
+            <span>Loading...</span>
+            <span>Loading...</span>
+            <span>Loading...</span>
           </div>
-        ))}
+        ) : data.length === 0 ? (
+          <div className="table-row no-data-row">
+            <span>-</span>
+            <span>-</span>
+            <span>-</span>
+            <span>-</span>
+            <span>No Data Available</span>
+            <span>-</span>
+            <span>-</span>
+          </div>
+        ) : (
+          data.map((item, index) => (
+            <div
+              className="table-row"
+              key={index}
+              onClick={() => handleRowClick(item)}
+            >
+              <span>{item.lifecycle}</span>
+              <span>{item.ticket}</span>
+
+              <span>
+                <span className={`priority ${item.priority}`}>
+                  • {item.priority}
+                </span>
+              </span>
+
+              <span>
+                <span className="stage">{item.stage}</span>
+              </span>
+
+              <span className="assigned">{item.assigned}</span>
+              <span>{item.eta}</span>
+
+              <span>
+                <span className={`status ${item.status}`}>
+                  • {item.status}
+                </span>
+              </span>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Modal */}
@@ -165,4 +149,3 @@ export default function GovernanceDashboard() {
     </div>
   );
 }
-

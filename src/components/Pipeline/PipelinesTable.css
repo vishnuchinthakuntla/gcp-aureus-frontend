@@ -1,25 +1,15 @@
-.pipeline-container {
-  background: #f8fafc;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-.main-content {
-  padding: 20px;
-  margin-top: 20px;   /* 👈 ADD THIS */
-}
+/* CONTAINER */
 .pipeline-container {
   background: #ffffff;
   border-radius: 12px;
   padding: 20px;
-  margin-top: 16px;   /* 👈 ADD THIS */
+  margin-top: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
-.pipeline-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;  /* 👈 increase spacing */
+
+.main-content {
+  padding: 20px;
+  margin-top: 20px;
 }
 
 /* HEADER */
@@ -49,7 +39,7 @@
   color: #1e3a8a;
 }
 
-/* RUN ALL BUTTON */
+/* RUN ALL */
 .run-all-btn {
   background: #16a34a;
   color: white;
@@ -58,7 +48,6 @@
   border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
-  transition: 0.2s;
 }
 
 .run-all-btn:hover {
@@ -92,7 +81,7 @@
   background: #f9fafb;
 }
 
-/* TEXT STYLES */
+/* TEXT */
 .id {
   font-weight: 600;
   color: #1e3a8a;
@@ -103,7 +92,23 @@
   font-weight: 500;
 }
 
-/* RUN BUTTON */
+/* STATUS */
+.status-active {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.status-paused {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.status-killed {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* BUTTONS */
 .run-btn {
   background: #2563eb;
   color: white;
@@ -116,4 +121,53 @@
 
 .run-btn:hover {
   background: #1d4ed8;
+}
+
+.kill-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.kill-btn:hover {
+  background: #dc2626;
+}
+
+.unkill-btn {
+  background: #0ea5e9;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.unkill-btn:hover {
+  background: #0284c7;
+}
+
+/* SELECT */
+.agent-select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5f5;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.agent-select:focus {
+  border-color: #2563eb;
+}
+
+/* ACTION CELL */
+.pipeline-table td:last-child {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 }
