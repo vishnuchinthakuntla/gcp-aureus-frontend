@@ -51,7 +51,8 @@ export default function Sidebar({ open }) {
         <LayoutDashboard size={18} />
         Overview
       </button>
-
+      {location.pathname === "/dashboard" && (
+      <>
       <div className="sidebar-section">Agents</div>
 
       {AGENTS.filter((agent) => agent.id !== "governance").map((agent) => {
@@ -71,6 +72,8 @@ export default function Sidebar({ open }) {
           </button>
         );
       })}
+      </>
+      )}
       <div className="sidebar-section">DASHBOARD</div>
 
       {/* ✅ GOVERNANCE BUTTON */}
@@ -83,7 +86,7 @@ export default function Sidebar({ open }) {
   }}
 >
   <span className="icon">🛡️</span>
-  Governance Agent
+  Governance
 </button>
 
       <div className="sidebar-section">Admin</div>
@@ -102,6 +105,13 @@ export default function Sidebar({ open }) {
       >
         <span className="icon">🚀</span>
         Pipeline History
+      </button>
+      <button
+        className={location.pathname === "/stuck-workflows" ? "active" : ""}
+        onClick={() => navigate("/stuck-workflows")}
+      >
+        <span className="icon">⚠️</span>
+        Stuck Workflows
       </button>
     </aside>
   );

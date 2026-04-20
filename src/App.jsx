@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Pipelines from "./pages/Pipelines";
 import Maincard from "./pages/GovernancePage";
 import PipelineHistory from "./pages/PipelineHistory";
+import StuckWorkflows from "./pages/StuckWorkflows";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/pipelines" element={<Pipelines />} />
         <Route path="/governance-dashboard" element={<Maincard />} />
         <Route path="/pipeline-history" element={<PipelineHistory />} />
+        <Route path="/stuck-workflows" element={<StuckWorkflows />} />
       </Routes>
     </Router>
   );
