@@ -39,14 +39,6 @@
   max-width: 100%;
 }
 
-.gov-main{
-  padding: calc(var(--nav-h) + 20px) 20px 20px;
-  transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
 .gov-main.shifted {
   margin-left: var(--sidebar-w);
 }
@@ -65,6 +57,7 @@
   display: flex;
   gap: 16px;
   align-items: stretch;
+  margin-bottom: 24px;
 }
 
 .right-panel {

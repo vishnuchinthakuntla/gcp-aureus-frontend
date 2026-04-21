@@ -1,9 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
-import Header from '../components/Header/Header'
+import React, { useEffect, useRef } from 'react'
 import AgentGrid from '../components/AgentGrid/AgentGrid'
 import AgentPanel from '../components/AgentPanel/AgentPanel'
 import useAgentStore from '../stores/useAgentStore'
-import Sidebar from '../components/Sidebar/Sidebar'
 import PipelinesBar from '../components/PipelinesBar/PipelinesBar'
 import TicketsTable from '../components/TicketsTable/TicketsTable'
 import TicketsDrawer from '../components/TicketsTable/TicketsDrawer'
@@ -18,7 +16,6 @@ const Dashboard = () => {
   const selectedAgent = useAgentStore(s => s.selectedAgent)
   const selectedTicket = useAgentStore(s => s.selectedTicket)
   const agents = useAgentStore(s => s.agents)
-  const [isOpen, setIsOpen] = useState(false)
   const initialized = useRef(false);
 
   useEffect(() => {
@@ -38,11 +35,7 @@ const Dashboard = () => {
   const agent = agents.find(a => a.id === selectedAgent)
 
   return (
-    <div className="app">
-      <Header open={isOpen} onMenuToggle={() => setIsOpen(!isOpen)} />
-      <Sidebar open={isOpen} />
-
-      <main className={`main${isOpen ? ' shifted' : ''}`}>
+    <>
         <PipelinesBar />
         <Ticker />
 
@@ -58,8 +51,7 @@ const Dashboard = () => {
 
         {selectedTicket && <TicketsDrawer />}
         <Charts />
-      </main>
-    </div>
+    </>
   )
 }
 

@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import TopNav from '../components/Header/Header'
-import Sidebar from '../components/Sidebar/Sidebar'
 import toast from 'react-hot-toast'
 import '../App.css'
 import './StuckWorkflows.css'
 
 const StuckWorkflows = () => {
-  const [menuOpen, setMenuOpen] = useState(false)
   const [workflows, setWorkflows] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -69,11 +66,7 @@ const StuckWorkflows = () => {
   }
 
   return (
-    <div className="app">
-      <TopNav open={menuOpen} onMenuToggle={() => setMenuOpen(!menuOpen)} />
-      <Sidebar open={menuOpen} />
-
-      <main className={`main${menuOpen ? ' shifted' : ''}`}>
+    <>
         <div className="sw-page-title">Stuck Workflows</div>
 
         <div className="sw-table-wrapper">
@@ -165,8 +158,7 @@ const StuckWorkflows = () => {
             </table>
           )}
         </div>
-      </main>
-    </div>
+    </>
   )
 }
 

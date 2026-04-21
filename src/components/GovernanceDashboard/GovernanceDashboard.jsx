@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./GovernanceDashboard.css";
 import LifecycleModal from "./LifecycleModal";
 
@@ -7,48 +7,40 @@ export default function GovernanceDashboard() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchDashboard = async () => {
-      try {
-        const response = await fetch("/api/governance/v2/dashboard");
+  const fetchDashboard = useCallback(async () => {
+    try {
+      const response = await fetch("/api/governance/v2/dashboard");
 
-        if (!response.ok) {
-          throw new Error("API failed");
-        }
-
-        const result = await response.json();
-
-        const formattedData =
-          result?.activeTickets?.items?.map((item) => ({
-            lifecycle: item.lifecycle_id,
-            ticket: item.ticket_id,
-            priority: item.priority,
-            stage: item.stage,
-            assigned: item.assigned_to || "Unassigned",
-            eta: `${item.eta_minutes} min`,
-            status: item.status,
-            threadId: item.thread_id,
-            pipeline: item.pipeline_name,
-          })) || [];
-
-        setData(formattedData);
-      } catch (error) {
-        console.error("Error fetching dashboard:", error);
-        setData([]); // fallback
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error("API failed");
       }
-    };
 
-    fetchDashboard();
+      const result = await response.json();
 
-    // ✅ Safety timeout (prevents infinite loading)
-    const timeout = setTimeout(() => {
+      const formattedData =
+        result?.activeTickets?.items?.map((item) => ({
+          lifecycle: item.lifecycle_id,
+          ticket: item.ticket_id,
+          priority: item.priority,
+          stage: item.stage,
+          assigned: item.assigned_to || "Unassigned",
+          eta: `${item.eta_minutes} min`,
+          status: item.status,
+          threadId: item.thread_id,
+          pipeline: item.pipeline_name,
+        })) || [];
+
+      setData(formattedData);
+    } catch (error) {
+      console.error("Error fetching dashboard:", error);
+      setData([]); // fallback
+    } finally {
       setLoading(false);
-    }, 5000);
-
-    return () => clearTimeout(timeout);
-  }, []);
+    }
+  });
+  useEffect(() => {
+    fetchDashboard();
+  }, [fetchDashboard]);
 
   const handleRowClick = (item) => {
     setSelectedRow(item);

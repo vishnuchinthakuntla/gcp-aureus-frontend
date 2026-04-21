@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import TopNav from '../components/Header/Header'
-import Sidebar from '../components/Sidebar/Sidebar'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import PipelineCharts from '../components/PipelineHistory/PipelineCharts'
@@ -20,7 +18,6 @@ const AGENT_OPTIONS = [
 
 
 const PipelineHistory = () => {
-    const [menuOpen, setMenuOpen] = useState(false)
     const [pipelineData, setPipelineData] = useState({})
     const [selectedPipeline, setSelectedPipeline] = useState('')
     const [selectedAgent, setSelectedAgent] = useState('')
@@ -80,11 +77,7 @@ const PipelineHistory = () => {
   }, [selectedPipeline, selectedAgent, fromDate, toDate])
 
   return (
-    <div className="app">
-      <TopNav open={menuOpen} onMenuToggle={() => setMenuOpen(!menuOpen)} />
-      <Sidebar open={menuOpen} />
-
-      <main className={`main${menuOpen ? ' shifted' : ''}`}>
+    <>
         {/* ── FILTER ROW ── */}
         <div className="ph-filter-row">
           {/* Pipeline Dropdown */}
@@ -175,8 +168,7 @@ const PipelineHistory = () => {
             ))
           )}
         </div>
-      </main>
-    </div>
+    </>
   )
 }
 
