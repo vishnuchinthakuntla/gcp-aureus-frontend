@@ -148,10 +148,14 @@ const PipelineHistory = () => {
         </div>
 
         {/* ── CHARTS (memo'd — won't re-render on thread expand/collapse) ── */}
-        <PipelineCharts pipelineData={pipelineData} />
+        <PipelineCharts pipelineData={pipelineData} selectedAgent={selectedAgent} />
 
         {/* ── EXECUTION FLOW ── */}
-        <div className="td-section-title">Execution Flow — Run Detail</div>
+        <div className="td-section-title">
+          {selectedAgent
+            ? `Run Detail — ${(AGENT_OPTIONS.find(a => a.value === selectedAgent)?.label || selectedAgent).toUpperCase()} Analysis`
+            : 'Execution Flow — Run Detail'}
+        </div>
 
         <div className="timeline-container">
           {!selectedPipeline ? (
@@ -164,7 +168,7 @@ const PipelineHistory = () => {
             </div>
           ) : (
             Object.entries(pipelineData.threads).map(([groupKey, threadData]) => (
-              <ThreadGroup key={groupKey} groupKey={groupKey} threadData={threadData} />
+              <ThreadGroup key={groupKey} groupKey={groupKey} threadData={threadData} selectedAgent={selectedAgent} />
             ))
           )}
         </div>
