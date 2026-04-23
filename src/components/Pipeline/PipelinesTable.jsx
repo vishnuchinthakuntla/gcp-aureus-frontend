@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./PipelinesTable.css";
 
-const AGENTS = ["none", "observers", "roc", "decision", "test_heart", "data_quantity"];
+const VALID_AGENTS = ["observer", "rca", "decision"];
+const AGENTS = ["none", ...VALID_AGENTS];
 
 export default function PipelinesTable() {
   const [pipelines, setPipelines] = useState([]);
@@ -15,6 +16,7 @@ export default function PipelinesTable() {
   const loadPipelines = async () => {
     try {
       const res = await fetch("/api/pipelines_schedule");
+
       const data = await res.json();
       setPipelines(data.items || []);
     } catch (err) {
@@ -24,91 +26,56 @@ export default function PipelinesTable() {
     }
   };
 
-  // 🔥 STATUS LOGIC
   const getStatus = (pl) => {
     if (pl.full_kill_switch === 1) return "killed";
-    if (pl.agent_kill_switch && pl.agent_kill_switch !== "none") return "paused";
+    if (pl.agent_kill_switch && pl.agent_kill_switch !== "none")
+      return "paused";
     return "active";
   };
 
-  // ▶ RUN
-  const handleRun = async (name) => {
-    try {
-      await fetch(`/api/pipelines/${encodeURIComponent(name)}/run`, {
-        method: "POST",
-      });
-      loadPipelines();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // ▶▶ RUN ALL
   const handleRunAll = async () => {
-    try {
-      await fetch("/api/pipelines/run-all", {
-        method: "POST",
-      });
-      loadPipelines();
-    } catch (err) {
-      console.error(err);
-    }
+    await fetch("/api/pipelines/run-all", { method: "POST" });
+    loadPipelines();
   };
 
-  // 🔴 KILL
+  const handleRun = async (name) => {
+    await fetch(`/api/pipelines/${name}/run`, { method: "POST" });
+    loadPipelines();
+  };
+
   const handleKill = async (name) => {
-    try {
-      await fetch(`/api/pipelines/${encodeURIComponent(name)}/kill`, {
-        method: "POST",
-      });
-      loadPipelines();
-    } catch (err) {
-      console.error(err);
-    }
+    await fetch(`/api/pipelines/${name}/kill`, { method: "POST" });
+    loadPipelines();
   };
 
-  // ↩ UNKILL
   const handleUnkill = async (name) => {
-    try {
-      await fetch(`/api/pipelines/${encodeURIComponent(name)}/unkill`, {
-        method: "POST",
-      });
-      loadPipelines();
-    } catch (err) {
-      console.error(err);
-    }
+    await fetch(`/api/pipelines/${name}/unkill`, { method: "POST" });
+    loadPipelines();
   };
 
-  // ⚙️ SET AGENT
-  const handleSetAgent = async (name, agent, pipeline) => {
-    try {
-      // If killed → unkill first
-      if (pipeline.full_kill_switch === 1) {
-        await fetch(`/api/pipelines/${encodeURIComponent(name)}/unkill`, {
-          method: "POST",
-        });
-      }
+  const handleSetAgent = async (name, agent) => {
+    await fetch("/api/pipelines/agent-config", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ pipeline_name: name, agent }),
+    });
+    loadPipelines();
+  };
 
-      await fetch("/api/pipelines/agent-config", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          pipeline_name: name,
-          agent: agent,
-        }),
-      });
-
-      loadPipelines();
-    } catch (err) {
-      console.error(err);
+  // ✅ LIVE LOGS
+  const handleLiveLogs = (jobId) => {
+    if (!jobId) {
+      alert("Job ID not available");
+      return;
     }
+
+    window.open(`/api/pipelines/${jobId}/logs`, "_blank");
   };
 
   return (
     <div className="pipeline-container">
-      {/* HEADER */}
       <div className="pipeline-header">
         <div className="left">
           <span className="bar"></span>
@@ -120,49 +87,57 @@ export default function PipelinesTable() {
         </button>
       </div>
 
-      {/* LOADING */}
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <table className="pipeline-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>NAME</th>
-              <th>STATUS</th>
-              <th>AGENT</th>
-              <th>ACTIONS</th>
-            </tr>
-          </thead>
+      {/* ✅ ALWAYS SHOW TABLE */}
+      <table className="pipeline-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>NAME</th>
+            <th>STATUS</th>
+            <th>AGENT</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
 
-          <tbody>
-            {pipelines.map((pl) => {
+        <tbody>
+          {/* 🔄 LOADING */}
+          {loading ? (
+            <tr>
+              <td colSpan="5">
+                <div className="loader-container">
+                  <div className="spinner"></div>
+                </div>
+              </td>
+            </tr>
+          ) : pipelines.length === 0 ? (
+            <tr>
+              <td colSpan="5" className="no-data">
+                No pipelines available
+              </td>
+            </tr>
+          ) : (
+            pipelines.map((pl) => {
               const status = getStatus(pl);
               const isKilled = status === "killed";
 
               return (
                 <tr key={pl.pipeline_id}>
-                  {/* ID */}
                   <td className="id">{pl.pipeline_id}</td>
-
-                  {/* NAME */}
                   <td className="name">{pl.pipeline_name}</td>
 
-                  {/* STATUS */}
                   <td className={`status-${status}`}>
                     {status === "active" && "🟢 Active"}
                     {status === "paused" && "🟡 Agent Stop"}
                     {status === "killed" && "🔴 Killed"}
                   </td>
 
-                  {/* AGENT */}
                   <td>
-                    {isKilled ? "-" : pl.agent_kill_switch || "none"}
+                    {isKilled
+                      ? "-"
+                      : (pl.agent_kill_switch || "none")}
                   </td>
 
-                  {/* ACTIONS */}
                   <td>
-                    {/* RUN */}
                     {!isKilled && (
                       <button
                         className="run-btn"
@@ -172,7 +147,6 @@ export default function PipelinesTable() {
                       </button>
                     )}
 
-                    {/* KILL / UNKILL */}
                     {isKilled ? (
                       <button
                         className="unkill-btn"
@@ -189,33 +163,40 @@ export default function PipelinesTable() {
                       </button>
                     )}
 
-                    {/* AGENT SELECT */}
                     {!isKilled && (
-                      <select
-                        className="agent-select"
-                        defaultValue={pl.agent_kill_switch || "none"}
-                        onChange={(e) =>
-                          handleSetAgent(
-                            pl.pipeline_name,
-                            e.target.value,
-                            pl
-                          )
-                        }
-                      >
-                        {AGENTS.map((a) => (
-                          <option key={a} value={a}>
-                            {a}
-                          </option>
-                        ))}
-                      </select>
+                      <>
+                        <select
+                          className="agent-select"
+                          value={pl.agent_kill_switch || "none"}
+                          onChange={(e) =>
+                            handleSetAgent(
+                              pl.pipeline_name,
+                              e.target.value
+                            )
+                          }
+                        >
+                          {AGENTS.map((a) => (
+                            <option key={a} value={a}>
+                              {a}
+                            </option>
+                          ))}
+                        </select>
+
+                        <button
+                          className="logs-btn"
+                          onClick={() => handleLiveLogs(pl.job_id)}
+                        >
+                          📄 Logs
+                        </button>
+                      </>
                     )}
                   </td>
                 </tr>
               );
-            })}
-          </tbody>
-        </table>
-      )}
+            })
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }
