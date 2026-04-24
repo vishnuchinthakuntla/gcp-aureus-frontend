@@ -4,6 +4,10 @@
   border-radius: 14px;
 }
 
+.kg * {
+  line-height: 1.5;
+}
+
 .kg-container {
   display: grid;
   grid-template-columns: auto 230px;

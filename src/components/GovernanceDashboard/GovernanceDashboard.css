@@ -83,6 +83,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  padding: 4px 12px 0px;
 }
 
 .title {
@@ -118,6 +119,12 @@
   max-height: 305px; /* ✅ 5 rows visible */
   overflow-y: auto;
   scrollbar-width: thin;
+  box-sizing: border-box;
+  padding: 12px;
+}
+
+.gov-table * {
+  line-height: 1.5;
 }
 
 /* Header Row */
@@ -151,8 +158,11 @@
   padding: 12px 0; /* ✅ reduced height */
   border-bottom: 1px solid #f1f3f5;
   align-items: center;
-  font-size: 13px;
   cursor: pointer;
+}
+
+.table-row span{
+  font-size: 12px !important;
 }
 
 .table-row:hover {
@@ -195,11 +205,16 @@
 
 /* Status */
 .status {
-  background: #fff5f5;
-  color: #fa5252;
+  background: hsl(0, 100%, 98%);
+  color: hsl(0, 94%, 65%);
   padding: 2px 6px;
   border-radius: 10px;
   font-size: 11px;
+}
+
+.status.in_progress{
+  background: hsl(33, 91%, 87%);
+  color: hsl(33, 100%, 34%);
 }
 
 /* ===================== */

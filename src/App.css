@@ -12,6 +12,10 @@
 } */
 
 :root {
+  --t1: #0f2040;
+  --t2: #3d5278;
+  --t3: #7a8ea8;
+  --t4: #b0bfce;
   --nav-h: 50px;
   --sidebar-w: 240px;
   --nav-bg: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #1e3a8a 100%);
@@ -194,10 +198,10 @@ html[data-theme="light"] .aging-warn {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 body {
-  font-family: "Open Sans", "Helvetica Neue", sans-serif;
   font-size: 12px;
   font-weight: 600;
   background: #fafcff;

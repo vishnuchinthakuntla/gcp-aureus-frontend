@@ -42,6 +42,10 @@
   overflow: hidden;
 }
 
+.panel * {
+  line-height: 1.5;
+}
+
 .ph {
   padding: 14px 20px 12px;
   display: flex;
