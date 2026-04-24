@@ -5,14 +5,44 @@ import InsightsDashboard from "../components/GovernanceDashboard/InsightsDashboa
 
 import KnowledgeGrowth from "../components/GovernanceDashboard/KnowledgeGrowth";
 import "../App.css";
-import useAgentStore from "../stores/useAgentStore";
+import useAgentStore from '../stores/useAgentStore';
 
-const GovernancePage = () => {
-  const fetchGovernanceDashboard = useAgentStore(s => s.fetchGovernanceDashboard);
+export default function GovernancePage() {
+  const fetchGovernanceDashboard = useAgentStore((s) => s.fetchGovernanceDashboard);
 
   useEffect(() => {
-    fetchGovernanceDashboard();
-  }, []);
+    let isMounted = true; // Prevents memory leaks if the user navigates away
+    let timeoutId;
+
+    const pollForData = async () => {
+      try {
+        await fetchGovernanceDashboard();
+
+        // Check the store directly to see if the data was populated successfully
+        const currentData = useAgentStore.getState().governanceDashData;
+        
+        if (currentData && currentData.activeTickets) {
+           console.log("Data successfully loaded!");
+           return; 
+        }
+      } catch (error) {
+         console.warn("Backend not ready or request failed. Retrying...");
+      }
+
+      // 🔄 If we reach here, it means either the fetch failed OR the data wasn't valid/ready
+      if (isMounted) {
+        timeoutId = setTimeout(pollForData, 2000); 
+      }
+    };
+
+    pollForData();
+
+    // Cleanup function: clears the timeout if the component is destroyed
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
+  }, []); 
 
   return (
     <>
@@ -34,5 +64,3 @@ const GovernancePage = () => {
     </>
   );
 };
-
-export default GovernancePage;
