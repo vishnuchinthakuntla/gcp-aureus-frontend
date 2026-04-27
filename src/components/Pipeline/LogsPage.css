@@ -1,0 +1,87 @@
+.logs-container {
+  padding: 20px;
+  background: #0f172a;
+  height: 100vh;
+  color: #fff;
+}
+
+.logs-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.back-btn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.logs-box {
+  background: #111;
+  padding: 15px;
+  border-radius: 8px;
+  height: 80vh;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+/* loader */
+.loader-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 100px;
+}
+
+.spinner {
+  width: 45px;
+  height: 45px;
+  border: 4px solid #333;
+  border-top: 4px solid #22c55e;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loader-wrapper p {
+  margin-top: 10px;
+  color: #aaa;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* logs */
+.log-line {
+  padding: 4px 0;
+  border-bottom: 1px solid #222;
+}
+
+.log-time {
+  color: #888;
+}
+
+.log-level.info {
+  color: #22c55e;
+}
+
+.log-level.warning {
+  color: orange;
+}
+
+.log-level.error {
+  color: red;
+}
+
+.no-logs {
+  text-align: center;
+  color: #888;
+  margin-top: 50px;
+}

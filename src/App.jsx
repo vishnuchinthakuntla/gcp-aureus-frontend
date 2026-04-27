@@ -8,6 +8,7 @@ import PipelineHistory from "./pages/PipelineHistory";
 import StuckWorkflows from "./pages/StuckWorkflows";
 import TopNav from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
+import LogsPage from "./components/Pipeline/LogsPage";
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -29,6 +30,7 @@ function App() {
             <Route path="/governance-dashboard" element={<Maincard />} />
             <Route path="/pipeline-history" element={<PipelineHistory />} />
             <Route path="/stuck-workflows" element={<StuckWorkflows />} />
+            <Route path="/logs" element={<LogsPage />} />
           </Routes>
           </main> 
         </Router>
