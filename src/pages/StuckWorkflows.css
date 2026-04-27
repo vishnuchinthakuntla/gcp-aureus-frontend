@@ -13,13 +13,14 @@
   border: 1px solid var(--border, #dde3ee);
   border-radius: 10px;
   box-shadow: var(--card-shadow);
-  overflow: hidden;
+  overflow-x: auto;
 }
 
 .sw-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 12px;
+  overflow-x: auto;
 }
 
 .sw-table thead {
@@ -43,6 +44,10 @@
   color: var(--text-primary, #1c2b3a);
   border-bottom: 1px solid var(--border, #dde3ee);
   vertical-align: middle;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  overflow: hidden;
 }
 
 .sw-table tbody tr:last-child td {
@@ -95,6 +100,7 @@
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+  white-space: nowrap;
 }
 
 .sw-reprocess-btn:hover:not(:disabled) {

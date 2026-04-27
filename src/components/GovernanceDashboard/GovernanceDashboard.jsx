@@ -53,8 +53,7 @@ export default function GovernanceDashboard() {
   };
 
   return (
-    <div className="gov-container">
-
+    <>
       {/* Header */}
       <div className="gov-header">
         <div className="title">ACTIVE TICKET LIFECYCLES</div>
@@ -66,19 +65,22 @@ export default function GovernanceDashboard() {
       </div>
 
       {/* Table */}
-      <div className="gov-table">
+      <div className="table-container">
+      <table className="gov-table">
 
         {/* Header Row */}
-        <div className="table-header">
-          <span>LIFECYCLE</span>
-          <span>TICKET</span>
-          <span>PRIORITY</span>
-          <span>STAGE</span>
-          <span>ASSIGNED</span>
-          <span>ETA</span>
-          <span>STATUS</span>
-        </div>
-
+        <thead>
+          <tr className="table-header">
+            <th><div>LIFECYCLE</div></th>
+            <th><div>TICKET</div></th>
+            <th><div>PRIORITY</div></th>
+            <th><div>STAGE</div></th>
+            <th><div>ASSIGNED</div></th>
+            <th><div>ETA</div></th>
+            <th><div>STATUS</div></th>
+          </tr>
+        </thead>
+        <tbody>
         {/* ✅ Loading State INSIDE table */}
         {/* loading ? (
           <div className="table-row loading-row">
@@ -92,46 +94,54 @@ export default function GovernanceDashboard() {
           </div>
         ) : */
         data?.length === 0 ? (
-          <div className="table-row no-data-row">
-            <span>-</span>
-            <span>-</span>
-            <span>-</span>
-            <span>-</span>
-            <span>No Data Available</span>
-            <span>-</span>
-            <span>-</span>
-          </div>
+          <tr className="table-row no-data-row">
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>No Data Available</td>
+            <td>-</td>
+            <td>-</td>
+          </tr>
         ) : (
           data?.map((item, index) => (
-            <div
+            <tr
               className="table-row"
               key={index}
               onClick={() => handleRowClick(item)}
             >
-              <span>{item.lifecycle || 'LC-UNK'}</span>
-              <span>{item.ticket_id}</span>
+              <td><div>{item.lifecycle || 'LC-UNK'}</div></td>
+              <td><div>{item.ticket_id}</div></td>
 
-              <span>
+              <td>
+                <div>
                 <span className={`priority ${item.severity}`}>
                   • {item.severity}
                 </span>
-              </span>
+                </div>
+              </td>
 
-              <span>
+              <td>
+                <div>
                 <span className="stage">{item.stage || 'DETECT'}</span>
-              </span>
+                </div>
+              </td>
 
-              <span className="assigned">{item.assigned_to || 'Unassigned'}</span>
-              <span>{item.eta || '00:00:00'}</span>
+              <td className="assigned"><div>{item.assigned_to || 'Unassigned'}</div></td>
+              <td><div>{item.eta || '00:00:00'}</div></td>
 
-              <span>
+              <td>
+                <div>
                 <span className={`status ${item.status.toLowerCase()}`}>
                   • {item.status || 'None'}
                 </span>
-              </span>
-            </div>
+                </div>
+              </td>
+            </tr>
           ))
         )}
+      </tbody>
+      </table>
       </div>
 
       {/* Modal */}
@@ -141,6 +151,6 @@ export default function GovernanceDashboard() {
           onClose={closeModal}
         />
       )}
-    </div>
+    </>
   );
 }
