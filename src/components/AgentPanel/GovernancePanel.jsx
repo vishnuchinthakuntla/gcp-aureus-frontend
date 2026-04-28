@@ -128,6 +128,7 @@ export default function GovernancePanel() {
           ],
         },
       ],
+      accessibility: { enabled: false },
       credits: { enabled: false },
     }),
     [governanceData],

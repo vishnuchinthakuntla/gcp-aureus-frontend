@@ -15,23 +15,25 @@ export default function GovernancePage() {
     let timeoutId;
 
     const pollForData = async () => {
+      if (!isMounted) return;
+
       try {
         await fetchGovernanceDashboard();
 
-        // Check the store directly to see if the data was populated successfully
         const currentData = useAgentStore.getState().governanceDashData;
         
+        // If data is ready, stop polling
         if (currentData && currentData.activeTickets) {
            console.log("Data successfully loaded!");
            return; 
         }
       } catch (error) {
-         console.warn("Backend not ready or request failed. Retrying...");
+         console.warn("Governance data fetch failed:", error);
       }
 
-      // 🔄 If we reach here, it means either the fetch failed OR the data wasn't valid/ready
+      // 🔄 Retry after 3 seconds (less aggressive than 2s)
       if (isMounted) {
-        timeoutId = setTimeout(pollForData, 2000); 
+        timeoutId = setTimeout(pollForData, 3000); 
       }
     };
 

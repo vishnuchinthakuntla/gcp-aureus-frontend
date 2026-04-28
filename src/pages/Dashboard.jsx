@@ -12,25 +12,12 @@ import '../App.css'
 
 const Dashboard = () => {
   const init = useAgentStore(s => s.init)
-  const destroy = useAgentStore(s => s.destroy)
+  // const destroy = useAgentStore(s => s.destroy)
   const selectedAgent = useAgentStore(s => s.selectedAgent)
   const selectedTicket = useAgentStore(s => s.selectedTicket)
   const agents = useAgentStore(s => s.agents)
   const initialized = useRef(false);
 
-  useEffect(() => {
-    if (!initialized.current) {
-      initialized.current = true;
-      init();
-    }
-
-    return () => {
-      if (initialized.current) {
-        initialized.current = false;
-        destroy();
-      }
-    };
-  }, [])
 
   const agent = agents.find(a => a.id === selectedAgent)
 

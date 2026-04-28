@@ -27,6 +27,7 @@ export default function KnowledgeGrowth() {
     title: {
       text: null,
     },
+    accessibility: { enabled: false },
     credits: { enabled: false },
     xAxis: {
       categories: knowledgeGrowthData?.timelineData?.map(item => item.weekLabel),

@@ -138,6 +138,7 @@ export default function InsightsDashboard() {
       width: 200,
     },
     title: { text: undefined },
+    accessibility: { enabled: false },
     credits: { enabled: false },
     pane: {
       size: '60%',

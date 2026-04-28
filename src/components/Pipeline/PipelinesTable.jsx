@@ -22,8 +22,11 @@ export default function PipelinesTable() {
 
   // 🔄 LOAD DATA
   const loadPipelines = async () => {
+    setLoading(true);
     try {
       const res = await fetch("/api/pipelines_schedule");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      
       const data = await res.json();
       setPipelines(data.items || []);
     } catch (err) {
@@ -41,22 +44,31 @@ export default function PipelinesTable() {
     return "active";
   };
 
-  // ✅ RUN ALL
-  const handleRunAll = async () => {
+const handleRunAll = async () => {
+  try {
+    const res = await fetch("/api/pipelines/run-all-gcp", {
+      method: "POST",
+    });
+
+    let data;
+
     try {
-      const res = await fetch("/api/pipelines/run-all", {
-        method: "POST",
-      });
-
-      const data = await res.json();
-
-      toast.success(data.message || "All pipelines triggered ✅");
-      loadPipelines();
-    } catch (err) {
-      console.error(err);
-      toast.error("Run all failed ❌");
+      data = await res.json();
+    } catch {
+      throw new Error("Invalid server response");
     }
-  };
+
+    if (!res.ok) {
+      throw new Error(data.message || "Run all failed");
+    }
+
+    toast.success(data.message || "All GCP pipelines triggered ✅");
+    loadPipelines();
+  } catch (err) {
+    console.error(err);
+    toast.error(err.message || "Run all failed ❌");
+  }
+};
 
   // ✅ RUN (with disable + loading)
   const handleRun = async (name) => {

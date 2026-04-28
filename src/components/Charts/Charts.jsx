@@ -92,7 +92,8 @@ function Charts() {
         colors: ['#F43F5E', '#F5A524', '#4F8EF7', '#10D9A0'],
         series: (trendData?.series || []).map((s) => ({ type: 'column', name: s.name, data: s.data })),
         plotOptions: { column: { stacking: 'normal', borderWidth: 0, borderRadius: 5 } },
-        credits: { enabled: false },
+        accessibility: { enabled: false },
+    credits: { enabled: false },
     };
 
     const pieOptions = {
@@ -106,7 +107,8 @@ function Charts() {
             },
         },
         series: [{ type: 'pie', name: 'Tickets', data: pieChartData.map((d) => ({ name: d.name, y: d.y, color: d.color })) }],
-        credits: { enabled: false },
+        accessibility: { enabled: false },
+    credits: { enabled: false },
     };
 
     return (

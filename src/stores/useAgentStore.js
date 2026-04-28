@@ -62,7 +62,6 @@ function arrayToAgentMap(agents) {
 }
 
 function mergeAgents(data) {
-
   if (data?.items && typeof data.items === "object") {
     return AGENTS.map((sa) => {
       const live = data.items[sa.id] || {};
@@ -134,7 +133,13 @@ const INITIAL_HEADER = {
   },
   tickets: { P1: 0, P2: 0, P3: 0, P4: 0, total: 0, sla_breach: 0, human: 0 },
   ticketsData: [],
-  info: { date: "", agent_count: 7, is_live: false, last_refresh: "", user_name: "" },
+  info: {
+    date: "",
+    agent_count: 7,
+    is_live: false,
+    last_refresh: "",
+    user_name: "",
+  },
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -155,6 +160,8 @@ const useAgentStore = create((set, get) => ({
   approvals: [],
   governanceData: null,
   governanceDashData: null,
+  _initialized: false,
+  _ticketsLoading: false,
 
   // Internal refs (not reactive)
   _ws: null,
@@ -197,11 +204,14 @@ const useAgentStore = create((set, get) => ({
 
   selectAgent: (agentId) => {
     if (agentId === "pipelines") {
-      set({ selectedAgent: agentId, panel: { ...EMPTY_PANEL, loading: false } });
+      set({
+        selectedAgent: agentId,
+        panel: { ...EMPTY_PANEL, loading: false },
+      });
       return;
     }
     set({ selectedAgent: agentId, panel: { ...EMPTY_PANEL, loading: true } });
-    if (agentId ) get().fetchPanel(agentId);
+    if (agentId) get().fetchPanel(agentId);
   },
 
   closePanel: () => {
@@ -216,15 +226,15 @@ const useAgentStore = create((set, get) => ({
 
     // Single API call instead of 4
     let data = null;
-    if(id === "governance") {
+    if (id === "governance") {
       data = await safeFetch(`/api/governance/dashboard?window_days=30`, null);
       set({ governanceData: data });
       return;
     }
     if (id !== "approval") {
       data = await safeFetch(`/api/agents/${id}/panel`, null);
-    } 
-    if(id === "approval") {
+    }
+    if (id === "approval") {
       get().refreshApprovals();
     }
 
@@ -264,25 +274,41 @@ const useAgentStore = create((set, get) => ({
 
   // ── Header ────────────────────────────────────────────────────────────────
   fetchHeader: async () => {
-    console.log("🔥 Calling ALL APIs");
+    // This now calls both for backward compatibility or initial load
+    await Promise.all([get().fetchHeaderCounts(), get().fetchTicketsTable()]);
+  },
 
-    const [headerData, ticketsRes] = await Promise.all([
-      safeFetch("/api/header", INITIAL_HEADER),
-      safeFetch("/api/tickets", {}),
-    ]);
-
-    console.log("✅ header tickets:", headerData.tickets);
-    console.log("✅ table tickets (/api/tickets):", ticketsRes);
+  fetchHeaderCounts: async () => {
+    const headerData = await safeFetch("/api/header", INITIAL_HEADER);
+    if (!headerData) return;
 
     set((s) => ({
       header: {
         ...s.header,
         pipeline: headerData.pipeline,
         tickets: headerData.tickets,
-        ticketsData: ticketsRes?.items || [],
         info: headerData.info,
       },
     }));
+  },
+
+  fetchTicketsTable: async () => {
+    if (get()._ticketsLoading) return;
+    set({ _ticketsLoading: true });
+
+    try {
+      const ticketsRes = await safeFetch("/api/tickets", {});
+      if (ticketsRes) {
+        set((s) => ({
+          header: {
+            ...get().header,
+            ticketsData: ticketsRes?.items || [],
+          },
+        }));
+      }
+    } finally {
+      set({ _ticketsLoading: false });
+    }
   },
 
   fetchGovernanceDashboard: async () => {
@@ -293,50 +319,48 @@ const useAgentStore = create((set, get) => ({
 
   // ── WebSocket ─────────────────────────────────────────────────────────────
 
+  _heartbeatTimer: null,
+
   connectWs: () => {
     const state = get();
-    if (
-      state._ws?.readyState === WebSocket.OPEN ||
-      state._ws?.readyState === WebSocket.CONNECTING
-    ) {
+
+    if (state._ws !== null) {
+      console.log("🚫 WS already exists — skipping");
       return;
     }
+
+    console.log("🔌 Creating WebSocket...");
 
     let ws;
     try {
       ws = new WebSocket(getWsUrl());
-    } catch {
+    } catch (err) {
+      console.error("❌ WS creation failed", err);
       return;
     }
 
     set({ _ws: ws });
 
     ws.onopen = () => {
+      console.log("✅ WS Connected");
       set({ wsConnected: true });
-      // Fetch everything fresh on connect
-      get().fetchAgents();
-      get().fetchHeader();
-      if (get().selectedAgent) get().fetchPanel();
     };
 
     ws.onmessage = (ev) => {
       try {
+        if (ev.data === "ping") {
+          ws.send("pong");
+          return;
+        }
+        if (ev.data === "pong") return; 
+        
         const msg = JSON.parse(ev.data);
         const { type, data } = msg;
 
-        if(type === "ticket_created") {
+        if (type === "ticket_created") {
           setTimeout(() => get().fetchHeader(), 1000);
         }
 
-        // Log event (keep last 100)
-        set((s) => ({
-          eventLog: [
-            { type, timestamp: new Date().toISOString(), data },
-            ...s.eventLog.slice(0, 99),
-          ],
-        }));
-
-        // ── header_refresh / initial_state — use inline data, NO REST calls ──
         if (type === "header_refresh" || type === "initial_state") {
           if (data?.pipeline || data?.tickets || data?.items) {
             set((s) => ({
@@ -359,9 +383,6 @@ const useAgentStore = create((set, get) => ({
           return;
         }
 
-        // ── All other events — debounced REST fetches ──
-        // Multiple events within 300ms trigger only ONE fetch each
-
         if (AGENT_REFRESH_TYPES.has(type)) {
           clearTimeout(get()._fetchAgentsTimer);
           const timer = setTimeout(() => get().fetchAgents(), 300);
@@ -377,54 +398,71 @@ const useAgentStore = create((set, get) => ({
         if (get().selectedAgent === "approval" && type === "approval_request") {
           get().refreshApprovals();
         }
-      } catch {
-        /* ignore malformed */
+      } catch (err) {
+        console.error("❌ WS message parse error", err);
       }
     };
 
-    ws.onclose = () => {
-      set({ wsConnected: false });
-      const timer = setTimeout(() => get().connectWs(), 3000);
-      set({ _retryTimer: timer });
+    ws.onerror = (err) => {
+      console.error("❌ WS error:", err);
     };
 
-    ws.onerror = () => ws.close();
+    ws.onclose = (ev) => {
+      console.log(`❌ WS Closed (Code: ${ev.code}, Reason: ${ev.reason || 'None'})`);
+
+      set({ wsConnected: false, _ws: null });
+
+      if (!get()._retryTimer) {
+        const timer = setTimeout(() => {
+          set({ _retryTimer: null });
+          get().connectWs();
+        }, 3000);
+
+        set({ _retryTimer: timer });
+      }
+    };
   },
 
   // ── Init / Destroy ────────────────────────────────────────────────────────
 
-  init: () => {
-    get().connectWs();
-    // get().refreshApprovals();
-    
-    /*      Interval based approvals refresh
-    if (!get()._approvalTimer) {
-      const timer = setInterval(() => {
-        if (get().selectedAgent === "approval") {
-          get().refreshApprovals();
-        }
-      }, 3000);
-      set({ _approvalTimer: timer });
-    }  */
+  init: async () => {
+    const state = get();
 
+    if (state._initialized) return;
+
+    console.log("🔥 INIT RUNNING");
+    set({ _initialized: true });
+
+    // 1. Critical path: WS and Agents
+    Promise.all([
+      get().connectWs(),
+      get().fetchAgents()
+    ]).catch(err => console.error("❌ Critical init failed", err));
+
+    // 2. Secondary path: Dash data (slightly delayed to prevent server burst)
+    setTimeout(() => {
+      Promise.all([
+        get().fetchHeaderCounts(),
+        get().fetchTicketsTable()
+      ]).catch(err => console.error("❌ Secondary init failed", err));
+
+      if (get().selectedAgent) get().fetchPanel();
+    }, 300); 
   },
 
   destroy: () => {
-    /*      Interval based approvals refresh
-    if (get()._approvalTimer) {
-      clearInterval(get()._approvalTimer);
-      set({ _approvalTimer: null });
-    } */
-    const { _ws, _retryTimer, _fetchAgentsTimer, _fetchPanelTimer } = get();
+    const { _ws, _retryTimer, _fetchAgentsTimer, _fetchPanelTimer, _heartbeatTimer } = get();
     if (_retryTimer) clearTimeout(_retryTimer);
     if (_fetchAgentsTimer) clearTimeout(_fetchAgentsTimer);
     if (_fetchPanelTimer) clearTimeout(_fetchPanelTimer);
+    if (_heartbeatTimer) clearInterval(_heartbeatTimer);
     if (_ws) _ws.close();
     set({
       _ws: null,
       _retryTimer: null,
       _fetchAgentsTimer: null,
       _fetchPanelTimer: null,
+      _heartbeatTimer: null,
       wsConnected: false,
     });
   },

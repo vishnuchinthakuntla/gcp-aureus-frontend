@@ -5,9 +5,7 @@ import useAgentStore from "../../stores/useAgentStore";
 
 export default function GovernanceDashboard() {
   const [selectedRow, setSelectedRow] = useState(null);
-  const data = useAgentStore(s => s.governanceDashData?.activeTickets?.items);
-
-  console.log(data)
+  const data = useAgentStore(s => s.governanceDashData?.activeTickets?.items) || [];
 
   /* const fetchDashboard = useCallback(async () => {
     try {

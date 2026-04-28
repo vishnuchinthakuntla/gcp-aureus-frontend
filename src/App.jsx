@@ -1,4 +1,4 @@
-import React, { useState } from "react"; 
+import React, { useState, useEffect } from "react"; 
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast"; 
 import Dashboard from "./pages/Dashboard";
@@ -9,9 +9,15 @@ import StuckWorkflows from "./pages/StuckWorkflows";
 import TopNav from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
 import LogsPage from "./components/Pipeline/LogsPage";
+import useAgentStore from "./stores/useAgentStore";
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const init = useAgentStore((s) => s.init);
+
+  useEffect(() => {
+    init();
+  }, [init]);
 
   return (
     <div className="app">

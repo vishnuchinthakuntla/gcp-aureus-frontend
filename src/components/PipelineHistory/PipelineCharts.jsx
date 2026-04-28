@@ -124,6 +124,7 @@ const PipelineCharts = ({ pipelineData, selectedAgent }) => {
       xAxis: { categories: cats },
       yAxis: { title: { text: null }, min: 0, max: 1, tickAmount: 3 },
       legend: { enabled: false },
+      accessibility: { enabled: false },
       credits: { enabled: false },
       plotOptions: { column: { borderWidth: 0, borderRadius: 3, color: '#10d9a0' } },
       series: [{ name: 'Confidence', data: agentSummary.confTimeline.map(d => d.value) }],
@@ -142,6 +143,7 @@ const PipelineCharts = ({ pipelineData, selectedAgent }) => {
       xAxis: { categories: cats },
       yAxis: { title: { text: null }, tickAmount: 4 },
       legend: { enabled: false },
+      accessibility: { enabled: false },
       credits: { enabled: false },
       plotOptions: { column: { borderWidth: 0, borderRadius: 3, color: '#a78bfa' } },
       series: [{ name: 'Prompt chars', data: agentSummary.llmTimeline.map(d => d.value) }],
@@ -183,6 +185,7 @@ const PipelineCharts = ({ pipelineData, selectedAgent }) => {
       xAxis: { type: 'category' },
       yAxis: { title: { text: null }, tickAmount: 4 },
       legend: { enabled: false },
+      accessibility: { enabled: false },
       credits: { enabled: false },
       series
     }
@@ -226,6 +229,7 @@ const PipelineCharts = ({ pipelineData, selectedAgent }) => {
         }
       },
       legend: { enabled: false },
+      accessibility: { enabled: false },
       credits: { enabled: false },
       series
     }

@@ -31,7 +31,6 @@ export default function TicketDrawer() {
   const normalized = useMemo(() => {
     if (!ticket) return null;
 
-    console.log(typeof ticket.description);
 
     return {
       id: ticket.ticket_id,
