@@ -46,7 +46,6 @@ const PipelineHistory = () => {
     const [selectedAgent, setSelectedAgent] = useState('')
     const [pipelineOptions, setPipelineOptions] = useState([])
     const [loading, setLoading] = useState(false)
-    const [showLogs, setShowLogs] = useState(true)
 
     // Draft state (UI-only, not yet applied)
     const [draftPipeline, setDraftPipeline] = useState('')
@@ -196,28 +195,12 @@ const PipelineHistory = () => {
           ))}
         </div>
 
-        {/* ── LOGS / STEPS TAB SWITCHER ── */}
-        <div className="ph-tab-switcher">
-          <button
-            className={`ph-tab-btn ${showLogs ? 'active' : ''}`}
-            onClick={() => setShowLogs(true)}
-          >
-            Logs
-          </button>
-          <button
-            className={`ph-tab-btn ${!showLogs ? 'active' : ''}`}
-            onClick={() => setShowLogs(false)}
-          >
-            Steps
-          </button>
-        </div>
-
         {loading ? (
           <div className="ph-loader-overlay">
             <div className="ph-spinner"></div>
             <span className="ph-loader-text">Loading pipeline data…</span>
           </div>
-        ) : showLogs ? (
+        ) : (
           <>
             {/* ── CHARTS (memo'd — won't re-render on thread expand/collapse) ── */}
             <PipelineCharts pipelineData={pipelineData} selectedAgent={selectedAgent} />
@@ -245,67 +228,6 @@ const PipelineHistory = () => {
               )}
             </div>
           </>
-        ) : (
-          <div className="timeline-container">
-            {!appliedPipeline ? (
-              <div style={{ textAlign: 'center', padding: '40px 20px', color: '#666', fontSize: '14px', fontWeight: '500' }}>
-                Please select a pipeline
-              </div>
-            ) : (!pipelineData?.threads || Object.keys(pipelineData.threads).length === 0) ? (
-              <div style={{ textAlign: 'center', padding: '40px 20px', color: '#666', fontSize: '14px', fontWeight: '500' }}>
-                Please change the parameters as there is no content to display with those parameters
-              </div>
-            ) : (
-              Object.entries(pipelineData.threads).map(([threadId, threadData]) => {
-                const steps = threadData.steps || [];
-                if (steps.length === 0) return null;
-
-                return (
-                  <div key={threadId} className="steps-section" data-theme="light">
-                    <div className="steps-header">
-                      <h3>Thread: {threadId}</h3>
-                      <div className="steps-meta">
-                        <span className="steps-count">{steps.length} steps</span>
-                      </div>
-                    </div>
-
-                    <div className="steps-pipeline">
-                      {steps.map((step, i) => {
-                        const cls = getStepStatusClass(step.status);
-                        const completed = formatCompletedAt(step.completed_at);
-                        return (
-                          <React.Fragment key={i}>
-                            <div className={`step-node ${cls}`}>
-                              <span className="step-number">{i + 1}</span>
-                              <div className="step-icon">{getStepIcon(step.status)}</div>
-                              <div className="step-info">
-                                <span className="step-name">{step.step_name || step.step}</span>
-                                <span className={`step-status ${cls}`}>{step.status}</span>
-                                {step.wall_time && (
-                                  <span className="step-time">⏱ {step.wall_time}</span>
-                                )}
-                                {completed && (
-                                  <div className="step-completed-group">
-                                    <span className="step-completed-date">{completed.date}</span>
-                                    {completed.time && (
-                                      <span className="step-completed-time">{completed.time}</span>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            {i < steps.length - 1 && (
-                              <div className={`step-connector ${cls}`} />
-                            )}
-                          </React.Fragment>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
         )}
     </>
   )

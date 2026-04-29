@@ -750,15 +750,15 @@
   border: 1px solid var(--border, #dde3ee);
   border-radius: 12px;
   padding: 4px;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
   box-shadow: inset 0 1px 3px rgba(15, 32, 64, 0.06);
 }
 
 .ph-tab-btn {
   flex: 1;
   position: relative;
-  padding: 10px 0;
-  font-size: 13px;
+  padding: 6px 0;
+  font-size: 12px;
   font-weight: 700;
   font-family: inherit;
   letter-spacing: 0.04em;
@@ -783,17 +783,21 @@
   box-shadow: 0 2px 8px rgba(29, 78, 216, 0.3);
 }
 
+/* Thread-level variant (smaller, sits inside each thread group) */
+.ph-tab-switcher--thread {
+  margin-top: 6px;
+  margin-bottom: 8px;
+}
 
 
 
 /* ===== STEPS PIPELINE ===== */
 
 .steps-section {
-  margin-top: 24px;
   background: #0b1120;
   border: 1px solid #1e293b;
   border-radius: 12px;
-  padding: 24px 24px 20px;
+  padding: 16px 24px 12px;
 }
 
 .steps-header {
@@ -801,7 +805,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
-  padding-bottom: 16px;
+  padding-bottom: 12px;
   border-bottom: 1px solid #1e293b;
 }
 
@@ -867,12 +871,12 @@
   display: flex;
   align-items: stretch;
   overflow-x: auto;
-  padding: 8px 0 20px;
+  padding: 0px 0 16px;
   gap: 0;
 }
 
 .steps-pipeline::-webkit-scrollbar {
-  height: 5px;
+  height: 3px;
 }
 
 .steps-pipeline::-webkit-scrollbar-track {

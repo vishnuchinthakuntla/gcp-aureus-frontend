@@ -188,10 +188,37 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent }) => {
   }
 
   /* ════════════════════════════════════════════
-     ALL-AGENTS view (existing — unchanged)
+     ALL-AGENTS view — with per-thread Logs / Steps tab
      ════════════════════════════════════════════ */
   const groupLogs = threadData.agent_logs || []
-  if (groupLogs.length === 0) return null
+  const steps = threadData.steps || []
+
+  /* hide thread entirely if nothing to show */
+  if (groupLogs.length === 0 && steps.length === 0) return null
+
+  /* ── step helpers (inline) ── */
+  const getStepStatusClass = (status) => {
+    if (!status) return 'not-executed'
+    const s = status.toLowerCase()
+    if (s.includes('succe') || s.includes('completed')) return 'succeeded'
+    if (s.includes('fail')) return 'failed'
+    if (s.includes('running') || s.includes('progress')) return 'running'
+    return 'not-executed'
+  }
+
+  const getStepIcon = (status) => {
+    switch (getStepStatusClass(status)) {
+      case 'succeeded': return '✓'
+      case 'failed':    return '✗'
+      case 'running':   return '⟳'
+      default:          return '○'
+    }
+  }
+
+  const formatCompletedAt = (completedObj) => {
+    if (!completedObj) return null
+    return { date: completedObj.date || '', time: completedObj.time || '' }
+  }
 
   return (
     <>
@@ -205,39 +232,108 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent }) => {
           </span>
         </div>
       </div>
-      {!isCollapsed && groupLogs.map((log, i) => {
-        const level = (log.level || "info").toLowerCase()
-        const isError = level === 'error' || level === 'critical'
-        const time = (new Date(log.logged_at).toLocaleDateString() + ' \t ' + new Date(log.logged_at).toLocaleTimeString())
 
-        let agentColorVar = 'var(--text-primary)'
-        let agentBgVar = 'var(--bg-elevated)'
-        const nodeLower = (log.agent_node || '').toLowerCase()
-        if (nodeLower.includes('observer')) { agentColorVar = 'var(--observer)'; agentBgVar = 'var(--observer-lt)' }
-        else if (nodeLower.includes('rca')) { agentColorVar = 'var(--rca)'; agentBgVar = 'var(--rca-lt)' }
-        else if (nodeLower.includes('decision')) { agentColorVar = 'var(--decision)'; agentBgVar = 'var(--decision-lt)' }
-        else if (nodeLower.includes('heal') || nodeLower.includes('ticket')) { agentColorVar = 'var(--healing)'; agentBgVar = 'var(--healing-lt)' }
-        else if (nodeLower.includes('quality')) { agentColorVar = 'var(--quality)'; agentBgVar = 'var(--quality-lt)' }
-        else if (nodeLower.includes('gov')) { agentColorVar = 'var(--governance)'; agentBgVar = 'var(--governance-lt)' }
+      {!isCollapsed && (
+        <>
+          {/* ── Per-thread Logs / Steps tab switcher ── */}
+          {steps.length > 0 && (
+            <div className="ph-tab-switcher ph-tab-switcher--thread">
+              <button
+                className={`ph-tab-btn ${!showSteps ? 'active' : ''}`}
+                onClick={() => setShowSteps(false)}
+              >
+                Logs
+              </button>
+              <button
+                className={`ph-tab-btn ${showSteps ? 'active' : ''}`}
+                onClick={() => setShowSteps(true)}
+              >
+                Steps
+              </button>
+            </div>
+          )}
 
-        const id = log.log_id || `${groupKey}-${i}`
-        const isExpanded = !!expandedLogs[id]
+          {showSteps && steps.length > 0 ? (
+            /* ── Steps view ── */
+            <div className="steps-section" data-theme="light">
+              <div className="steps-header">
+                <h3>Pipeline Steps</h3>
+                <div className="steps-meta">
+                  <span className="steps-count">{steps.length} steps</span>
+                </div>
+              </div>
 
-        return (
-          <div key={id} className="tl-row" style={{ borderLeft: `2px solid ${agentColorVar}`, marginBottom: '2px' }} onClick={() => toggleLogExpansion(id)}>
-            <span
-              className={isError ? "err-badge" : "badge"}
-              style={!isError ? { color: agentColorVar, backgroundColor: agentBgVar, border: `1px solid ${agentColorVar}` } : {}}
-            >
-              {log.agent_node}
-            </span>
-            <span className={`tl-msg ${isExpanded ? 'expanded' : ''}`} title={!isExpanded ? log.message : ''}>
-              {log.message}
-            </span>
-            <span className="tl-time">{time}</span>
-          </div>
-        )
-      })}
+              <div className="steps-pipeline">
+                {steps.map((step, i) => {
+                  const cls = getStepStatusClass(step.status)
+                  const completed = formatCompletedAt(step.completed_at)
+                  return (
+                    <React.Fragment key={i}>
+                      <div className={`step-node ${cls}`}>
+                        <span className="step-number">{i + 1}</span>
+                        <div className="step-icon">{getStepIcon(step.status)}</div>
+                        <div className="step-info">
+                          <span className="step-name">{step.step_name || step.step}</span>
+                          <span className={`step-status ${cls}`}>{step.status}</span>
+                          {step.wall_time && (
+                            <span className="step-time">⏱ {step.wall_time}</span>
+                          )}
+                          {completed && (
+                            <div className="step-completed-group">
+                              <span className="step-completed-date">{completed.date}</span>
+                              {completed.time && (
+                                <span className="step-completed-time">{completed.time}</span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {i < steps.length - 1 && (
+                        <div className={`step-connector ${cls}`} />
+                      )}
+                    </React.Fragment>
+                  )
+                })}
+              </div>
+            </div>
+          ) : (
+            /* ── Logs view (default) ── */
+            groupLogs.map((log, i) => {
+              const level = (log.level || "info").toLowerCase()
+              const isError = level === 'error' || level === 'critical'
+              const time = (new Date(log.logged_at).toLocaleDateString() + ' \t ' + new Date(log.logged_at).toLocaleTimeString())
+
+              let agentColorVar = 'var(--text-primary)'
+              let agentBgVar = 'var(--bg-elevated)'
+              const nodeLower = (log.agent_node || '').toLowerCase()
+              if (nodeLower.includes('observer')) { agentColorVar = 'var(--observer)'; agentBgVar = 'var(--observer-lt)' }
+              else if (nodeLower.includes('rca')) { agentColorVar = 'var(--rca)'; agentBgVar = 'var(--rca-lt)' }
+              else if (nodeLower.includes('decision')) { agentColorVar = 'var(--decision)'; agentBgVar = 'var(--decision-lt)' }
+              else if (nodeLower.includes('heal') || nodeLower.includes('ticket')) { agentColorVar = 'var(--healing)'; agentBgVar = 'var(--healing-lt)' }
+              else if (nodeLower.includes('quality')) { agentColorVar = 'var(--quality)'; agentBgVar = 'var(--quality-lt)' }
+              else if (nodeLower.includes('gov')) { agentColorVar = 'var(--governance)'; agentBgVar = 'var(--governance-lt)' }
+
+              const id = log.log_id || `${groupKey}-${i}`
+              const isExpanded = !!expandedLogs[id]
+
+              return (
+                <div key={id} className="tl-row" style={{ borderLeft: `2px solid ${agentColorVar}`, marginBottom: '2px' }} onClick={() => toggleLogExpansion(id)}>
+                  <span
+                    className={isError ? "err-badge" : "badge"}
+                    style={!isError ? { color: agentColorVar, backgroundColor: agentBgVar, border: `1px solid ${agentColorVar}` } : {}}
+                  >
+                    {log.agent_node}
+                  </span>
+                  <span className={`tl-msg ${isExpanded ? 'expanded' : ''}`} title={!isExpanded ? log.message : ''}>
+                    {log.message}
+                  </span>
+                  <span className="tl-time">{time}</span>
+                </div>
+              )
+            })
+          )}
+        </>
+      )}
     </>
   )
 }
