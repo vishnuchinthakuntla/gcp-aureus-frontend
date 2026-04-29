@@ -6,6 +6,30 @@ import ThreadGroup from '../components/PipelineHistory/ThreadGroup'
 import '../App.css'
 import './PipelineHistory.css'
 
+/* ── Step helpers ── */
+const getStepStatusClass = (status) => {
+  if (!status) return 'not-executed';
+  const s = status.toLowerCase();
+  if (s.includes('succe') || s.includes('completed')) return 'succeeded';
+  if (s.includes('fail')) return 'failed';
+  if (s.includes('running') || s.includes('progress')) return 'running';
+  return 'not-executed';
+};
+
+const getStepIcon = (status) => {
+  switch (getStepStatusClass(status)) {
+    case 'succeeded': return '✓';
+    case 'failed':    return '✗';
+    case 'running':   return '⟳';
+    default:          return '○';
+  }
+};
+
+const formatCompletedAt = (completedObj) => {
+  if (!completedObj) return null;
+  return { date: completedObj.date || '', time: completedObj.time || '' };
+};
+
 const AGENT_OPTIONS = [
     { value: '', label: 'All Agents' },
     { value: 'observer', label: 'Observer Agent' },
@@ -19,11 +43,26 @@ const AGENT_OPTIONS = [
 
 const PipelineHistory = () => {
     const [pipelineData, setPipelineData] = useState({})
-    const [selectedPipeline, setSelectedPipeline] = useState('')
     const [selectedAgent, setSelectedAgent] = useState('')
-    const [fromDate, setFromDate] = useState(new Date())
-    const [toDate, setToDate] = useState(new Date())
     const [pipelineOptions, setPipelineOptions] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [showLogs, setShowLogs] = useState(true)
+
+    // Draft state (UI-only, not yet applied)
+    const [draftPipeline, setDraftPipeline] = useState('')
+    const [draftFromDate, setDraftFromDate] = useState(new Date())
+    const [draftToDate, setDraftToDate] = useState(new Date())
+
+    // Applied state (used for fetching)
+    const [appliedPipeline, setAppliedPipeline] = useState('')
+    const [appliedFromDate, setAppliedFromDate] = useState(new Date())
+    const [appliedToDate, setAppliedToDate] = useState(new Date())
+
+    const handleApplyFilters = () => {
+        setAppliedPipeline(draftPipeline)
+        setAppliedFromDate(draftFromDate)
+        setAppliedToDate(draftToDate)
+    }
 
     useEffect(() => {
         fetch('/api/pipelines')
@@ -44,18 +83,19 @@ const PipelineHistory = () => {
         try{
             // Construct query parameters
             const queryParams = new URLSearchParams();
-            queryParams.append('pipeline_name', selectedPipeline || '');
+            queryParams.append('pipeline_name', appliedPipeline || '');
             queryParams.append('agent_node', selectedAgent || '');
-            if (fromDate) queryParams.append('start_date', fromDate.toISOString().split('T')[0]);
-            if (toDate) queryParams.append('end_date', toDate.toISOString().split('T')[0]);
+            if (appliedFromDate) queryParams.append('start_date', appliedFromDate.toISOString().split('T')[0]);
+            if (appliedToDate) queryParams.append('end_date', appliedToDate.toISOString().split('T')[0]);
             
             const queryString = queryParams.toString();
             const url = `/api/pipelines/performance/v2${queryString ? `?${queryString}` : ''}`;
 
-            if(selectedPipeline === ''){
+            if(appliedPipeline === ''){
                 setPipelineData({})
                 return
             }
+            setLoading(true)
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -69,12 +109,15 @@ const PipelineHistory = () => {
         catch(error){
             console.error('Error fetching pipeline data:', error)
         }
+        finally{
+            setLoading(false)
+        }
     }
     const timer = setTimeout(() => {
         fetchPipelineData()
     }, 400)
     return () => clearTimeout(timer)
-  }, [selectedPipeline, selectedAgent, fromDate, toDate])
+  }, [appliedPipeline, selectedAgent, appliedFromDate, appliedToDate])
 
   return (
     <>
@@ -85,8 +128,8 @@ const PipelineHistory = () => {
             <label className="ph-filter-label">Pipeline</label>
             <select
               className="ph-select"
-              value={selectedPipeline}
-              onChange={(e) => setSelectedPipeline(e.target.value)}
+              value={draftPipeline}
+              onChange={(e) => setDraftPipeline(e.target.value)}
             >
               {pipelineOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -101,12 +144,12 @@ const PipelineHistory = () => {
           <div className="ph-filter-group">
             <label className="ph-filter-label">From</label>
             <DatePicker
-              selected={fromDate}
-              onChange={(date) => setFromDate(date)}
+              selected={draftFromDate}
+              onChange={(date) => setDraftFromDate(date)}
               selectsStart
-              startDate={fromDate}
-              endDate={toDate}
-              maxDate={toDate || new Date()}
+              startDate={draftFromDate}
+              endDate={draftToDate}
+              maxDate={draftToDate || new Date()}
               placeholderText="Start date"
               className="ph-datepicker"
               dateFormat="dd MMM yyyy"
@@ -118,18 +161,24 @@ const PipelineHistory = () => {
           <div className="ph-filter-group">
             <label className="ph-filter-label">To</label>
             <DatePicker
-              selected={toDate}
-              onChange={(date) => setToDate(date)}
+              selected={draftToDate}
+              onChange={(date) => setDraftToDate(date)}
               selectsEnd
-              startDate={fromDate}
-              endDate={toDate}
-              minDate={fromDate}
+              startDate={draftFromDate}
+              endDate={draftToDate}
+              minDate={draftFromDate}
               maxDate={new Date()}
               placeholderText="End date"
               className="ph-datepicker"
               dateFormat="dd MMM yyyy"
               isClearable
             />
+          </div>
+
+          {/* Apply Button */}
+          <div className="ph-filter-group ph-apply-group">
+            <label className="ph-filter-label">&nbsp;</label>
+            <button className="ph-apply-btn" onClick={handleApplyFilters}>Apply</button>
           </div>
         </div>
 
@@ -147,31 +196,117 @@ const PipelineHistory = () => {
           ))}
         </div>
 
-        {/* ── CHARTS (memo'd — won't re-render on thread expand/collapse) ── */}
-        <PipelineCharts pipelineData={pipelineData} selectedAgent={selectedAgent} />
-
-        {/* ── EXECUTION FLOW ── */}
-        <div className="td-section-title">
-          {selectedAgent
-            ? `Run Detail — ${(AGENT_OPTIONS.find(a => a.value === selectedAgent)?.label || selectedAgent).toUpperCase()} Analysis`
-            : 'Execution Flow — Run Detail'}
+        {/* ── LOGS / STEPS TAB SWITCHER ── */}
+        <div className="ph-tab-switcher">
+          <button
+            className={`ph-tab-btn ${showLogs ? 'active' : ''}`}
+            onClick={() => setShowLogs(true)}
+          >
+            Logs
+          </button>
+          <button
+            className={`ph-tab-btn ${!showLogs ? 'active' : ''}`}
+            onClick={() => setShowLogs(false)}
+          >
+            Steps
+          </button>
         </div>
 
-        <div className="timeline-container">
-          {!selectedPipeline ? (
-            <div style={{ textAlign: 'center', padding: '40px 20px', color: '#666', fontSize: '14px', fontWeight: '500' }}>
-              Please select a pipeline
+        {loading ? (
+          <div className="ph-loader-overlay">
+            <div className="ph-spinner"></div>
+            <span className="ph-loader-text">Loading pipeline data…</span>
+          </div>
+        ) : showLogs ? (
+          <>
+            {/* ── CHARTS (memo'd — won't re-render on thread expand/collapse) ── */}
+            <PipelineCharts pipelineData={pipelineData} selectedAgent={selectedAgent} />
+
+            {/* ── EXECUTION FLOW ── */}
+            <div className="td-section-title">
+              {selectedAgent
+                ? `Run Detail — ${(AGENT_OPTIONS.find(a => a.value === selectedAgent)?.label || selectedAgent).toUpperCase()} Analysis`
+                : 'Execution Flow — Run Detail'}
             </div>
-          ) : (!pipelineData?.threads || Object.keys(pipelineData.threads).length === 0) ? (
-            <div style={{ textAlign: 'center', padding: '40px 20px', color: '#666', fontSize: '14px', fontWeight: '500' }}>
-              Please change the parameters as there is no content to display with those parameters
+
+            <div className="timeline-container">
+              {!appliedPipeline ? (
+                <div style={{ textAlign: 'center', padding: '40px 20px', color: '#666', fontSize: '14px', fontWeight: '500' }}>
+                  Please select a pipeline
+                </div>
+              ) : (!pipelineData?.threads || Object.keys(pipelineData.threads).length === 0) ? (
+                <div style={{ textAlign: 'center', padding: '40px 20px', color: '#666', fontSize: '14px', fontWeight: '500' }}>
+                  Please change the parameters as there is no content to display with those parameters
+                </div>
+              ) : (
+                Object.entries(pipelineData.threads).map(([groupKey, threadData]) => (
+                  <ThreadGroup key={groupKey} groupKey={groupKey} threadData={threadData} selectedAgent={selectedAgent} />
+                ))
+              )}
             </div>
-          ) : (
-            Object.entries(pipelineData.threads).map(([groupKey, threadData]) => (
-              <ThreadGroup key={groupKey} groupKey={groupKey} threadData={threadData} selectedAgent={selectedAgent} />
-            ))
-          )}
-        </div>
+          </>
+        ) : (
+          <div className="timeline-container">
+            {!appliedPipeline ? (
+              <div style={{ textAlign: 'center', padding: '40px 20px', color: '#666', fontSize: '14px', fontWeight: '500' }}>
+                Please select a pipeline
+              </div>
+            ) : (!pipelineData?.threads || Object.keys(pipelineData.threads).length === 0) ? (
+              <div style={{ textAlign: 'center', padding: '40px 20px', color: '#666', fontSize: '14px', fontWeight: '500' }}>
+                Please change the parameters as there is no content to display with those parameters
+              </div>
+            ) : (
+              Object.entries(pipelineData.threads).map(([threadId, threadData]) => {
+                const steps = threadData.steps || [];
+                if (steps.length === 0) return null;
+
+                return (
+                  <div key={threadId} className="steps-section" data-theme="light">
+                    <div className="steps-header">
+                      <h3>Thread: {threadId}</h3>
+                      <div className="steps-meta">
+                        <span className="steps-count">{steps.length} steps</span>
+                      </div>
+                    </div>
+
+                    <div className="steps-pipeline">
+                      {steps.map((step, i) => {
+                        const cls = getStepStatusClass(step.status);
+                        const completed = formatCompletedAt(step.completed_at);
+                        return (
+                          <React.Fragment key={i}>
+                            <div className={`step-node ${cls}`}>
+                              <span className="step-number">{i + 1}</span>
+                              <div className="step-icon">{getStepIcon(step.status)}</div>
+                              <div className="step-info">
+                                <span className="step-name">{step.step_name || step.step}</span>
+                                <span className={`step-status ${cls}`}>{step.status}</span>
+                                {step.wall_time && (
+                                  <span className="step-time">⏱ {step.wall_time}</span>
+                                )}
+                                {completed && (
+                                  <div className="step-completed-group">
+                                    <span className="step-completed-date">{completed.date}</span>
+                                    {completed.time && (
+                                      <span className="step-completed-time">{completed.time}</span>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            {i < steps.length - 1 && (
+                              <div className={`step-connector ${cls}`} />
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        )}
     </>
   )
 }
