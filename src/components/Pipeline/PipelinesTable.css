@@ -216,3 +216,16 @@
 .logs-btn:hover {
   background: #1d4ed8;
 }
+.stop-btn {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  margin-left: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.stop-btn:hover {
+  background-color: #d9363e;
+}

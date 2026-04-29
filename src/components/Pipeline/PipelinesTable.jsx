@@ -26,7 +26,7 @@ export default function PipelinesTable() {
     try {
       const res = await fetch("/api/pipelines_schedule");
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      
+
       const data = await res.json();
       setPipelines(data.items || []);
     } catch (err) {
@@ -44,31 +44,67 @@ export default function PipelinesTable() {
     return "active";
   };
 
-const handleRunAll = async () => {
-  try {
-    const res = await fetch("/api/pipelines/run-all-gcp", {
-      method: "POST",
-    });
+  const handleRunAll = async () => {
+    try {
+      const res = await fetch("/api/pipelines/run-all-gcp", {
+        method: "POST",
+      });
 
-    let data;
+      let data;
+
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error("Invalid server response");
+      }
+
+      if (!res.ok) {
+        throw new Error(data.message || "Run all failed");
+      }
+
+      toast.success(data.message || "All GCP pipelines triggered ✅");
+      loadPipelines();
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "Run all failed ❌");
+    }
+  };
+  // ✅ STOP JOB
+  const handleStop = async (jobId, pipelineName) => {
+    if (!jobId) {
+      toast.error("No running job to stop ⚠️");
+      return;
+    }
 
     try {
-      data = await res.json();
-    } catch {
-      throw new Error("Invalid server response");
-    }
+      const res = await fetch(`/api/jobs/${jobId}/stop`, {
+        method: "POST",
+      });
 
-    if (!res.ok) {
-      throw new Error(data.message || "Run all failed");
-    }
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error("Invalid server response");
+      }
 
-    toast.success(data.message || "All GCP pipelines triggered ✅");
-    loadPipelines();
-  } catch (err) {
-    console.error(err);
-    toast.error(err.message || "Run all failed ❌");
-  }
-};
+      if (!res.ok) {
+        throw new Error(data.message || `Stop failed (${res.status})`);
+      }
+
+      toast.success(data.message || "Job stopped 🛑");
+
+      // clear job_id after stop
+      setPipelines((prev) =>
+        prev.map((p) =>
+          p.pipeline_name === pipelineName ? { ...p, job_id: null } : p,
+        ),
+      );
+    } catch (err) {
+      console.error("STOP ERROR:", err);
+      toast.error(err.message || "Stop failed ❌");
+    }
+  };
 
   // ✅ RUN (with disable + loading)
   const handleRun = async (name) => {
@@ -236,15 +272,27 @@ const handleRunAll = async () => {
 
                       <td>
                         {!isKilled && (
-                          <button
-                            className="run-btn"
-                            disabled={runningPipelines[pl.pipeline_name]}
-                            onClick={() => handleRun(pl.pipeline_name)}
-                          >
-                            {runningPipelines[pl.pipeline_name]
-                              ? "Running..."
-                              : "▶ Run"}
-                          </button>
+                          <>
+                            <button
+                              className="run-btn"
+                              disabled={runningPipelines[pl.pipeline_name]}
+                              onClick={() => handleRun(pl.pipeline_name)}
+                            >
+                              {runningPipelines[pl.pipeline_name]
+                                ? "Running..."
+                                : "▶ Run"}
+                            </button>
+
+                            {/* ✅ ALWAYS SHOW STOP BUTTON */}
+                            <button
+                              className="stop-btn"
+                              onClick={() =>
+                                handleStop(pl.job_id, pl.pipeline_name)
+                              }
+                            >
+                              🛑 Stop
+                            </button>
+                          </>
                         )}
 
                         {isKilled ? (

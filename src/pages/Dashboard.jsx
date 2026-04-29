@@ -11,13 +11,9 @@ import PipelinesTable from '../components/Pipeline/PipelinesTable';
 import '../App.css'
 
 const Dashboard = () => {
-  const init = useAgentStore(s => s.init)
-  // const destroy = useAgentStore(s => s.destroy)
   const selectedAgent = useAgentStore(s => s.selectedAgent)
   const selectedTicket = useAgentStore(s => s.selectedTicket)
   const agents = useAgentStore(s => s.agents)
-  const initialized = useRef(false);
-
 
   const agent = agents.find(a => a.id === selectedAgent)
 
