@@ -10,10 +10,11 @@ function computeDuration(logs) {
   return `${Math.round(ms / 1000)}s`
 }
 
-const ThreadGroup = ({ groupKey, threadData, selectedAgent }) => {
+const ThreadGroup = ({ groupKey, threadData, selectedAgent, isFirst }) => {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [expandedLogs, setExpandedLogs] = useState({})
-  const [showSteps, setShowSteps] = useState(false)
+  const [openPanels, setOpenPanels] = useState({ logs: Boolean(isFirst), steps: false })
+  const togglePanel = (panel) => setOpenPanels(p => ({ ...p, [panel]: !p[panel] }))
 
   const toggleCollapse = useCallback(() => { setIsCollapsed(prev => !prev) }, [])
   const toggleLogExpansion = useCallback((id) => {
@@ -135,11 +136,11 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent }) => {
           {/* Show internal steps */}
           {agentLogs.length > 0 && (
             <>
-              <button className="arc-steps-toggle" onClick={() => setShowSteps(s => !s)}>
-                {showSteps ? '▲' : '▼'} {showSteps ? 'Hide' : 'Show'} internal steps
+              <button className="arc-steps-toggle" onClick={() => togglePanel('steps')}>
+                {openPanels.steps ? '▲' : '▼'} {openPanels.steps ? 'Hide' : 'Show'} internal steps
               </button>
 
-              {showSteps && (
+              {openPanels.steps && (
                 <div className="arc-steps">
                   {agentLogs.map((log, i) => {
                     const level = (log.level || 'info').toLowerCase()
@@ -235,103 +236,107 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent }) => {
 
       {!isCollapsed && (
         <>
-          {/* ── Per-thread Logs / Steps tab switcher ── */}
-          {steps.length > 0 && (
-            <div className="ph-tab-switcher ph-tab-switcher--thread">
-              <button
-                className={`ph-tab-btn ${!showSteps ? 'active' : ''}`}
-                onClick={() => setShowSteps(false)}
-              >
-                Logs
+          <div className="ph-collapsible-panels">
+            <div className={`ph-collapsible-panel ${openPanels.logs ? 'open' : ''}`}>
+              <button className="ph-collapsible-header" onClick={() => togglePanel('logs')}>
+                <span>AGENT STEPS</span>
+                <span className="ph-collapsible-icon">{openPanels.logs ? '▲' : '▼'}</span>
               </button>
-              <button
-                className={`ph-tab-btn ${showSteps ? 'active' : ''}`}
-                onClick={() => setShowSteps(true)}
-              >
-                Steps
-              </button>
-            </div>
-          )}
 
-          {showSteps && steps.length > 0 ? (
-            /* ── Steps view ── */
-            <div className="steps-section" data-theme="light">
-              <div className="steps-header">
-                <h3>Pipeline Steps</h3>
-                <div className="steps-meta">
-                  <span className="steps-count">{steps.length} steps</span>
-                </div>
-              </div>
+              {openPanels.logs && (
+                <div className="ph-collapsible-body">
+                  {groupLogs.map((log, i) => {
+                    const level = (log.level || "info").toLowerCase()
+                    const isError = level === 'error' || level === 'critical'
+                    const time = (new Date(log.logged_at).toLocaleDateString() + ' \t ' + new Date(log.logged_at).toLocaleTimeString())
 
-              <div className="steps-pipeline">
-                {steps.map((step, i) => {
-                  const cls = getStepStatusClass(step.status)
-                  const completed = formatCompletedAt(step.completed_at)
-                  return (
-                    <React.Fragment key={i}>
-                      <div className={`step-node ${cls}`}>
-                        <span className="step-number">{i + 1}</span>
-                        <div className="step-icon">{getStepIcon(step.status)}</div>
-                        <div className="step-info">
-                          <span className="step-name">{step.step_name || step.step}</span>
-                          <span className={`step-status ${cls}`}>{step.status}</span>
-                          {step.wall_time && (
-                            <span className="step-time">⏱ {step.wall_time}</span>
-                          )}
-                          {completed && (
-                            <div className="step-completed-group">
-                              <span className="step-completed-date">{completed.date}</span>
-                              {completed.time && (
-                                <span className="step-completed-time">{completed.time}</span>
-                              )}
-                            </div>
-                          )}
-                        </div>
+                    let agentColorVar = 'var(--text-primary)'
+                    let agentBgVar = 'var(--bg-elevated)'
+                    const nodeLower = (log.agent_node || '').toLowerCase()
+                    if (nodeLower.includes('observer')) { agentColorVar = 'var(--observer)'; agentBgVar = 'var(--observer-lt)' }
+                    else if (nodeLower.includes('rca')) { agentColorVar = 'var(--rca)'; agentBgVar = 'var(--rca-lt)' }
+                    else if (nodeLower.includes('decision')) { agentColorVar = 'var(--decision)'; agentBgVar = 'var(--decision-lt)' }
+                    else if (nodeLower.includes('heal') || nodeLower.includes('ticket')) { agentColorVar = 'var(--healing)'; agentBgVar = 'var(--healing-lt)' }
+                    else if (nodeLower.includes('quality')) { agentColorVar = 'var(--quality)'; agentBgVar = 'var(--quality-lt)' }
+                    else if (nodeLower.includes('gov')) { agentColorVar = 'var(--governance)'; agentBgVar = 'var(--governance-lt)' }
+
+                    const id = log.log_id || `${groupKey}-${i}`
+                    const isExpanded = !!expandedLogs[id]
+
+                    return (
+                      <div key={id} className="tl-row" style={{ borderLeft: `2px solid ${agentColorVar}`, marginBottom: '2px' }} onClick={() => toggleLogExpansion(id)}>
+                        <span
+                          className={isError ? "err-badge" : "badge"}
+                          style={!isError ? { color: agentColorVar, backgroundColor: agentBgVar, border: `1px solid ${agentColorVar}` } : {}}
+                        >
+                          {log.agent_node}
+                        </span>
+                        <span className={`tl-msg ${isExpanded ? 'expanded' : ''}`} title={!isExpanded ? log.message : ''}>
+                          {log.message}
+                        </span>
+                        <span className="tl-time">{time}</span>
                       </div>
-                      {i < steps.length - 1 && (
-                        <div className={`step-connector ${cls}`} />
-                      )}
-                    </React.Fragment>
-                  )
-                })}
-              </div>
-            </div>
-          ) : (
-            /* ── Logs view (default) ── */
-            groupLogs.map((log, i) => {
-              const level = (log.level || "info").toLowerCase()
-              const isError = level === 'error' || level === 'critical'
-              const time = (new Date(log.logged_at).toLocaleDateString() + ' \t ' + new Date(log.logged_at).toLocaleTimeString())
-
-              let agentColorVar = 'var(--text-primary)'
-              let agentBgVar = 'var(--bg-elevated)'
-              const nodeLower = (log.agent_node || '').toLowerCase()
-              if (nodeLower.includes('observer')) { agentColorVar = 'var(--observer)'; agentBgVar = 'var(--observer-lt)' }
-              else if (nodeLower.includes('rca')) { agentColorVar = 'var(--rca)'; agentBgVar = 'var(--rca-lt)' }
-              else if (nodeLower.includes('decision')) { agentColorVar = 'var(--decision)'; agentBgVar = 'var(--decision-lt)' }
-              else if (nodeLower.includes('heal') || nodeLower.includes('ticket')) { agentColorVar = 'var(--healing)'; agentBgVar = 'var(--healing-lt)' }
-              else if (nodeLower.includes('quality')) { agentColorVar = 'var(--quality)'; agentBgVar = 'var(--quality-lt)' }
-              else if (nodeLower.includes('gov')) { agentColorVar = 'var(--governance)'; agentBgVar = 'var(--governance-lt)' }
-
-              const id = log.log_id || `${groupKey}-${i}`
-              const isExpanded = !!expandedLogs[id]
-
-              return (
-                <div key={id} className="tl-row" style={{ borderLeft: `2px solid ${agentColorVar}`, marginBottom: '2px' }} onClick={() => toggleLogExpansion(id)}>
-                  <span
-                    className={isError ? "err-badge" : "badge"}
-                    style={!isError ? { color: agentColorVar, backgroundColor: agentBgVar, border: `1px solid ${agentColorVar}` } : {}}
-                  >
-                    {log.agent_node}
-                  </span>
-                  <span className={`tl-msg ${isExpanded ? 'expanded' : ''}`} title={!isExpanded ? log.message : ''}>
-                    {log.message}
-                  </span>
-                  <span className="tl-time">{time}</span>
+                    )
+                  })}
                 </div>
-              )
-            })
-          )}
+              )}
+            </div>
+
+            {steps.length > 0 && (
+              <div className={`ph-collapsible-panel ${openPanels.steps ? 'open' : ''}`}>
+                <button className="ph-collapsible-header" onClick={() => togglePanel('steps')}>
+                  <span>PIPELINE STEPS</span>
+                  <span className="ph-collapsible-icon">{openPanels.steps ? '▲' : '▼'}</span>
+                </button>
+
+                {openPanels.steps && (
+                  <div className="ph-collapsible-body">
+                    <div className="steps-section" data-theme="light">
+                      {/* <div className="steps-header">
+                        <h3>Pipeline Steps</h3>
+                        <div className="steps-meta">
+                          <span className="steps-count">{steps.length} steps</span>
+                        </div>
+                      </div> */}
+
+                      <div className="steps-pipeline">
+                        {steps.map((step, i) => {
+                          const cls = getStepStatusClass(step.status)
+                          const completed = formatCompletedAt(step.completed_at)
+                          return (
+                            <React.Fragment key={i}>
+                              <div className={`step-node ${cls}`}>
+                                <span className="step-number">{i + 1}</span>
+                                <div className="step-icon">{getStepIcon(step.status)}</div>
+                                <div className="step-info">
+                                  <span className="step-name">{step.step_name || step.step}</span>
+                                  <span className={`step-status ${cls}`}>{step.status}</span>
+                                  {step.wall_time && (
+                                    <span className="step-time">⏱ {step.wall_time}</span>
+                                  )}
+                                  {completed && (
+                                    <div className="step-completed-group">
+                                      <span className="step-completed-date">{completed.date}</span>
+                                      {completed.time && (
+                                        <span className="step-completed-time">{completed.time}</span>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                              {i < steps.length - 1 && (
+                                <div className={`step-connector ${cls}`} />
+                              )}
+                            </React.Fragment>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </>
       )}
     </>

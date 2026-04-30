@@ -222,8 +222,14 @@ const PipelineHistory = () => {
                   Please change the parameters as there is no content to display with those parameters
                 </div>
               ) : (
-                Object.entries(pipelineData.threads).map(([groupKey, threadData]) => (
-                  <ThreadGroup key={groupKey} groupKey={groupKey} threadData={threadData} selectedAgent={selectedAgent} />
+                Object.entries(pipelineData.threads).map(([groupKey, threadData], index) => (
+                  <ThreadGroup
+                    key={groupKey}
+                    groupKey={groupKey}
+                    threadData={threadData}
+                    selectedAgent={selectedAgent}
+                    isFirst={index === 0}
+                  />
                 ))
               )}
             </div>
