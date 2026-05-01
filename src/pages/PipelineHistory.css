@@ -869,7 +869,11 @@
   background: #0b1120;
   border: 1px solid #1e293b;
   border-radius: 12px;
-  padding: 16px 24px 12px;
+  padding: 16px 16px 12px;
+}
+
+.steps-section:has(.modal-pipeline-strip){
+  padding-bottom: 0;
 }
 
 .steps-header {
@@ -943,12 +947,13 @@
   display: flex;
   align-items: stretch;
   overflow-x: auto;
-  padding: 0px 0 16px;
+  padding: 8px 0 16px;
   gap: 0;
 }
 
 .steps-pipeline.modal-pipeline-strip{
-  padding: 1rem;
+  padding: 0.4rem;
+  padding-bottom: 1rem;
   gap: 1rem;
 }
 
@@ -964,10 +969,6 @@
 .steps-pipeline::-webkit-scrollbar-thumb {
   background: #334155;
   border-radius: 3px;
-}
-
-.steps-pipeline::-webkit-scrollbar-thumb:hover {
-  background: #475569;
 }
 
 /* Step node card — UNIFORM */
@@ -1085,7 +1086,7 @@
   color: #60a5fa;
   border: 2px solid #1e40af;
   animation: spinIcon 2s linear infinite;
-  padding: 0 0 6px 0;
+  padding: 0 0 4px 0;
 }
 
 @keyframes spinIcon {

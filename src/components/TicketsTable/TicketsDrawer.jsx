@@ -237,7 +237,7 @@ export default function TicketDrawer() {
           {/* ROOT CAUSE */}
           <div className="td-section-title">Root Cause</div>
           <div className="td-card scroll">
-            {run.error_message || "No error info"}
+            {run ? run.error_message : "No error info"}
           </div>
 
           {/* RCA DETAILS */}
