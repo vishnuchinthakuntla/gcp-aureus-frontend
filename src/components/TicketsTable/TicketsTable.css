@@ -643,6 +643,25 @@
     margin-right: 6px;
 }
 
+.td-loader{
+    height: 20px;
+    width: 20px;
+    border: 3px solid #9b9b9b38;
+    border-top: 3px solid black;
+    border-right: 3px solid black;
+    border-radius: 50%;
+    animation: rotate 1s linear infinite;
+    margin-right: 5px;
+}
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 /* ── EXECUTION FLOW ── */
 .flow-container {
     background: var(--bg-elevated);

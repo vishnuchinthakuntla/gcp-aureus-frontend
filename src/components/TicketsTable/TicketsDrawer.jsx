@@ -78,8 +78,8 @@ export default function TicketDrawer() {
 
   if (!normalized) return null;
 
-  const workflow = pipelineData?.workflow || {};
-  const run = pipelineData?.run || {};
+  const workflow = pipelineData?.workflow || null;
+  const run = pipelineData?.run || null;
 
   const rcaConfidence = useMemo(() => {
     const logs = pipelineData?.agent_logs || [];
@@ -242,6 +242,9 @@ export default function TicketDrawer() {
 
           {/* RCA DETAILS */}
           <div className="td-section-title">RCA Details</div>
+          {
+            workflow && run ? (
+
           <div className="td-card scroll">
             <p>
               <b>Pipeline:</b> {run.pipeline_name}
@@ -252,30 +255,30 @@ export default function TicketDrawer() {
             <p>
               <b>Severity:</b> {workflow.severity}
             </p>
-            <p>
-              <b>Confidence:</b> {rcaConfidence ?? "N/A"}
-            </p>
+              {rcaConfidence && (
+                <p><b>Confidence:</b> {rcaConfidence}</p>
+              )}
             {/* <p>
               <b>SLA Breach:</b> {workflow.sla_breached ? "YES" : "NO"}
             </p> */}
-            <p>
-  <b>Immediate Recommendations:</b>{" "}
+            
   {(() => {
     try {
       const factors = JSON.parse(workflow.contributing_factors || "[]");
 
       return factors.length > 0
-        ? factors.join(", ")
-        : "N/A";
+        ? <p>
+  <b>Immediate Recommendations:</b>{factors.join(", ")}</p>
+        : null;
     } catch (e) {
-      return "N/A";
+      return null;
     }
   })()}
-</p>
 
-            <p>
+
+            {/* <p>
               <b>Recommended Actions:</b>
-            </p>
+            </p> */}
 
             {(() => {
               try {
@@ -305,10 +308,14 @@ export default function TicketDrawer() {
                 return <p>No recommended actions available</p>;
               }
             })()}
-          </div>
+          </div> ) : (
+            <div className="td-card scroll" style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
+              <div className="td-loader"></div> Loading Data...
+            </div>
+          )}
 
           {/* 🔥 EXECUTION FLOW */}
-          <div className="td-section-title">Execution Flow</div>
+          {/* <div className="td-section-title">Execution Flow</div>
 
           <div className="flow-container">
             {(pipelineData?.agent_logs || []).map((log, i) => {
@@ -334,7 +341,7 @@ export default function TicketDrawer() {
                 </div>
               );
             })}
-          </div>
+          </div> */}
           <button
             className="td-action-btn"
             onClick={() => window.open(normalized.url, "_blank")}
