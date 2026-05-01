@@ -392,7 +392,7 @@ const PipelineCharts = ({ pipelineData, selectedAgent }) => {
           </div>
           <div className="summary-card">
             <div className="summary-label">Auto-Heal Rate</div>
-            <div className="summary-value">{pipelineData.summary.auto_heal_rate * 100}%</div>
+            <div className="summary-value">{(pipelineData.summary.auto_heal_rate * 100).toFixed(2)}%</div>
             <div className="summary-sub sub-green">{pipelineData.summary.auto_healed_count} of {pipelineData.summary.total_runs} runs</div>
           </div>
           <div className="summary-card">

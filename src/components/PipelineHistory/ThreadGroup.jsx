@@ -193,6 +193,7 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, isFirst }) => {
      ════════════════════════════════════════════ */
   const groupLogs = threadData.agent_logs || []
   const steps = threadData.steps || []
+  const agent_steps = threadData.agent_steps || []
 
   /* hide thread entirely if nothing to show */
   if (groupLogs.length === 0 && steps.length === 0) return null
@@ -210,9 +211,9 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, isFirst }) => {
   const getStepIcon = (status) => {
     switch (getStepStatusClass(status)) {
       case 'succeeded': return '✓'
-      case 'failed':    return '✗'
-      case 'running':   return '⟳'
-      default:          return '○'
+      case 'failed': return '✗'
+      case 'running': return '⟳'
+      default: return '○'
     }
   }
 
@@ -243,42 +244,85 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, isFirst }) => {
                 <span className="ph-collapsible-icon">{openPanels.logs ? '▲' : '▼'}</span>
               </button>
 
-              {openPanels.logs && (
-                <div className="ph-collapsible-body">
-                  {groupLogs.map((log, i) => {
-                    const level = (log.level || "info").toLowerCase()
-                    const isError = level === 'error' || level === 'critical'
-                    const time = (new Date(log.logged_at).toLocaleDateString() + ' \t ' + new Date(log.logged_at).toLocaleTimeString())
+              {openPanels.logs && (<div className="ph-collapsible-body" >
+                {/* <div className="modal-section-title">Pipeline Stages</div> */}
+                <div className="steps-section" data-theme="light">
+                  <div className="steps-pipeline modal-pipeline-strip">
+                    {agent_steps &&
+                      agent_steps.map((stage, i) => {
+                        const statusLower = stage.status
+                          ? stage.status.toLowerCase()
+                          : "idle";
+                        const state =
+                          statusLower === "completed"
+                            ? "done"
+                            : statusLower === "in_progress" ||
+                              statusLower === "breached"
+                              ? "active"
+                              : "idle";
 
-                    let agentColorVar = 'var(--text-primary)'
-                    let agentBgVar = 'var(--bg-elevated)'
-                    const nodeLower = (log.agent_node || '').toLowerCase()
-                    if (nodeLower.includes('observer')) { agentColorVar = 'var(--observer)'; agentBgVar = 'var(--observer-lt)' }
-                    else if (nodeLower.includes('rca')) { agentColorVar = 'var(--rca)'; agentBgVar = 'var(--rca-lt)' }
-                    else if (nodeLower.includes('decision')) { agentColorVar = 'var(--decision)'; agentBgVar = 'var(--decision-lt)' }
-                    else if (nodeLower.includes('heal') || nodeLower.includes('ticket')) { agentColorVar = 'var(--healing)'; agentBgVar = 'var(--healing-lt)' }
-                    else if (nodeLower.includes('quality')) { agentColorVar = 'var(--quality)'; agentBgVar = 'var(--quality-lt)' }
-                    else if (nodeLower.includes('gov')) { agentColorVar = 'var(--governance)'; agentBgVar = 'var(--governance-lt)' }
+                        return (
+                          <React.Fragment key={i}>
+                            <div className="ps-node">
+                              <div className="ps-dot-wrap">
+                                <div className={`ps-dot ${state}`}>
+                                  {state === "completed"
+                                    ? "✓"
+                                    : stage.stage_name
+                                      ? stage.stage_name[0]
+                                      : ""}
+                                </div>
+                                <div className={`ps-label ${state}`}>
+                                  {stage.stage_name}
+                                </div>
+                                <div className={`ps-time ${state}`}>
+                                  {stage.total_duration || "00:00"}
+                                </div>
+                              </div>
+                            </div>
+                            {i < agent_steps.length - 1 && (
+                              <div className="ps-arrow">›</div>
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
+                  </div> </div> </div>
+                // Logs section
+                /* <div className="ph-collapsible-body">
+                 {groupLogs.map((log, i) => {
+                   const level = (log.level || "info").toLowerCase()
+                   const isError = level === 'error' || level === 'critical'
+                   const time = (new Date(log.logged_at).toLocaleDateString() + ' \t ' + new Date(log.logged_at).toLocaleTimeString())
 
-                    const id = log.log_id || `${groupKey}-${i}`
-                    const isExpanded = !!expandedLogs[id]
+                   let agentColorVar = 'var(--text-primary)'
+                   let agentBgVar = 'var(--bg-elevated)'
+                   const nodeLower = (log.agent_node || '').toLowerCase()
+                   if (nodeLower.includes('observer')) { agentColorVar = 'var(--observer)'; agentBgVar = 'var(--observer-lt)' }
+                   else if (nodeLower.includes('rca')) { agentColorVar = 'var(--rca)'; agentBgVar = 'var(--rca-lt)' }
+                   else if (nodeLower.includes('decision')) { agentColorVar = 'var(--decision)'; agentBgVar = 'var(--decision-lt)' }
+                   else if (nodeLower.includes('heal') || nodeLower.includes('ticket')) { agentColorVar = 'var(--healing)'; agentBgVar = 'var(--healing-lt)' }
+                   else if (nodeLower.includes('quality')) { agentColorVar = 'var(--quality)'; agentBgVar = 'var(--quality-lt)' }
+                   else if (nodeLower.includes('gov')) { agentColorVar = 'var(--governance)'; agentBgVar = 'var(--governance-lt)' }
 
-                    return (
-                      <div key={id} className="tl-row" style={{ borderLeft: `2px solid ${agentColorVar}`, marginBottom: '2px' }} onClick={() => toggleLogExpansion(id)}>
-                        <span
-                          className={isError ? "err-badge" : "badge"}
-                          style={!isError ? { color: agentColorVar, backgroundColor: agentBgVar, border: `1px solid ${agentColorVar}` } : {}}
-                        >
-                          {log.agent_node}
-                        </span>
-                        <span className={`tl-msg ${isExpanded ? 'expanded' : ''}`} title={!isExpanded ? log.message : ''}>
-                          {log.message}
-                        </span>
-                        <span className="tl-time">{time}</span>
-                      </div>
-                    )
-                  })}
-                </div>
+                   const id = log.log_id || `${groupKey}-${i}`
+                   const isExpanded = !!expandedLogs[id]
+
+                   return (
+                     <div key={id} className="tl-row" style={{ borderLeft: `2px solid ${agentColorVar}`, marginBottom: '2px' }} onClick={() => toggleLogExpansion(id)}>
+                       <span
+                         className={isError ? "err-badge" : "badge"}
+                         style={!isError ? { color: agentColorVar, backgroundColor: agentBgVar, border: `1px solid ${agentColorVar}` } : {}}
+                       >
+                         {log.agent_node}
+                       </span>
+                       <span className={`tl-msg ${isExpanded ? 'expanded' : ''}`} title={!isExpanded ? log.message : ''}>
+                         {log.message}
+                       </span>
+                       <span className="tl-time">{time}</span>
+                     </div>
+                   )
+                 })}
+               </div> */
               )}
             </div>
 

@@ -853,9 +853,14 @@
   background: rgba(29, 78, 216, 0.1);
 }
 
-.ph-collapsible-panel.open {
-  box-shadow: 0 12px 28px rgba(15, 32, 64, 0.08);
+.steps-section.scale-big{
+  scale: 2;
+  gap: 20px;
 }
+
+/* .ph-collapsible-panel.open {
+  box-shadow: 0 12px 28px rgba(15, 32, 64, 0.08);
+} */
 
 
 /* ===== STEPS PIPELINE ===== */
@@ -940,6 +945,11 @@
   overflow-x: auto;
   padding: 0px 0 16px;
   gap: 0;
+}
+
+.steps-pipeline.modal-pipeline-strip{
+  padding: 1rem;
+  gap: 1rem;
 }
 
 .steps-pipeline::-webkit-scrollbar {
@@ -1075,10 +1085,11 @@
   color: #60a5fa;
   border: 2px solid #1e40af;
   animation: spinIcon 2s linear infinite;
+  padding: 0 0 6px 0;
 }
 
 @keyframes spinIcon {
-  100% { transform: rotate(360deg); }
+  100% { transform: rotate(360deg); transform-origin: center; }
 }
 
 .step-node.not-executed .step-icon {

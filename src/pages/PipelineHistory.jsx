@@ -6,30 +6,6 @@ import ThreadGroup from '../components/PipelineHistory/ThreadGroup'
 import '../App.css'
 import './PipelineHistory.css'
 
-/* ── Step helpers ── */
-const getStepStatusClass = (status) => {
-  if (!status) return 'not-executed';
-  const s = status.toLowerCase();
-  if (s.includes('succe') || s.includes('completed')) return 'succeeded';
-  if (s.includes('fail')) return 'failed';
-  if (s.includes('running') || s.includes('progress')) return 'running';
-  return 'not-executed';
-};
-
-const getStepIcon = (status) => {
-  switch (getStepStatusClass(status)) {
-    case 'succeeded': return '✓';
-    case 'failed':    return '✗';
-    case 'running':   return '⟳';
-    default:          return '○';
-  }
-};
-
-const formatCompletedAt = (completedObj) => {
-  if (!completedObj) return null;
-  return { date: completedObj.date || '', time: completedObj.time || '' };
-};
-
 const AGENT_OPTIONS = [
     { value: '', label: 'All Agents' },
     { value: 'observer', label: 'Observer Agent' },
