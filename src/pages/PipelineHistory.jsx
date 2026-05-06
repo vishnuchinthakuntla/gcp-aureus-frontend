@@ -16,6 +16,13 @@ const AGENT_OPTIONS = [
     { value: 'governance', label: 'Governance Agent' },
 ]
 
+const AGENT_NODE_KEYS = {
+    selfhealing: 'self_heal',
+}
+
+function getAgentNodeParam(agentId) {
+    return AGENT_NODE_KEYS[agentId] || agentId
+}
 
 const PipelineHistory = () => {
     const [pipelineData, setPipelineData] = useState({})
@@ -59,7 +66,9 @@ const PipelineHistory = () => {
             // Construct query parameters
             const queryParams = new URLSearchParams();
             queryParams.append('pipeline_name', appliedPipeline || '');
-            queryParams.append('agent_node', selectedAgent || '');
+            if (selectedAgent) {
+              queryParams.append('agent_node', getAgentNodeParam(selectedAgent));
+            }
             if (appliedFromDate) queryParams.append('start_date', appliedFromDate.toISOString().split('T')[0]);
             if (appliedToDate) queryParams.append('end_date', appliedToDate.toISOString().split('T')[0]);
             
@@ -68,9 +77,9 @@ const PipelineHistory = () => {
 
             if(appliedPipeline === ''){
                 setPipelineData({})
+                setLoading(false)
                 return
             }
-            setLoading(true)
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -88,6 +97,11 @@ const PipelineHistory = () => {
             setLoading(false)
         }
     }
+
+    if (appliedPipeline) {
+      setLoading(true)
+    }
+
     const timer = setTimeout(() => {
         fetchPipelineData()
     }, 400)
@@ -179,7 +193,7 @@ const PipelineHistory = () => {
         ) : (
           <>
             {/* ── CHARTS (memo'd — won't re-render on thread expand/collapse) ── */}
-            <PipelineCharts pipelineData={pipelineData} selectedAgent={selectedAgent} />
+            <PipelineCharts pipelineData={pipelineData} selectedAgent={selectedAgent} loading={loading} />
 
             {/* ── EXECUTION FLOW ── */}
             <div className="td-section-title">

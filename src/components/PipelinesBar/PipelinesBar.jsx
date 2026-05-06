@@ -43,8 +43,8 @@ function buildTicketBadges(tickets) {
         { label: 'P2', count: tickets.P2 ?? 0 },
         { label: 'P3', count: tickets.P3 ?? 0 },
         { label: 'P4', count: tickets.P4 ?? 0 },
-        { label: 'SLA Breach', count: tickets.sla_breach ?? 0 },
-        { label: 'Human', count: tickets.human ?? 0 },
+        { label: 'SLA Breach', count: tickets.sla_breach_count ?? 0 },
+        { label: 'Human', count: tickets.human_intervention_count ?? 0 },
     ]
 }
 

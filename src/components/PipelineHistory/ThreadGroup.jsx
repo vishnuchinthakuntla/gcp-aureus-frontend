@@ -1,5 +1,24 @@
 import React, { useState, useCallback } from 'react'
 
+const AGENT_DATA_KEYS = {
+  selfhealing: 'self_heal',
+}
+
+function normalizeAgentName(value = '') {
+  return String(value).toLowerCase().replace(/[_\s-]/g, '')
+}
+
+function matchesAgentNode(node, agentId) {
+  if (!node) return false
+  const normalizedNode = normalizeAgentName(node)
+  const normalizedAgent = normalizeAgentName(agentId)
+  return normalizedNode === normalizedAgent || normalizedNode.includes(normalizedAgent) || normalizedAgent.includes(normalizedNode)
+}
+
+function getAgentDataKey(agentId) {
+  return AGENT_DATA_KEYS[agentId] || agentId
+}
+
 /* ── helper: compute step duration from agent_logs timestamps ── */
 function computeDuration(logs) {
   if (!logs || logs.length < 2) return null
@@ -25,8 +44,9 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, isFirst }) => {
      AGENT-SPECIFIC  "Run Detail" card
      ════════════════════════════════════════════ */
   if (selectedAgent) {
-    const agentInfo = threadData[selectedAgent] || null
-    const agentLogs = (threadData.agent_logs || []).filter(l => l.agent_node === selectedAgent)
+    const agentKey = getAgentDataKey(selectedAgent)
+    const agentInfo = threadData[agentKey] || null
+    const agentLogs = (threadData.agent_logs || []).filter(log => matchesAgentNode(log.agent_node, selectedAgent))
 
     /* nothing to show for this thread */
     if (!agentInfo && agentLogs.length === 0) return null
@@ -52,6 +72,14 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, isFirst }) => {
     const reasoning = agentInfo?.reasoning
     const priority = agentInfo?.priority
     const businessImpact = agentInfo?.business_impact
+
+    const isSelfHeal = selectedAgent === 'selfhealing'
+    const selfHealAttemptCount = agentInfo?.attempt_count
+    const selfHealActionTaken = agentInfo?.action_taken
+    const selfHealSuccess = agentInfo?.success
+    const selfHealNeedsRetry = agentInfo?.needs_retry
+    const selfHealError = agentInfo?.error_message
+    const selfHealJobId = agentInfo?.new_job_id
 
     return (
       <div className="agent-run-card">
@@ -130,6 +158,26 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, isFirst }) => {
                   </li>
                 ))}
               </ol>
+            </>
+          )}
+
+          {isSelfHeal && agentInfo && (
+            <>
+              <div className="arc-section-label">SELF-HEAL SUMMARY</div>
+              <div className="arc-root-cause">
+                <span className="arc-rc-text">{selfHealActionTaken || 'Self-heal attempted'}</span>
+                <span className={`arc-cat-badge ${selfHealSuccess ? 'healable' : selfHealNeedsRetry ? 'not-healable' : 'not-healable'}`}>
+                  {selfHealSuccess ? 'Success' : selfHealNeedsRetry ? 'Retry pending' : 'Failed'}
+                </span>
+              </div>
+              <div className="arc-reasoning">
+                Attempt {selfHealAttemptCount ?? 'N/A'}{selfHealJobId ? ` · Job ID: ${selfHealJobId}` : ''}
+              </div>
+              {selfHealError && (
+                <div className="arc-reasoning" style={{ marginTop: '8px', color: '#e02d46' }}>
+                  {selfHealError}
+                </div>
+              )}
             </>
           )}
 

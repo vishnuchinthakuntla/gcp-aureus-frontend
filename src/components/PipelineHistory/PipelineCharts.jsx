@@ -2,6 +2,25 @@ import React, { useMemo } from 'react'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 
+const AGENT_DATA_KEYS = {
+  selfhealing: 'self_heal',
+}
+
+function normalizeAgentName(value = '') {
+  return String(value).toLowerCase().replace(/[_\s-]/g, '')
+}
+
+function getAgentDataKey(agentId) {
+  return AGENT_DATA_KEYS[agentId] || agentId
+}
+
+function matchesAgentNode(node, agentId) {
+  if (!node) return false
+  const normalizedNode = normalizeAgentName(node)
+  const normalizedAgent = normalizeAgentName(agentId)
+  return normalizedNode === normalizedAgent || normalizedNode.includes(normalizedAgent) || normalizedAgent.includes(normalizedNode)
+}
+
 /* ── colour look-up shared with ThreadGroup ── */
 const AGENT_META = {
   rca:         { label: 'RCA Agent',          color: 'var(--rca)',        colorHex: '#f5a524', lt: 'var(--rca-lt)' },
@@ -14,14 +33,15 @@ const AGENT_META = {
 
 /* ── helper: compute agent-level aggregates from threads ── */
 function computeAgentSummary(threads, agentKey, pipelineData) {
+  const dataKey = getAgentDataKey(agentKey)
   const entries = Object.entries(threads || {})
   const items = entries
     .map(([tid, t]) => ({
       threadId: tid,
-      info: t[agentKey] || null,
+      info: t[dataKey] || null,
       runDate: t.run_date,
       status: t.status,
-      logs: (t.agent_logs || []).filter(l => l.agent_node === agentKey),
+      logs: (t.agent_logs || []).filter(l => matchesAgentNode(l.agent_node, agentKey)),
     }))
     .filter(d => d.info || d.logs.length > 0)
 
@@ -102,7 +122,7 @@ function computeAgentSummary(threads, agentKey, pipelineData) {
   }
 }
 
-const PipelineCharts = ({ pipelineData, selectedAgent }) => {
+const PipelineCharts = ({ pipelineData, selectedAgent, loading }) => {
 
   /* ════════════════════════════════════════════
      AGENT-SPECIFIC summary + charts
@@ -111,6 +131,14 @@ const PipelineCharts = ({ pipelineData, selectedAgent }) => {
     if (!selectedAgent || !pipelineData?.threads) return null
     return computeAgentSummary(pipelineData.threads, selectedAgent, pipelineData)
   }, [selectedAgent, pipelineData?.threads])
+
+  if (selectedAgent && loading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '40px 20px', color: '#7a8ea8', fontSize: '13px', fontWeight: '600' }}>
+        Loading agent data…
+      </div>
+    )
+  }
 
   const confChartOpts = useMemo(() => {
     if (!agentSummary?.confTimeline?.length) return null
@@ -296,11 +324,11 @@ const PipelineCharts = ({ pipelineData, selectedAgent }) => {
                 <div className="summary-value">{agentSummary.avgConfidence ?? 'N/A'}</div>
                 <div className="summary-sub sub-amber">{confSub}</div>
               </div>
-              <div className="summary-card">
+              {/* <div className="summary-card">
                 <div className="summary-label">Root Cause</div>
                 <div className="summary-value summary-value-sm">{agentSummary.topRootCause}</div>
                 <div className="summary-sub sub-amber">{rcSub}</div>
-              </div>
+              </div> */}
               <div className="summary-card">
                 <div className="summary-label">Avg LLM Prompt</div>
                 <div className="summary-value">{agentSummary.avgPrompt ?? 'N/A'}</div>
@@ -329,7 +357,25 @@ const PipelineCharts = ({ pipelineData, selectedAgent }) => {
             </>
           )}
 
-          {selectedAgent !== 'rca' && selectedAgent !== 'decision' && (
+          {selectedAgent === 'selfhealing' ? (
+            <>
+              <div className="summary-card">
+                <div className="summary-label">Auto-Heal Rate</div>
+                <div className="summary-value">{pipelineData.summary?.auto_heal_rate != null ? `${(pipelineData.summary.auto_heal_rate * 100).toFixed(0)}%` : 'N/A'}</div>
+                <div className="summary-sub sub-green">{pipelineData.summary?.auto_healed_count ?? 0} auto-healed</div>
+              </div>
+              <div className="summary-card">
+                <div className="summary-label">Other Action Count</div>
+                <div className="summary-value">{pipelineData.summary?.other_action_count ?? 0}</div>
+                <div className="summary-sub sub-amber">Non-auto-heal outcomes</div>
+              </div>
+              <div className="summary-card">
+                <div className="summary-label">SLA Breached</div>
+                <div className="summary-value">{pipelineData.summary?.sla_breached_count ?? 0}</div>
+                <div className="summary-sub sub-red">{pipelineData.summary?.sla_status ?? 'N/A'}</div>
+              </div>
+            </>
+          ) : selectedAgent !== 'rca' && selectedAgent !== 'decision' && (
             <>
               <div className="summary-card">
                 <div className="summary-label">Events Logged</div>
