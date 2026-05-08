@@ -9,6 +9,7 @@ import StuckWorkflows from "./pages/StuckWorkflows";
 import TopNav from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
 import LogsPage from "./components/Pipeline/LogsPage";
+import PipelineRunsMonitor from "./pages/PipelineRunsMonitor";
 import useAgentStore from "./stores/useAgentStore";
 
 function App() {
@@ -32,11 +33,12 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/pipelines" element={<Pipelines />} />
+            <Route path="/pipelines" element={<Pipelines open={menuOpen} />} />
             <Route path="/governance-dashboard" element={<Maincard />} />
             <Route path="/pipeline-history" element={<PipelineHistory />} />
             <Route path="/stuck-workflows" element={<StuckWorkflows />} />
             <Route path="/logs" element={<LogsPage />} />
+            <Route path="/pipeline-runs" element={<PipelineRunsMonitor />} />
           </Routes>
           </main> 
         </Router>
