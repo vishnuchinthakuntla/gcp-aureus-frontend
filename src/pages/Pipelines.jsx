@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import PipelinesTable from "../components/Pipeline/PipelinesTable";
 import "../App.css";
 
-const Pipelines = () => {
+const Pipelines = ({open}) => {
 
   return (
     <>
-        <PipelinesTable />
+        <PipelinesTable open={open}/>
     </>
   );
 };

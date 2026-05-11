@@ -37,6 +37,23 @@ export default function PipelinesTable() {
     }
   };
 
+  const loadGCPPipelines = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/pipelines/fetch-and-sync-gcp", {
+        method: "POST",
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      toast.success("Pipelines synced from GCP ✅");
+      loadPipelines();
+    } catch (err) {
+      console.error("Fetch error:", err);
+      toast.error("Failed to load pipelines ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getStatus = (pl) => {
     if (pl.full_kill_switch === 1) return "killed";
     if (pl.agent_kill_switch && pl.agent_kill_switch !== "none")
@@ -212,143 +229,150 @@ export default function PipelinesTable() {
   };
 
   return (
-    <div className="pipeline-container">
-      <div className="pipeline-header">
-        <div className="left">
-          <span className="bar"></span>
-          <span className="title">ACTIVE PIPELINES</span>
+    <>
+      <div className="pipeline-container">
+        <div className="pipeline-header">
+          <div className="left">
+            <span className="bar"></span>
+            <span className="title">ACTIVE PIPELINES</span>
+          </div>
+
+          <button className="run-all-btn" onClick={handleRunAll}>
+            ▶▶ Run All
+          </button>
         </div>
 
-        <button className="run-all-btn" onClick={handleRunAll}>
-          ▶▶ Run All
-        </button>
-      </div>
-
-      <div style={{ display: "flex", gap: "20px" }}>
-        <div style={{ width: "100%" }}>
-          <table className="pipeline-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>NAME</th>
-                <th>STATUS</th>
-                <th>AGENT</th>
-                <th>ACTIONS</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {loading ? (
+        <div style={{ display: "flex", gap: "20px" }}>
+          <div style={{ width: "100%" }}>
+            <table className="pipeline-table">
+              <thead>
                 <tr>
-                  <td colSpan="5">
-                    <div className="loader-container">
-                      <div className="spinner"></div>
-                    </div>
-                  </td>
+                  <th>ID</th>
+                  <th>PIPELINE NAME</th>
+                  <th>STATUS</th>
+                  <th>AGENT</th>
+                  <th>ACTIONS</th>
                 </tr>
-              ) : pipelines.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="no-data">
-                    No pipelines available
-                  </td>
-                </tr>
-              ) : (
-                pipelines.map((pl) => {
-                  const status = getStatus(pl);
-                  const isKilled = status === "killed";
+              </thead>
 
-                  return (
-                    <tr key={pl.pipeline_id}>
-                      <td className="id">{pl.pipeline_id}</td>
-                      <td className="name">{pl.pipeline_name}</td>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan="5" style={{ textAlign: "center" }}>
+                      <div className="loader-container">
+                        <div className="spinner"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ) : pipelines.length === 0 ? (
+                  <tr>
+                    <td className="no-data">
+                      No pipelines available
+                    </td>
+                  </tr>
+                ) : (
+                  pipelines.map((pl) => {
+                    const status = getStatus(pl);
+                    const isKilled = status === "killed";
 
-                      <td className={`status-${status}`}>
-                        {status === "active" && "🟢 Active"}
-                        {status === "paused" && "🟡 Agent Stop"}
-                        {status === "killed" && "🔴 Killed"}
-                      </td>
+                    return (
+                      <tr key={pl.pipeline_id}>
+                        <td className="id">{pl.pipeline_id}</td>
+                        <td className="name">{pl.pipeline_name}</td>
 
-                      <td>{isKilled ? "-" : pl.agent_kill_switch || "none"}</td>
+                        <td className={`status-${status}`}>
+                          {status === "active" && "🟢 Active"}
+                          {status === "paused" && "🟡 Agent Stop"}
+                          {status === "killed" && "🔴 Killed"}
+                        </td>
 
-                      <td>
-                        {!isKilled && (
-                          <>
-                            <button
-                              className="run-btn"
-                              disabled={runningPipelines[pl.pipeline_name]}
-                              onClick={() => handleRun(pl.pipeline_name)}
-                            >
-                              {runningPipelines[pl.pipeline_name]
-                                ? "Running..."
-                                : "▶ Run"}
-                            </button>
+                        <td>{isKilled ? "-" : pl.agent_kill_switch || "none"}</td>
 
-                            {/* ✅ ALWAYS SHOW STOP BUTTON */}
-                            <button
-                              className="stop-btn"
-                              onClick={() =>
-                                handleStop(pl.job_id, pl.pipeline_name)
-                              }
-                            >
-                              🛑 Stop
-                            </button>
-                          </>
-                        )}
-
-                        {isKilled ? (
-                          <button
-                            className="unkill-btn"
-                            onClick={() => handleUnkill(pl.pipeline_name)}
-                          >
-                            ↩ Re-enable
-                          </button>
-                        ) : (
-                          <button
-                            className="kill-btn"
-                            onClick={() => handleKill(pl.pipeline_name)}
-                          >
-                            🔴 Kill
-                          </button>
-                        )}
-
-                        {!isKilled && (
-                          <>
-                            <select
-                              className="agent-select"
-                              value={pl.agent_kill_switch || "none"}
-                              onChange={(e) =>
-                                handleSetAgent(pl.pipeline_name, e.target.value)
-                              }
-                            >
-                              {AGENTS.map((a) => (
-                                <option key={a} value={a}>
-                                  {a}
-                                </option>
-                              ))}
-                            </select>
-
-                            {pl.job_id && (
+                        <td>
+                          {!isKilled && (
+                            <>
                               <button
-                                className="logs-btn"
-                                disabled={loadingLogs[pl.pipeline_name]}
-                                onClick={() => handleLogsClick(pl)}
+                                className="run-btn"
+                                disabled={runningPipelines[pl.pipeline_name]}
+                                onClick={() => handleRun(pl.pipeline_name)}
                               >
-                                {loadingLogs[pl.pipeline_name]
-                                  ? "Opening..."
-                                  : "📄 Logs"}
+                                {runningPipelines[pl.pipeline_name]
+                                  ? "Running..."
+                                  : "▶ Run"}
                               </button>
-                            )}
-                          </>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+
+                              {/* ✅ ALWAYS SHOW STOP BUTTON */}
+                              <button
+                                className="stop-btn"
+                                onClick={() =>
+                                  handleStop(pl.job_id, pl.pipeline_name)
+                                }
+                              >
+                                🛑 Stop
+                              </button>
+                            </>
+                          )}
+
+                          {isKilled ? (
+                            <button
+                              className="unkill-btn"
+                              onClick={() => handleUnkill(pl.pipeline_name)}
+                            >
+                              ↩ Re-enable
+                            </button>
+                          ) : (
+                            <button
+                              className="kill-btn"
+                              onClick={() => handleKill(pl.pipeline_name)}
+                            >
+                              🔴 Kill
+                            </button>
+                          )}
+
+                          {!isKilled && (
+                            <>
+                              <select
+                                className="agent-select"
+                                value={pl.agent_kill_switch || "none"}
+                                onChange={(e) =>
+                                  handleSetAgent(pl.pipeline_name, e.target.value)
+                                }
+                              >
+                                {AGENTS.map((a) => (
+                                  <option key={a} value={a}>
+                                    {a}
+                                  </option>
+                                ))}
+                              </select>
+
+                              {pl.job_id && (
+                                <button
+                                  className="logs-btn"
+                                  disabled={loadingLogs[pl.pipeline_name]}
+                                  onClick={() => handleLogsClick(pl)}
+                                >
+                                  {loadingLogs[pl.pipeline_name]
+                                    ? "Opening..."
+                                    : "📄 Logs"}
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
+      {pipelines.length === 0 && !loading && (
+        <button onClick={loadGCPPipelines} className={`load-pl-btn ${open ? "shifted" : ""}`}>
+          Load Pipelines from GCP
+        </button>
+      )}
+    </>
   );
 }
