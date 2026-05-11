@@ -211,3 +211,14 @@
   animation: pulse 1.8s infinite;
 }
 
+.kg-offline{
+  color: var(--red);
+  background: rgba(239, 68, 68, 0.09);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+}
+.kg-online{
+  color: var(--green);
+  background: rgba(4, 120, 87, 0.09);
+  border: 1px solid rgba(4, 120, 87, 0.22);
+}
+

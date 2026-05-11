@@ -37,14 +37,14 @@ const StatBox = ({ value, label, color }) => (
 
 /* ── Transform store data → component shape ── */
 
-function buildTicketBadges(tickets) {
+function buildTicketBadges(tickets, pipelines) {
     return [
         { label: 'P1', count: tickets.P1 ?? 0 },
         { label: 'P2', count: tickets.P2 ?? 0 },
         { label: 'P3', count: tickets.P3 ?? 0 },
         { label: 'P4', count: tickets.P4 ?? 0 },
-        { label: 'SLA Breach', count: tickets.sla_breach_count ?? 0 },
-        { label: 'Human', count: tickets.human_intervention_count ?? 0 },
+        { label: 'SLA Breach', count: pipelines.sla_breach_count ?? 0 },
+        { label: 'Human', count: pipelines.human_intervention_count ?? 0 },
     ]
 }
 
@@ -54,7 +54,7 @@ function PipelinesBar() {
     const pipeline = useAgentStore(s => s.header.pipeline)
     const info = useAgentStore(s => s.header.info)
 
-    const ticketBadges = buildTicketBadges(tickets)
+    const ticketBadges = buildTicketBadges(tickets, pipeline)
 
     return (
         <>
@@ -78,7 +78,7 @@ function PipelinesBar() {
                         <div className="ph-pl-sep"></div>
                         <div className="ph-pl-cards">
                             <div className="ph-pl-card ph-pl-done">
-                                <div className="ph-pl-val">{pipeline.total}</div>
+                                <div className="ph-pl-val">{pipeline.completed || '0'}</div>
                                 <div className="ph-pl-lbl">COMPLETED</div>
                             </div>
                             <div className="ph-pl-sep"></div>

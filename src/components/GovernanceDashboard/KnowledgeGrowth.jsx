@@ -160,8 +160,8 @@ export default function KnowledgeGrowth() {
 
               <div className="kg-milestone-footer">
                 <span className="kg-feedback-label">Feedback loop</span>
-                <span className="kg-active-badge">
-                  <span className="kg-active-dot"></span>{knowledgeGrowthData?.milestoneProgress?.feedbackLoop}
+                <span className={`kg-active-badge ${knowledgeGrowthData?.milestoneProgress?.feedbackLoopStatus.toLowerCase() === "online" ? "kg-online" : "kg-offline"}`}>
+                  <span className="kg-active-dot"></span>{knowledgeGrowthData?.milestoneProgress?.feedbackLoopStatus}
                 </span>
               </div>
 

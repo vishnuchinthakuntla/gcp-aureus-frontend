@@ -14,7 +14,6 @@ const Dashboard = () => {
   const selectedAgent = useAgentStore(s => s.selectedAgent)
   const selectedTicket = useAgentStore(s => s.selectedTicket)
   const agents = useAgentStore(s => s.agents)
-
   const agent = agents.find(a => a.id === selectedAgent)
 
   return (
