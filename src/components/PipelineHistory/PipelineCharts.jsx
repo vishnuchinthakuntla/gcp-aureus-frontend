@@ -382,11 +382,11 @@ const PipelineCharts = ({ pipelineData, selectedAgent, loading }) => {
                 <div className="summary-value">{agentSummary.totalLogs}</div>
                 <div className="summary-sub sub-amber">{agentSummary.errorLogs} errors</div>
               </div>
-              <div className="summary-card">
+              {/* <div className="summary-card">
                 <div className="summary-label">Avg LLM Prompt</div>
                 <div className="summary-value">{agentSummary.avgPrompt ?? 'N/A'}</div>
                 <div className="summary-sub sub-gray">{llmSub || 'Not applicable'}</div>
-              </div>
+              </div> */}
               <div className="summary-card">
                 <div className="summary-label">Status</div>
                 <div className="summary-value summary-value-sm">Active</div>

@@ -97,7 +97,7 @@ export default function Sidebar({ open }) {
         onClick={() => navigate("/pipelines")}
       >
         <span className="icon">🚀</span>
-        Pipelines
+        Pipeline Actions
       </button>
       <button
         className={location.pathname === "/pipeline-history" ? "active" : ""}
