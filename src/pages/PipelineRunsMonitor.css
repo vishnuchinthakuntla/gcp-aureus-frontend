@@ -13,6 +13,30 @@
     --muted: #7a90ab;
     --mono: 'Space Mono', monospace;
     --sans: 'DM Sans', sans-serif;
+      --observer: #2563eb;
+  --observer-lt: #eef4ff;
+  --observer-glow: rgba(37, 99, 235, 0.18);
+  --observer-grad: linear-gradient(140deg, #eef4ff 0%, #fafcff 100%);
+  --rca: #b45309;
+  --rca-lt: #fff8e6;
+  --rca-glow: rgba(180, 83, 9, 0.18);
+  --rca-grad: linear-gradient(140deg, #fff8e6 0%, #fffdf5 100%);
+  --decision: #6d28d9;
+  --decision-lt: #f4f0ff;
+  --decision-glow: rgba(109, 40, 217, 0.18);
+  --decision-grad: linear-gradient(140deg, #f4f0ff 0%, #fafafe 100%);
+  --healing: #047857;
+  --healing-lt: #eefbf5;
+  --healing-glow: rgba(4, 120, 87, 0.18);
+  --healing-grad: linear-gradient(140deg, #eefbf5 0%, #f6fdf9 100%);
+  --quality: #0776a4;
+  --quality-lt: #e8f7fc;
+  --quality-glow: rgba(7, 118, 164, 0.18);
+  --quality-grad: linear-gradient(140deg, #e8f7fc 0%, #f4fbfe 100%);
+  --governance: #c41e3a;
+  --governance-lt: #fff0f3;
+  --governance-glow: rgba(196, 30, 58, 0.18);
+  --governance-grad: linear-gradient(140deg, #fff0f3 0%, #fff7f8 100%);
 }
 
 .filters {
@@ -186,19 +210,20 @@ select.fi {
 }
 
 table {
-    width: 100%;
     border-collapse: collapse;
+    overflow: auto;
+    min-width: 100%;
 }
 
 table thead tr {
     background: linear-gradient(90deg, #1e3a8a 0%, #1d4ed8 60%, #2563eb 100%);
     border-bottom: 1px solid rgba(59, 130, 246, 0.25);
-}
-
-thead th {
     position: sticky;
     top: 0;
     z-index: 10;
+}
+
+thead th {
     padding: 10px 14px;
     font-size: 13px;
     font-weight: 700;
@@ -236,6 +261,11 @@ tbody tr {
     border-bottom: 1px solid rgba(220, 228, 240, 0.6);
     transition: background .12s;
     animation: rowIn .25s ease both;
+    color: #222;
+}
+
+table :is(td:first-child, td:nth-child(2), td:nth-child(3)) {
+    width: 150px;
 }
 
 @keyframes rowIn {
@@ -260,7 +290,7 @@ tbody tr:last-child {
 
 tbody td {
     padding: 15px 18px;
-    font-size: 14px;
+    font-size: 12px;
     vertical-align: middle;
 }
 
@@ -286,6 +316,73 @@ tbody td {
 
 .msg-warning {
     color: var(--warning);
+}
+
+/* ─── Agent Badges ─── */
+.agent-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    line-height: 1.4;
+    width: 100px;
+}
+
+.agent-badge--observer {
+    background: var(--observer-lt);
+    color: var(--observer);
+    border: 1px solid var(--observer-glow);
+}
+
+.agent-badge--rca {
+    background: var(--rca-lt);
+    color: var(--rca);
+    border: 1px solid var(--rca-glow);
+}
+
+.agent-badge--decision {
+    background: var(--decision-lt);
+    color: var(--decision);
+    border: 1px solid var(--decision-glow);
+}
+
+.agent-badge--healing {
+    background: var(--healing-lt);
+    color: var(--healing);
+    border: 1px solid var(--healing-glow);
+}
+
+.agent-badge--quality {
+    background: var(--quality-lt);
+    color: var(--quality);
+    border: 1px solid var(--quality-glow);
+}
+
+.agent-badge--system {
+    background: #eef1f6;
+    color: #475569;
+    border: 1px solid rgba(71, 85, 105, 0.2);
+}
+
+.agent-badge--audit {
+    background: var(--governance-lt);
+    color: var(--governance);
+    border: 1px solid var(--governance-glow);
+}
+
+.agent-badge--join {
+    background: #e0f7f5;
+    color: #0d9488;
+    border: 1px solid rgba(13, 148, 136, 0.2);
+}
+
+.agent-badge--selfservice {
+    background: rgba(161, 69, 114, 0.12);
+    color: #a14572;
+    border: 1px solid rgba(161, 69, 114, 0.2);
 }
 
 .msg-info {

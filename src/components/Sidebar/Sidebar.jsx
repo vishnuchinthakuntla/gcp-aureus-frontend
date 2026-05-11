@@ -88,6 +88,13 @@ export default function Sidebar({ open }) {
   <span className="icon">🛡️</span>
   Governance
 </button>
+      <button
+        className={location.pathname === "/pipeline-monitor" ? "active" : ""}
+        onClick={() => navigate("/pipeline-monitor")}
+      >
+        <span className="icon">🖥️</span>
+        Pipeline Monitoring
+      </button>
 
       <div className="sidebar-section">Admin</div>
 

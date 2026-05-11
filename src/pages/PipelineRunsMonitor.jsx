@@ -1,53 +1,83 @@
 import React, { useState, useEffect } from 'react'
 import './PipelineRunsMonitor.css'
 
+const AGENT_BADGE = {
+  Observer:    { label: 'Observer',      cls: 'agent-badge--observer' },
+  RCA:         { label: 'RCA',           cls: 'agent-badge--rca' },
+  Decision:    { label: 'Decision',      cls: 'agent-badge--decision' },
+  SelfHealing: { label: 'Self-Healing',  cls: 'agent-badge--healing' },
+  DataQuality: { label: 'Data Quality',  cls: 'agent-badge--quality' },
+  system: { label: 'System', cls: 'agent-badge--system' },
+  audit:  { label: 'Audit', cls: 'agent-badge--audit' },
+  join:  { label: 'Join', cls: 'agent-badge--join' },
+  "Self-Service":  { label: 'Self-Service', cls: 'agent-badge--selfservice' }
+}
+
 const PipelineRunsMonitor = () => {
   const [dateFrom, setDateFrom] = useState('2026-04-18')
   const [dateTo, setDateTo] = useState('2026-04-20')
   const [searchValue, setSearchValue] = useState('')
   const [pipeline, setPipeline] = useState('')
   const [liveEnabled, setLiveEnabled] = useState(true)
-  const [pipelineOptions] = useState([])
+  const [agent, setAgent] = useState('')
+  const [pipelineOptions, setPipelineOptions] = useState([])
   const [rows, setRows] = useState([])
-  const [sortField, setSortField] = useState('date')
-  const [sortDir, setSortDir] = useState('desc')
   const [currentPage, setCurrentPage] = useState(1)
   const rowsPerPage = 10
 
+  const fetchPipelineRuns = async (search = '') => {
+    const queryParams = new URLSearchParams();
+    queryParams.append('start_date', dateFrom);
+    queryParams.append('end_date', dateTo);
+    queryParams.append('pipeline_name', pipeline);
+    queryParams.append('agent', agent)
+    if (search) queryParams.append('search', search);
+    const url = `/api/pipelines/monitoring?${queryParams.toString()}`
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await response.json()
+    setRows(data.logs)
+  }
+
   useEffect(() => {
-    const fetchPipelineRuns = async () => {
-      const url = `/api/pipelines/runs?from=${dateFrom}&to=${dateTo}&pipeline=${pipeline}`
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await response.json()
-      setRows(data.items)
-    }
     fetchPipelineRuns()
   }, [dateFrom, dateTo, pipeline])
 
-  const handleSort = (field) => {
-    if (sortField === field) {
-      setSortDir((prev) => (prev === 'desc' ? 'asc' : 'desc'))
-    } else {
-      setSortField(field)
-      setSortDir('desc')
-    }
-  }
+  useEffect(() => {
+    loadPipelines();
+  }, []);
+
 
   // Reset to page 1 when rows change
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [rows])
+  // useEffect(() => {
+  //   setCurrentPage(1)
+  // }, [rows])
 
-  const totalPages = Math.ceil(rows.length / rowsPerPage)
-  const paginatedRows = rows.slice(
+  const totalPages = Math.ceil(rows?.length / rowsPerPage)
+  const paginatedRows = rows?.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   )
+
+  const loadPipelines = async () => {
+    try {
+      const res = await fetch("/api/pipelines_schedule");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const data = await res.json();
+      if (!data) {
+        setTimeout(() => loadPipelines(), 1500)
+        return
+      }
+      setPipelineOptions(data.items || []);
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+  };
 
   const getPageNumbers = () => {
     const pages = []
@@ -103,7 +133,7 @@ const PipelineRunsMonitor = () => {
 
         <div className="filter-group">
           <div className="filter-label">Agent</div>
-          <select className="fi" id="agentFilter">
+          <select className="fi" id="agentFilter" onChange={(e) => setAgent(e.target.value)}>
             <option value="">All Agents</option>
             <option value="observer">Observer</option>
             <option value="rca">RCA</option>
@@ -127,6 +157,9 @@ const PipelineRunsMonitor = () => {
               placeholder="Search by name, ID or trigger..."
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') fetchPipelineRuns(searchValue)
+              }}
             />
           </div>
         </div>
@@ -155,36 +188,40 @@ const PipelineRunsMonitor = () => {
           <table>
             <thead>
               <tr>
-                <th className="sortable" onClick={() => handleSort('date')}>
+                <th className="sortable">
                   Date
-                  <div className={`sort-icon ${sortField === 'date' ? sortDir : ''}`}>
+                  {/* <div className={`sort-icon ${sortField === 'date' ? sortDir : ''}`}>
                     <span className="up">▲</span>
                     <span className="down">▼</span>
-                  </div>
+                  </div> */}
                 </th>
-                <th className="sortable" onClick={() => handleSort('pipeline')}>
+                <th className="sortable">
                   Pipeline Name
-                  <div className={`sort-icon ${sortField === 'pipeline' ? sortDir : ''}`}>
+                  {/* <div className={`sort-icon ${sortField === 'pipeline' ? sortDir : ''}`}>
                     <span className="up">▲</span>
                     <span className="down">▼</span>
-                  </div>
+                  </div> */}
                 </th>
-                <th className="sortable" onClick={() => handleSort('agent')}>
+                <th className="sortable">
                   Agent
-                  <div className={`sort-icon ${sortField === 'agent' ? sortDir : ''}`}>
+                  {/* <div className={`sort-icon ${sortField === 'agent' ? sortDir : ''}`}>
                     <span className="up">▲</span>
                     <span className="down">▼</span>
-                  </div>
+                  </div> */}
                 </th>
                 <th>Message</th>
               </tr>
             </thead>
             <tbody id="tableBody">
-              {paginatedRows.map((row, idx) => (
+              {paginatedRows?.map((row, idx) => (
                 <tr key={row.id ?? idx}>
                   <td>{row.date}</td>
-                  <td>{row.name}</td>
-                  <td>{row.agent}</td>
+                  <td>{row.pipeline.toString()}</td>
+                  <td>
+                    <span className={`agent-badge ${AGENT_BADGE[row.agent]?.cls}`}>
+                      {AGENT_BADGE[row.agent]?.label}
+                    </span>
+                  </td>
                   <td>{row.message}</td>
                 </tr>
               ))}

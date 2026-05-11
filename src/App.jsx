@@ -38,7 +38,7 @@ function App() {
             <Route path="/pipeline-history" element={<PipelineHistory />} />
             <Route path="/stuck-workflows" element={<StuckWorkflows />} />
             <Route path="/logs" element={<LogsPage />} />
-            <Route path="/pipeline-runs" element={<PipelineRunsMonitor />} />
+            <Route path="/pipeline-monitor" element={<PipelineRunsMonitor />} />
           </Routes>
           </main> 
         </Router>
