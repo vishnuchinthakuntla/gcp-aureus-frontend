@@ -190,7 +190,10 @@ const useAgentStore = create((set, get) => ({
 
   fetchAgents: async () => {
     const data = await safeFetch("/api/agents", null);
-    if (!data) return;
+    if (!data) {
+      setTimeout(() => get().fetchAgents(), 1500)
+      return
+    }
 
     if (data?.agents && Array.isArray(data.agents)) {
       data.items = arrayToAgentMap(data.agents);
@@ -280,7 +283,10 @@ const useAgentStore = create((set, get) => ({
 
   fetchHeaderCounts: async () => {
     const headerData = await safeFetch("/api/header", INITIAL_HEADER);
-    if (!headerData) return;
+    if (!headerData) {
+      setTimeout(() => get().fetchHeaderCounts(), 1500)
+      return
+    }
 
     set((s) => ({
       header: {
@@ -305,6 +311,9 @@ const useAgentStore = create((set, get) => ({
             ticketsData: ticketsRes?.items || [],
           },
         }));
+      } else {
+        setTimeout(() => get().fetchTicketsTable(), 1500)
+        return
       }
     } finally {
       set({ _ticketsLoading: false });
@@ -313,7 +322,9 @@ const useAgentStore = create((set, get) => ({
 
   fetchGovernanceDashboard: async () => {
     const data = await safeFetch("/api/governance/v2/dashboard", {});
-    if (!data) return;
+    if (!data) {
+      setTimeout(() => get().fetchGovernanceDashboard(), 1500)
+    }
     set({ governanceDashData: data });
   },
 
@@ -352,8 +363,8 @@ const useAgentStore = create((set, get) => ({
           ws.send("pong");
           return;
         }
-        if (ev.data === "pong") return; 
-        
+        if (ev.data === "pong") return;
+
         const msg = JSON.parse(ev.data);
         const { type, data } = msg;
 
@@ -433,21 +444,18 @@ const useAgentStore = create((set, get) => ({
     console.log("🔥 INIT RUNNING");
     set({ _initialized: true });
 
-    // 1. Critical path: WS and Agents
+    // 1. Fetch all dashboard data first
     Promise.all([
-      get().connectWs(),
-      get().fetchAgents()
-    ]).catch(err => console.error("❌ Critical init failed", err));
-
-    // 2. Secondary path: Dash data (slightly delayed to prevent server burst)
-    setTimeout(() => {
-      Promise.all([
-        get().fetchHeaderCounts(),
-        get().fetchTicketsTable()
-      ]).catch(err => console.error("❌ Secondary init failed", err));
-
-      if (get().selectedAgent) get().fetchPanel();
-    }, 300); 
+      get().fetchAgents(),
+      get().fetchHeaderCounts(),
+      get().fetchTicketsTable(),
+    ])
+      .catch(err => console.error("❌ Dashboard init failed", err))
+      .finally(() => {
+        // 2. Connect WS after data fetches settle (succeed or fail)
+        get().connectWs();
+        if (get().selectedAgent) get().fetchPanel();
+      });
   },
 
   destroy: () => {

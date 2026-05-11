@@ -11,39 +11,7 @@ export default function GovernancePage() {
   const fetchGovernanceDashboard = useAgentStore((s) => s.fetchGovernanceDashboard);
 
   useEffect(() => {
-    let isMounted = true; // Prevents memory leaks if the user navigates away
-    let timeoutId;
-
-    const pollForData = async () => {
-      if (!isMounted) return;
-
-      try {
-        await fetchGovernanceDashboard();
-
-        const currentData = useAgentStore.getState().governanceDashData;
-        
-        // If data is ready, stop polling
-        if (currentData && currentData.activeTickets) {
-           console.log("Data successfully loaded!");
-           return; 
-        }
-      } catch (error) {
-         console.warn("Governance data fetch failed:", error);
-      }
-
-      // 🔄 Retry after 3 seconds (less aggressive than 2s)
-      if (isMounted) {
-        timeoutId = setTimeout(pollForData, 3000); 
-      }
-    };
-
-    pollForData();
-
-    // Cleanup function: clears the timeout if the component is destroyed
-    return () => {
-      isMounted = false;
-      clearTimeout(timeoutId);
-    };
+    fetchGovernanceDashboard()
   }, []); 
 
   return (
