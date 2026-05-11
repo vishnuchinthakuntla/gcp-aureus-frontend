@@ -377,10 +377,10 @@ const useAgentStore = create((set, get) => ({
             set((s) => ({
               header: {
                 ...s.header,
-                pipeline: data.pipeline || s.header.pipeline,
-                tickets: data.tickets || s.header.tickets,
+                pipeline: { ...s.header.pipeline, ...(data.pipeline || {}) },
+                tickets: { ...s.header.tickets, ...(data.tickets || {}) },
                 ticketsData: data.items || s.header.ticketsData,
-                info: data.info || s.header.info,
+                info: { ...s.header.info, ...(data.info || {}) },
               },
             }));
           }

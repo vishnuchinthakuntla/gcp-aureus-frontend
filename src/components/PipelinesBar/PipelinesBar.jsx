@@ -56,6 +56,8 @@ function PipelinesBar() {
 
     const ticketBadges = buildTicketBadges(tickets, pipeline)
 
+    console.log('pipeline', pipeline)
+
     return (
         <>
             {/* tickets + pipeline bar */}
@@ -78,7 +80,7 @@ function PipelinesBar() {
                         <div className="ph-pl-sep"></div>
                         <div className="ph-pl-cards">
                             <div className="ph-pl-card ph-pl-done">
-                                <div className="ph-pl-val">{pipeline.completed || '0'}</div>
+                                <div className="ph-pl-val">{pipeline.completed ?? 0}</div>
                                 <div className="ph-pl-lbl">COMPLETED</div>
                             </div>
                             <div className="ph-pl-sep"></div>
