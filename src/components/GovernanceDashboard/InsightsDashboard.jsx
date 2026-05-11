@@ -47,7 +47,8 @@ export default function InsightsDashboard() {
     yAxis: {
       title: { text: null },
       min: 0,
-      tickInterval: 2,
+      // tickInterval: 2,
+      tickAmount: 5,
       // gridLineColor: '#e2e8f0',
       lineColor: '#e2e8f0',
       lineWidth: 1,

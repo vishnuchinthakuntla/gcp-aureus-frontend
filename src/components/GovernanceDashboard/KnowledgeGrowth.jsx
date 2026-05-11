@@ -23,6 +23,12 @@ export default function KnowledgeGrowth() {
     chart: {
       type: 'area',
       height: '200px',
+      events: {
+        render() {
+          const fraction = 0.2;
+          this.xAxis[0].update({ minPadding: fraction, maxPadding: fraction }, false);
+        }
+      }
     },
     title: {
       text: null,
@@ -33,6 +39,8 @@ export default function KnowledgeGrowth() {
       categories: knowledgeGrowthData?.timelineData?.map(item => item.weekLabel),
       tickStart: 0,
       tickInterval: 1,
+      minPadding: 0.1,
+      maxPadding: 0.1
     },
     yAxis: [
       {
@@ -40,7 +48,8 @@ export default function KnowledgeGrowth() {
         // min: 170,
         // max: 220,
         // tickStart: 170,
-        tickInterval: 10,
+        // tickInterval: 10,
+        tickAmount: 5,
         gridLineWidth: 1,
         gridLineColor: '#e8edf5',
       },
@@ -50,7 +59,8 @@ export default function KnowledgeGrowth() {
         labels: { format: '{value}%' },
         // min: 45,
         // max: 65,
-        tickInterval: 5,
+        tickAmount: 5,
+        // tickInterval: 5,
       },
     ],
     legend: {
@@ -78,6 +88,7 @@ export default function KnowledgeGrowth() {
         data: knowledgeGrowthData?.timelineData?.map(item => item.diagnosticRules),
         color: '#3B82F6',
         fillColor: 'rgba(59, 130, 246, 0.1)',
+        pointPlacement: 'on'
       },
       {
         name: 'Auto-resolve %',
@@ -87,6 +98,7 @@ export default function KnowledgeGrowth() {
         color: '#F97316',
         yAxis: 1,               // maps to the right-side axis
         marker: { radius: 3 },  
+        pointPlacement: 'on'
       },
     ],
   };
@@ -160,7 +172,7 @@ export default function KnowledgeGrowth() {
 
               <div className="kg-milestone-footer">
                 <span className="kg-feedback-label">Feedback loop</span>
-                <span className={`kg-active-badge ${knowledgeGrowthData?.milestoneProgress?.feedbackLoopStatus.toLowerCase() === "online" ? "kg-online" : "kg-offline"}`}>
+                <span className={`kg-active-badge ${knowledgeGrowthData?.milestoneProgress?.feedbackLoopStatus.toLowerCase() === "active" ? "kg-online" : "kg-offline"}`}>
                   <span className="kg-active-dot"></span>{knowledgeGrowthData?.milestoneProgress?.feedbackLoopStatus}
                 </span>
               </div>
