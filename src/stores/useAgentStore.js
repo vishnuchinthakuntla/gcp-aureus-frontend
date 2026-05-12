@@ -188,11 +188,13 @@ const useAgentStore = create((set, get) => ({
 
   // ── Agent Cards ───────────────────────────────────────────────────────────
 
+  delay: (ms = 3000) => new Promise((resolve) => setTimeout(resolve, ms)),
+
   fetchAgents: async () => {
     const data = await safeFetch("/api/agents", null);
     if (!data) {
-      setTimeout(() => get().fetchAgents(), 1500)
-      return
+      await get().delay();
+      return get().fetchAgents();
     }
 
     if (data?.agents && Array.isArray(data.agents)) {
@@ -200,7 +202,10 @@ const useAgentStore = create((set, get) => ({
     }
 
     const merged = mergeAgents(data);
-    if (merged) set({ agents: merged });
+    if (merged) {
+      set({ agents: merged });
+      return merged;
+    }
   },
 
   // ── Agent Panel (Kanban) — single call ────────────────────────────────────
@@ -282,10 +287,10 @@ const useAgentStore = create((set, get) => ({
   },
 
   fetchHeaderCounts: async () => {
-    const headerData = await safeFetch("/api/header", INITIAL_HEADER);
+    const headerData = await safeFetch("/api/header", null);
     if (!headerData) {
-      setTimeout(() => get().fetchHeaderCounts(), 1500)
-      return
+      await get().delay();
+      return get().fetchHeaderCounts();
     }
 
     set((s) => ({
@@ -296,24 +301,25 @@ const useAgentStore = create((set, get) => ({
         info: headerData.info,
       },
     }));
+    return headerData;
   },
 
   fetchTicketsTable: async () => {
-    if (get()._ticketsLoading) return;
+    // if (get()._ticketsLoading) return;
     set({ _ticketsLoading: true });
 
     try {
-      const ticketsRes = await safeFetch("/api/tickets", {});
-      if (ticketsRes) {
+      const ticketsRes = await safeFetch("/api/tickets", null);
+      if (!ticketsRes) {
+        await get().delay();
+        return get().fetchTicketsTable();
+      } else {
         set((s) => ({
           header: {
             ...get().header,
             ticketsData: ticketsRes?.items || [],
           },
         }));
-      } else {
-        setTimeout(() => get().fetchTicketsTable(), 1500)
-        return
       }
     } finally {
       set({ _ticketsLoading: false });
@@ -321,11 +327,13 @@ const useAgentStore = create((set, get) => ({
   },
 
   fetchGovernanceDashboard: async () => {
-    const data = await safeFetch("/api/governance/v2/dashboard", {});
+    const data = await safeFetch("/api/governance/v2/dashboard", null);
     if (!data) {
-      setTimeout(() => get().fetchGovernanceDashboard(), 1500)
+      await get().delay();
+      return get().fetchGovernanceDashboard();
     }
     set({ governanceDashData: data });
+    return data;
   },
 
   // ── WebSocket ─────────────────────────────────────────────────────────────

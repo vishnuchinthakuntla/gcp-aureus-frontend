@@ -1,5 +1,55 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './PipelineRunsMonitor.css'
+
+const CustomSelect = ({ options, value, onChange, placeholder, id }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const selectedOption = options.find(opt => opt.value === value);
+
+  return (
+    <div className="custom-dropdown" ref={dropdownRef} id={id}>
+      <div 
+        className={`fi dropdown-header ${isOpen ? 'open' : ''}`} 
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span>{selectedOption ? selectedOption.label : placeholder}</span>
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
+      {isOpen && (
+        <div className="dropdown-list">
+          <div 
+            className={`dropdown-item ${value === "" ? 'selected' : ''}`}
+            onClick={() => { onChange(""); setIsOpen(false); }}
+          >
+            {placeholder}
+          </div>
+          {options.map((opt) => (
+            <div 
+              key={opt.value}
+              className={`dropdown-item ${value === opt.value ? 'selected' : ''}`}
+              onClick={() => { onChange(opt.value); setIsOpen(false); }}
+            >
+              {opt.label}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const AGENT_BADGE = {
   Observer:    { label: 'Observer',      cls: 'agent-badge--observer' },
@@ -39,17 +89,21 @@ const PipelineRunsMonitor = () => {
         'Content-Type': 'application/json',
       },
     });
+    if(!response.ok) {
+      return
+    }
     const data = await response.json()
-    setRows(data.logs)
+    setRows(data.logs || [])
+    setPipelineOptions(data.pipelines || [])
   }
 
   useEffect(() => {
     fetchPipelineRuns()
   }, [dateFrom, dateTo, pipeline])
 
-  useEffect(() => {
-    loadPipelines();
-  }, []);
+  // useEffect(() => {
+  //   loadPipelines();
+  // }, []);
 
 
   // Reset to page 1 when rows change
@@ -73,7 +127,7 @@ const PipelineRunsMonitor = () => {
         setTimeout(() => loadPipelines(), 1500)
         return
       }
-      setPipelineOptions(data.items || []);
+      setPipelineOptions(data.items.map(p => p.pipeline_name) || []);
     } catch (err) {
       console.error("Fetch error:", err);
     }
@@ -123,24 +177,30 @@ const PipelineRunsMonitor = () => {
 
         <div className="filter-group">
           <div className="filter-label">Pipeline</div>
-          <select className="fi" id="pipeFilter" onChange={(e) => setPipeline(e.target.value)}>
-            <option value="">All Pipelines</option>
-            {pipelineOptions.map((p) => (
-              <option key={p.value} value={p.value}>{p.label}</option>
-            ))}
-          </select>
+          <CustomSelect
+            id="pipeFilter"
+            value={pipeline}
+            onChange={(val) => setPipeline(val)}
+            placeholder="All Pipelines"
+            options={pipelineOptions.map(p => ({ label: p, value: p }))}
+          />
         </div>
 
         <div className="filter-group">
           <div className="filter-label">Agent</div>
-          <select className="fi" id="agentFilter" onChange={(e) => setAgent(e.target.value)}>
-            <option value="">All Agents</option>
-            <option value="observer">Observer</option>
-            <option value="rca">RCA</option>
-            <option value="decision">Decision</option>
-            <option value="selfhealing">Self-Healing</option>
-            <option value="dataquality">Data Quality</option>
-          </select>
+          <CustomSelect
+            id="agentFilter"
+            value={agent}
+            onChange={(val) => setAgent(val)}
+            placeholder="All Agents"
+            options={[
+              { label: "Observer", value: "observer" },
+              { label: "RCA", value: "rca" },
+              { label: "Decision", value: "decision" },
+              { label: "Self-Healing", value: "selfhealing" },
+              { label: "Data Quality", value: "dataquality" }
+            ]}
+          />
         </div>
 
         <div className="filter-group" style={{ flex: 1 }}>
