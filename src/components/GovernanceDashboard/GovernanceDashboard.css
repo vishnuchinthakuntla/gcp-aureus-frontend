@@ -459,3 +459,16 @@
 .highcharts-series-group {
   width: 100% !important;
 }
+
+.gov-skeleton {
+  background-color: #e2e8f0;
+  border-radius: 12px;
+  animation: gov-pulse 1.5s infinite ease-in-out;
+  width: 100%;
+}
+
+@keyframes gov-pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.2; }
+  100% { opacity: 0.6; }
+}

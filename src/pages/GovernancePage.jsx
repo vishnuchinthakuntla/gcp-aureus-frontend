@@ -9,28 +9,31 @@ import useAgentStore from '../stores/useAgentStore';
 
 export default function GovernancePage() {
   const fetchGovernanceDashboard = useAgentStore((s) => s.fetchGovernanceDashboard);
+  const data = useAgentStore((s) => s.governanceDashData);
 
   useEffect(() => {
     fetchGovernanceDashboard()
   }, []); 
+
+  const isLoading = !data;
 
   return (
     <>
         {/* TOP SECTION (2 columns) */}
         <div className="gov-layout">
           <div className="left-panel">
-            <GovernanceDashboard />
+            {isLoading ? <div className="gov-skeleton" style={{ height: "350px" }} /> : <GovernanceDashboard />}
           </div>
 
           <div className="right-panel">
-            <ComplianceCard />
+            {isLoading ? <div className="gov-skeleton" style={{ height: "350px" }} /> : <ComplianceCard />}
           </div>
         </div>
 
         {/* 🔥 BOTTOM SECTION (3 charts) */}
-        <InsightsDashboard />
+        {isLoading ? <div className="gov-skeleton" style={{ height: "300px", margin: "0 0 20px" }} /> : <InsightsDashboard />}
 
-        <KnowledgeGrowth />
+        {isLoading ? <div className="gov-skeleton" style={{ height: "300px", margin: "0 0 20px" }} /> : <KnowledgeGrowth />}
     </>
   );
 };
