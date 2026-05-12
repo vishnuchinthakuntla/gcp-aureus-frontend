@@ -110,6 +110,11 @@ const PipelineHistory = () => {
 
   return (
     <>
+      <div id="ph-header">
+        <h1 id="ph-title">Pipeline History</h1>
+        <p id="ph-description">Explore performance metrics and execution details for all your data pipelines</p>
+      </div>
+      
       {/* ── FILTER ROW ── */}
       <div className="ph-filter-row">
         {/* Pipeline Dropdown */}
@@ -171,6 +176,13 @@ const PipelineHistory = () => {
         </div>
       </div>
 
+      {appliedPipeline !== '' && <div className='selected-pipeline'>
+        <span className='selected-pipeline-helper'>Viewing execution details for pipeline:</span>
+        <div className='selected-pipeline-label'> {appliedPipeline}</div>
+        <div className='selected-pipeline-date'>From: {appliedFromDate.toISOString().split('T')[0]}</div>
+        <div className='selected-pipeline-date'>To: {appliedToDate.toISOString().split('T')[0]}</div>
+      </div>}
+
       {/* ── AGENT FILTER (Pills) ── */}
       <div className="filter-row">
         <span className="filter-label">Filter:</span>
@@ -219,6 +231,7 @@ const PipelineHistory = () => {
                   threadData={threadData}
                   selectedAgent={selectedAgent}
                   isFirst={index === 0}
+                  pipeline_name={appliedPipeline}
                 />
               ))
             )}

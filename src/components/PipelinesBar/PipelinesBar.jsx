@@ -56,8 +56,6 @@ function PipelinesBar() {
 
     const ticketBadges = buildTicketBadges(tickets, pipeline)
 
-    console.log('pipeline', pipeline)
-
     return (
         <>
             {/* tickets + pipeline bar */}

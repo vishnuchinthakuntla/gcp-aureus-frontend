@@ -1,9 +1,4 @@
 /* ── Global Reset & Design Tokens ── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
 :root {
   --color-primary:      #1a3a8f;

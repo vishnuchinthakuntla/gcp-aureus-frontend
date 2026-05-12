@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"; 
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast"; 
 import Dashboard from "./pages/Dashboard";
 import Pipelines from "./pages/Pipelines";
@@ -15,6 +15,7 @@ import useAgentStore from "./stores/useAgentStore";
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const init = useAgentStore((s) => s.init);
+  const pathname = window.location.pathname
 
   useEffect(() => {
     init();
@@ -28,7 +29,7 @@ function App() {
           <Sidebar open={menuOpen} />
 
           {/* ✅ CONTENT */}
-            <main className={`main${menuOpen ? ' shifted' : ''}`}>
+            <main className={`main${menuOpen ? ' shifted' : ''} ${pathname === "/" || pathname === "/dashboard" || pathname === "/governance-dashboard" ? "":"extra-padding"}`}>
             <Toaster position="top-right" />
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" />} />

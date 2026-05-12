@@ -29,10 +29,10 @@ function computeDuration(logs) {
   return `${Math.round(ms / 1000)}s`
 }
 
-const ThreadGroup = ({ groupKey, threadData, selectedAgent, isFirst }) => {
+const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFirst }) => {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [expandedLogs, setExpandedLogs] = useState({})
-  const [openPanels, setOpenPanels] = useState({ logs: Boolean(isFirst), steps: false })
+  const [openPanels, setOpenPanels] = useState({ agent_steps: Boolean(isFirst), steps: false })
   const togglePanel = (panel) => setOpenPanels(p => ({ ...p, [panel]: !p[panel] }))
 
   const toggleCollapse = useCallback(() => { setIsCollapsed(prev => !prev) }, [])
@@ -274,10 +274,9 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, isFirst }) => {
     <>
       <div className="run-header" onClick={toggleCollapse} style={{ cursor: 'pointer' }}>
         <div className="run-dot" />
-        <div className="run-name">Thread: {groupKey}</div>
+        <div className="run-name">{pipeline_name}</div>
         <div className="run-status">
-          {groupLogs.length} events
-          <span style={{ marginLeft: '8px', fontSize: '9px', opacity: 0.7, paddingBottom: '2px', display: 'inline-block' }}>
+          <span style={{ fontSize: '9px', opacity: 0.7, paddingBottom: '2px', display: 'inline-block' }}>
             {isCollapsed ? '▼' : '▲'}
           </span>
         </div>
@@ -286,13 +285,13 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, isFirst }) => {
       {!isCollapsed && (
         <>
           <div className="ph-collapsible-panels">
-            <div className={`ph-collapsible-panel ${openPanels.logs ? 'open' : ''}`}>
+            <div className={`ph-collapsible-panel ${openPanels.agent_steps ? 'open' : ''}`}>
               <button className="ph-collapsible-header" onClick={() => togglePanel('logs')}>
                 <span>AGENT STEPS</span>
-                <span className="ph-collapsible-icon">{openPanels.logs ? '▲' : '▼'}</span>
+                <span className="ph-collapsible-icon">{openPanels.agent_steps ? '▲' : '▼'}</span>
               </button>
 
-              {openPanels.logs && (<div className="ph-collapsible-body" >
+              {openPanels.agent_steps && (<div className="ph-collapsible-body" >
                 {/* <div className="modal-section-title">Pipeline Stages</div> */}
                 <div className="steps-section" data-theme="light">
                   <div className="steps-pipeline modal-pipeline-strip">
