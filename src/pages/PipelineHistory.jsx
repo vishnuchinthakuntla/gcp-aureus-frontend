@@ -114,7 +114,7 @@ const PipelineHistory = () => {
         <h1 id="ph-title">Pipeline History</h1>
         <p id="ph-description">Explore performance metrics and execution details for all your data pipelines</p>
       </div>
-      
+
       {/* ── FILTER ROW ── */}
       <div className="ph-filter-row">
         {/* Pipeline Dropdown */}
@@ -176,12 +176,17 @@ const PipelineHistory = () => {
         </div>
       </div>
 
-      {appliedPipeline !== '' && <div className='selected-pipeline'>
-        <span className='selected-pipeline-helper'>Viewing execution details for pipeline:</span>
-        <div className='selected-pipeline-label'> {appliedPipeline}</div>
-        <div className='selected-pipeline-date'>From: {appliedFromDate.toISOString().split('T')[0]}</div>
-        <div className='selected-pipeline-date'>To: {appliedToDate.toISOString().split('T')[0]}</div>
-      </div>}
+      {appliedPipeline !== '' && (
+        <div className='selected-pipeline'>
+          <span className='selected-pipeline-helper'>Execution history —</span>
+          <div className='selected-pipeline-label'>{appliedPipeline}</div>
+          <div className='selected-pipeline-dates'>
+            <span className='selected-pipeline-date'>{appliedFromDate.toISOString().split('T')[0]}</span>
+            <span className='selected-pipeline-date-sep'>→</span>
+            <span className='selected-pipeline-date'>{appliedToDate.toISOString().split('T')[0]}</span>
+          </div>
+        </div>
+      )}
 
       {/* ── AGENT FILTER (Pills) ── */}
       <div className="filter-row">
