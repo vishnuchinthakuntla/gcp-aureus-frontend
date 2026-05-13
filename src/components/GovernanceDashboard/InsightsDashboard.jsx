@@ -136,13 +136,13 @@ export default function InsightsDashboard() {
       polar: true,
       backgroundColor: 'transparent',
       height: 200,
-      width: 200,
+      // width: 200,
     },
     title: { text: undefined },
     accessibility: { enabled: false },
     credits: { enabled: false },
     pane: {
-      size: '60%',
+      size: '65%',
       startAngle: -36,
       endAngle: 324
     },
@@ -151,7 +151,9 @@ export default function InsightsDashboard() {
       tickmarkPlacement: 'on',
       lineWidth: 0,
       labels: {
-        distance: 5,
+        overflow: 'allow',
+        crop: false,
+        distance: 12,
         style: {
           fontSize: '9px',
           color: '#7a8ea8',
@@ -164,7 +166,8 @@ export default function InsightsDashboard() {
       lineWidth: 0,
       min: 0,
       max: 100,
-      tickInterval: 10,
+      // tickInterval: 10,
+      tickAmount: 8,
       labels: {
         format: '{value}%',
         style: { fontSize: '8px', color: '#7a8ea8' }
@@ -174,7 +177,8 @@ export default function InsightsDashboard() {
     },
     tooltip: {
       shared: true,
-      pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}%</b><br/>'
+      pointFormat: '<span style="color:{series.color};font-size:10px">{series.name}</span>: <b style="font-size:10px">{point.y}%</b><br/>',
+      padding: 5
     },
     legend: { enabled: false },
     plotOptions: {

@@ -276,7 +276,8 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
         <div className="run-dot" />
         <div className="run-name">{pipeline_name}</div>
         <div className="run-status">
-          <span style={{ fontSize: '9px', opacity: 0.7, paddingBottom: '2px', display: 'inline-block' }}>
+          Thread_id: {groupKey}
+          <span style={{ marginLeft: '8px', fontSize: '9px', opacity: 0.7, paddingBottom: '2px', display: 'inline-block' }}>
             {isCollapsed ? '▼' : '▲'}
           </span>
         </div>
