@@ -206,10 +206,6 @@ const PipelineRunsMonitor = () => {
         <div className="filter-group" style={{ flex: 1 }}>
           <div className="filter-label">Search</div>
           <div className="search-wrap">
-            <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
-              <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2.5" />
-              <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-            </svg>
             <input
               type="text"
               className="fi"
@@ -221,6 +217,12 @@ const PipelineRunsMonitor = () => {
                 if (e.key === 'Enter') fetchPipelineRuns(searchValue)
               }}
             />
+            <button className="search-btn-icon" onClick={() => fetchPipelineRuns(searchValue)} aria-label="Search">
+              <svg width="12" height="12" fill="none" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="3" />
+                <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+              </svg>
+            </button>
           </div>
         </div>
 
