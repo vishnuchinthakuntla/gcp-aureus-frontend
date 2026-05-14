@@ -12,6 +12,7 @@ import LogsPage from "./components/Pipeline/LogsPage";
 import PipelineRunsMonitor from "./pages/PipelineRunsMonitor";
 import PipelineRuns from "./pages/PipelineRuns";
 import useAgentStore from "./stores/useAgentStore";
+import PipelineMetadata from "./pages/PipelineMetadata";
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -42,6 +43,7 @@ function App() {
             <Route path="/logs" element={<LogsPage />} />
             <Route path="/pipeline-monitor" element={<PipelineRunsMonitor />} />
             <Route path="/pipeline-runs" element={<PipelineRuns />} />
+            <Route path="/pipeline-metadata" element={<PipelineMetadata />} />
           </Routes>
           </main> 
         </Router>
