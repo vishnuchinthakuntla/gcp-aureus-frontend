@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Search } from 'lucide-react';
 import './PipelineRuns.css';
 
 // --- Subcomponents ---
@@ -81,10 +82,7 @@ const Filters = ({ filters, setFilters, pipelineOptions, onExport }) => {
             onKeyDown={handleKeyDown} 
           />
           <button className="pr-search-btn-icon" onClick={handleSearch} aria-label="Search">
-            <svg width="12" height="12" fill="none" viewBox="0 0 24 24">
-              <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="3"/>
-              <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-            </svg>
+            <Search size={14} strokeWidth={2.5} color="white" style={{ flexShrink: 0, minWidth: 14, minHeight: 14 }} />
           </button>
         </div>
       </div>
@@ -95,12 +93,10 @@ const Filters = ({ filters, setFilters, pipelineOptions, onExport }) => {
   );
 };
 
-const PipelineModal = ({ isOpen, onClose, runId, pipelineName }) => {
-  const [runData, setRunData] = useState(null);
-  const [stages, setStages] = useState([]);
-  const [loading, setLoading] = useState(false);
+const PipelineModal = ({ isOpen, onClose, runId, pipelineName, agentStages, runData }) => {
   const [openStates, setOpenStates] = useState({});
 
+  /*
   useEffect(() => {
     if (isOpen && runId) {
       setLoading(true);
@@ -113,7 +109,7 @@ const PipelineModal = ({ isOpen, onClose, runId, pipelineName }) => {
         setLoading(false);
       });
     }
-  }, [isOpen, runId]);
+  }, [isOpen, runId]); */
 
   if (!isOpen) return null;
 
@@ -147,10 +143,6 @@ const PipelineModal = ({ isOpen, onClose, runId, pipelineName }) => {
           <button className="pr-close-btn" onClick={onClose}>✕</button>
         </div>
         <div className="pr-modal-body">
-          {loading ? (
-            <div style={{ textAlign: 'center', padding: '40px 0', color: '#64748b' }}>Loading data flow...</div>
-          ) : (
-            <>
               <div className="pr-workflow-section">
                 <div className="pr-section-title">Run Summary</div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
@@ -177,11 +169,11 @@ const PipelineModal = ({ isOpen, onClose, runId, pipelineName }) => {
               <div className="pr-workflow-section">
                 <div className="pr-section-title">Data Flow</div>
                 <div className="pr-timeline">
-                  {stages.length === 0 ? (
+                  {agentStages.length === 0 ? (
                     <div style={{ textAlign: 'center', width: '100%', color: '#64748b', fontSize: '13px', padding: '20px' }}>No activity log found for this run.</div>
                   ) : (
-                    stages.map((s, idx) => {
-                      let timeLabel = s.time || '';
+                    agentStages.map((s, idx) => {
+                      let timeLabel = s.created_at || '';
                       if (timeLabel) {
                         try {
                            const d = new Date(timeLabel);
@@ -217,8 +209,6 @@ const PipelineModal = ({ isOpen, onClose, runId, pipelineName }) => {
                   )}
                 </div>
               </div>
-            </>
-          )}
         </div>
       </div>
     </div>
@@ -244,7 +234,7 @@ const PipelineRuns = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
-  const [modalState, setModalState] = useState({ isOpen: false, runId: null, pipelineName: '' });
+  const [modalState, setModalState] = useState({ isOpen: false, runId: null, pipelineName: '', agentStages: [], runData: {} });
 
   useEffect(() => {
     fetchRuns();
@@ -257,18 +247,20 @@ const PipelineRuns = () => {
       if (apiStatus === 'success') apiStatus = 'succeeded';
       if (apiStatus === 'failure') apiStatus = 'failed';
 
-      const res = await fetch(`/api/pipeline-runs?pipeline=${pipeline}&status=${apiStatus}&from=${dateFrom}&to=${dateTo}`);
+      const res = await fetch(`/api/pipelines/run-log?pipeline=${pipeline}&status=${apiStatus}&from=${dateFrom}&to=${dateTo}`);
       if (res.ok) {
         const data = await res.json();
-        const mappedRuns = data.map(r => ({
+        const mappedRuns = data.execution_runs.map(r => ({
           id: r.id,
           date: r.date,
           time: r.time,
-          pipeline: r.pipeline || r.PipelineName,
+          pipeline: r.pipeline_name,
           status: r.status,
           duration: r.duration,
           rows: 0,
-          trigger: "Scheduled"
+          trigger: "Scheduled",
+          agentStages: r.agent_stages,
+          run_id: r.run_id,
         }));
         setRuns(mappedRuns);
 
@@ -386,7 +378,7 @@ const PipelineRuns = () => {
                         <div style={{ width: '12px', height: '2px', background: '#0072e5' }}></div>
                         <div style={{ width: '12px', height: '2px', background: '#0072e5' }}></div>
                       </div>
-                      <span className="pr-pipeline-link" onClick={() => setModalState({ isOpen: true, runId: r.id, pipelineName: r.pipeline })}>
+                      <span className="pr-pipeline-link" onClick={() => setModalState({ isOpen: true, runId: r.id, pipelineName: r.pipeline, agentStages: r.agentStages, runData: {pipeline: r.pipeline, startTime: r.date, status: r.status, duration: r.duration} })}>
                         {r.pipeline}
                       </span>
                     </td>
@@ -398,7 +390,7 @@ const PipelineRuns = () => {
                     </td>
                     <td style={{ color: '#64748b' }}>{r.duration} sec</td>
                     <td><span style={{ fontSize: '11px', color: '#64748b' }}>{r.trigger}</span></td>
-                    <td><span style={{ fontSize: '10px', color: '#64748b' }}>{r.id}</span></td>
+                    <td><span style={{ fontSize: '10px', color: '#64748b' }}>{r.run_id}</span></td>
                   </tr>
                 );
               })}
@@ -429,9 +421,11 @@ const PipelineRuns = () => {
 
       <PipelineModal 
         isOpen={modalState.isOpen} 
-        onClose={() => setModalState({ isOpen: false, runId: null, pipelineName: '' })}
+        onClose={() => setModalState({ isOpen: false, runId: null, pipelineName: '', agentStages: [], runData: {} })}
         runId={modalState.runId}
         pipelineName={modalState.pipelineName}
+        agentStages={modalState.agentStages}
+        runData={modalState.runData}
       />
     </div>
   );

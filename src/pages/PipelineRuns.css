@@ -41,14 +41,15 @@
 
 .pr-search-btn-icon {
   position: absolute;
-  right: 4px;
-  top: 50%;
-  transform: translateY(-50%);
+  right: 0;
+  top: 0;
+  bottom: 0;
+  /* transform: translateY(-50%); */
   background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
   border: none;
   border-radius: 4px;
   width: 26px;
-  height: 26px;
+  /* height: 26px; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,10 +59,10 @@
   transition: all 0.2s ease;
 }
 
-.pr-search-btn-icon:hover {
+/* .pr-search-btn-icon:hover {
   transform: translateY(-50%) scale(1.05);
   box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
-}
+} */
 .pr-filter-right { margin-left: auto; display: flex; gap: 8px; align-items: flex-end; }
 .pr-btn-primary { 
   padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;

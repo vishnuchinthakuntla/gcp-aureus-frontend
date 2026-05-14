@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { Search } from 'lucide-react'
 import './PipelineRunsMonitor.css'
 
 const CustomSelect = ({ options, value, onChange, placeholder, id }) => {
@@ -89,7 +90,8 @@ const PipelineRunsMonitor = () => {
         'Content-Type': 'application/json',
       },
     });
-    if(!response.ok) {
+    if(!response.ok || !response) {
+      setTimeout(() => fetchPipelineRuns(search), 3000)
       return
     }
     const data = await response.json()
@@ -218,10 +220,7 @@ const PipelineRunsMonitor = () => {
               }}
             />
             <button className="search-btn-icon" onClick={() => fetchPipelineRuns(searchValue)} aria-label="Search">
-              <svg width="12" height="12" fill="none" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="3" />
-                <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-              </svg>
+              <Search size={14} strokeWidth={2.5} style={{ flexShrink: 0, minWidth: 14, minHeight: 14 }} />
             </button>
           </div>
         </div>
