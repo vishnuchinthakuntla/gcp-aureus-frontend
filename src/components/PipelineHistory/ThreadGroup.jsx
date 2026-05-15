@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react'
+import AnalysisModal from './AnalysisModal'
 
 const AGENT_DATA_KEYS = {
   selfhealing: 'self_heal',
@@ -33,6 +34,7 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [expandedLogs, setExpandedLogs] = useState({})
   const [openPanels, setOpenPanels] = useState({ agent_steps: Boolean(isFirst), steps: false })
+  const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false)
   const togglePanel = (panel) => setOpenPanels(p => ({ ...p, [panel]: !p[panel] }))
 
   const toggleCollapse = useCallback(() => { setIsCollapsed(prev => !prev) }, [])
@@ -82,6 +84,7 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
     const selfHealJobId = agentInfo?.new_job_id
 
     return (
+      <>
       <div className="agent-run-card">
         {/* ── Card Header ── */}
         <div className="arc-header">
@@ -117,6 +120,9 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
 
         {/* ── Body ── */}
         <div className="arc-body">
+          {selectedAgent === "rca" || selectedAgent === "decision" ? (
+            <button className="arc-button" onClick={() => setIsAnalysisModalOpen(true)}>Show History</button>
+          ) : null}
           {/* RCA-specific fields */}
           {rootCause && (
             <>
@@ -233,6 +239,14 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
           )}
         </div>
       </div>
+      {isAnalysisModalOpen && (
+        <AnalysisModal 
+          threadId={groupKey} 
+          agentType={selectedAgent} 
+          onClose={() => setIsAnalysisModalOpen(false)} 
+        />
+      )}
+      </>
     )
   }
 
@@ -430,6 +444,14 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
             )}
           </div>
         </>
+      )}
+
+      {isAnalysisModalOpen && (
+        <AnalysisModal 
+          threadId={groupKey} 
+          agentType={selectedAgent} 
+          onClose={() => setIsAnalysisModalOpen(false)} 
+        />
       )}
     </>
   )

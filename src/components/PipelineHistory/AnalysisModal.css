@@ -1,0 +1,223 @@
+.am-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 47, 87, 0.4);
+  backdrop-filter: blur(6px);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes amSlideUp {
+  from {
+    transform: translateY(28px) scale(0.97);
+    opacity: 0
+  }
+  to {
+    transform: none;
+    opacity: 1
+  }
+}
+
+.am-modal {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 24px 80px rgba(15, 32, 64, 0.22), 0 4px 20px rgba(15, 32, 64, 0.12);
+  width: 800px;
+  max-width: calc(100vw - 40px);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: amSlideUp 0.22s cubic-bezier(0.34, 1.3, 0.64, 1);
+  overflow: hidden;
+  font-family: var(--font-sans, "Open Sans", "Helvetica Neue", sans-serif);
+}
+
+.am-header {
+  background: linear-gradient(90deg, #0f2040 0%, #1a3a8f 100%);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.am-header-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(29, 110, 245, 0.35);
+  border: 1px solid rgba(29, 110, 245, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.am-header-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.am-title-block {
+  flex: 1;
+}
+
+.am-title {
+  font-family: var(--display, inherit);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.am-subtitle {
+  font-family: var(--mono, inherit);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 2px;
+  letter-spacing: 0.03em;
+}
+
+.am-close-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.am-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.am-body {
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.am-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.am-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.am-section-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--t3, #94a3b8);
+  margin-bottom: 16px;
+}
+
+.am-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.am-card {
+  background: var(--bg-elevated, #f8fafc);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.am-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.am-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-secondary, #64748b);
+  width: 140px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.am-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary, #0f172a);
+  flex: 1;
+}
+
+.am-value.highlight {
+  color: var(--rca, #e02d46);
+  font-weight: 600;
+}
+
+.am-value.capitalize {
+  text-transform: capitalize;
+}
+
+.am-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: #e2e8f0;
+  color: #334155;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.am-badge.priority {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.am-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.am-list {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+  color: var(--text-primary, #0f172a);
+  line-height: 1.5;
+}
+
+.am-list li {
+  margin-bottom: 4px;
+}
+
+.am-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-primary, #0f172a);
+  background: #fff;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #e2e8f0);
+}
