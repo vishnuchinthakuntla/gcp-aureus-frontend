@@ -16,12 +16,7 @@ import PipelineMetadata from "./pages/PipelineMetadata";
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const init = useAgentStore((s) => s.init);
   const pathname = window.location.pathname
-
-  useEffect(() => {
-    init();
-  }, [init]);
 
   return (
     <div className="app">

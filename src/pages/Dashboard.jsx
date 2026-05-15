@@ -15,6 +15,11 @@ const Dashboard = () => {
   const selectedTicket = useAgentStore(s => s.selectedTicket)
   const agents = useAgentStore(s => s.agents)
   const agent = agents.find(a => a.id === selectedAgent)
+  const init = useAgentStore(s => s.init);
+  
+  useEffect(() => {
+    init();
+  }, []);
 
   return (
     <>

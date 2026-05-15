@@ -528,7 +528,7 @@ input:disabled + .slider {
   opacity: 0.7;
 }
 
-.t-prio {
+.meta-table .t-prio {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -544,39 +544,39 @@ input:disabled + .slider {
   /* width: 12px; */
 }
 
-.t-prio.p1 {
+.meta-table .t-prio.p1 {
   background-color: #e11d48;
   border-color: #f43f5e;
 }
 
-.t-prio.p2 {
+.meta-table .t-prio.p2 {
   background-color: #d97706;
   border-color: #f59e0b;
 }
 
-.t-prio.p3 {
+.meta-table .t-prio.p3 {
   background-color: #2563eb;
   border-color: #3b82f6;
 }
 
-.t-prio.p4 {
+.meta-table .t-prio.p4 {
   background-color: #059669;
   border-color: #10b981;
 }
 
-tbody tr:has(.t-prio.p1):hover{
+.meta-table tbody tr:has(.t-prio.p1):hover{
   background-color: #fef2f2;
 }
 
-tbody tr:has(.t-prio.p2):hover{
+.meta-table tbody tr:has(.t-prio.p2):hover{
   background-color: #fff7ed;
 }
 
-tbody tr:has(.t-prio.p3):hover{
+.meta-table tbody tr:has(.t-prio.p3):hover{
   background-color: #eff6ff;
 }
 
-tbody tr:has(.t-prio.p4):hover{
+.meta-table tbody tr:has(.t-prio.p4):hover{
   background-color: #f0fdf4;
 }
 
