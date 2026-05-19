@@ -4,29 +4,25 @@ import './PipelineRuns.css';
 
 // --- Subcomponents ---
 
-const ScoreGrid = ({ runs }) => {
-  const total = runs.length;
-  const success = runs.filter(r => (r.status || '').toLowerCase() === 'succeeded' || (r.status || '').toLowerCase() === 'success').length;
-  const failure = runs.filter(r => (r.status || '').toLowerCase() === 'failed' || (r.status || '').toLowerCase() === 'failure').length;
-  const successRate = total > 0 ? Math.round((success / Math.max(total, 1)) * 100) : 0;
+const ScoreGrid = ({summary}) => {
 
   return (
     <div className="pr-score-grid">
       <div className="pr-score-card pr-card-total">
         <div className="pr-score-label">Total Runs</div>
-        <div className="pr-score-value">{total}</div>
+        <div className="pr-score-value">{summary?.total_runs || 0}</div>
       </div>
       <div className="pr-score-card pr-card-success">
         <div className="pr-score-label">Successful</div>
-        <div className="pr-score-value">{success}</div>
+        <div className="pr-score-value">{summary?.succeeded || 0}</div>
       </div>
       <div className="pr-score-card pr-card-failure">
         <div className="pr-score-label">Failed</div>
-        <div className="pr-score-value">{failure}</div>
+        <div className="pr-score-value">{summary?.failed || 0}</div>
       </div>
       <div className="pr-score-card pr-card-prio">
         <div className="pr-score-label">Success Rate</div>
-        <div className="pr-score-value">{successRate}%</div>
+        <div className="pr-score-value">{summary?.success_rate || 0}%</div>
       </div>
     </div>
   );
@@ -219,6 +215,7 @@ const PipelineModal = ({ isOpen, onClose, runId, pipelineName, agentStages, runD
 
 const PipelineRuns = () => {
   const [runs, setRuns] = useState([]);
+  const [summary, setSummary] = useState(null);
   const [filteredRuns, setFilteredRuns] = useState([]);
   const [pipelineOptions, setPipelineOptions] = useState([]);
   
@@ -248,26 +245,25 @@ const PipelineRuns = () => {
       if (apiStatus === 'failure') apiStatus = 'failed';
 
       const res = await fetch(`/api/pipelines/run-log?pipeline=${pipeline}&status=${apiStatus}&from=${dateFrom}&to=${dateTo}`);
-      if (res.ok) {
-        const data = await res.json();
-        const mappedRuns = data.execution_runs.map(r => ({
-          id: r.id,
-          date: r.date,
-          time: r.time,
-          pipeline: r.pipeline_name,
-          status: r.status,
-          duration: r.duration,
-          rows: 0,
-          trigger: "Scheduled",
-          agentStages: r.agent_stages,
-          run_id: r.run_id,
-        }));
-        setRuns(mappedRuns);
-
-        // Extract pipelines for dropdown
-        const uniquePipelines = [...new Set(mappedRuns.map(r => r.pipeline))].filter(Boolean).sort();
-        setPipelineOptions(uniquePipelines);
+      if(!res.ok){
+        setTimeout(() => fetchRuns(), 3000);
       }
+      const data = await res.json();
+      const mappedRuns = data.execution_runs.map(r => ({
+        id: r.id,
+        date: r.date,
+        time: r.time,
+        pipeline: r.pipeline_name,
+        status: r.status,
+        duration: r.duration,
+        rows: 0,
+        trigger: "Scheduled",
+        agentStages: r.agent_stages,
+        run_id: r.run_id,
+      }));
+      setRuns(mappedRuns);
+      setSummary(data.summary || {});
+      setPipelineOptions(data.pipelines || []);
     } catch (e) {
       console.error("Failed to fetch pipeline runs", e);
     }

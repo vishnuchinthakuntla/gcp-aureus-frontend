@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import useAgentStore from "../../stores/useAgentStore";
 import React from "react";
+import pipelineIcon from "../../assets/pipeline-icon.png";
 
 function toTitleCase(str) {
   return str.replace(
@@ -112,6 +113,20 @@ export default function Sidebar({ open }) {
       >
         <span className="icon">🚀</span>
         Pipeline History
+      </button>
+      <button
+        className={location.pathname === "/pipeline-runs" ? "active" : ""}
+        onClick={() => navigate("/pipeline-runs")}
+      >
+        <span className="icon"><img src={pipelineIcon} style={{height:"18px"}} alt="" /></span>
+        Pipeline Runs
+      </button>
+      <button
+        className={location.pathname === "/pipeline-metadata" ? "active" : ""}
+        onClick={() => navigate("/pipeline-metadata")}
+      >
+        <span className="icon">🏷️</span>
+        Pipeline Metadata
       </button>
       <button
         className={location.pathname === "/stuck-workflows" ? "active" : ""}
