@@ -65,7 +65,17 @@ const PipelineMetadata = () => {
 
   const startEdit = (pipeline) => {
     setEditingId(pipeline.pipeline_name);
-    setEditData({ ...pipeline });
+    // Parse one_time_run_at ("2026-05-19 21:44:00") into separate date and time fields for the split inputs
+    const otr = pipeline.one_time_run_at || "";
+    let otrDate = "";
+    let otrTime = "";
+    if (otr) {
+      // Handle both "YYYY-MM-DD HH:MM:SS" and "YYYY-MM-DDTHH:MM" formats
+      const parts = otr.replace("T", " ").split(" ");
+      otrDate = parts[0] || "";
+      otrTime = (parts[1] || "").substring(0, 5); // Take HH:MM only
+    }
+    setEditData({ ...pipeline, _otr_date: otrDate, _otr_time: otrTime });
   };
 
   const cancelEdit = () => {
@@ -84,14 +94,29 @@ const PipelineMetadata = () => {
       payload.is_active = payload.is_active ? 1 : 0;
     //   payload.IsRetry = payload.IsRetry ? 1 : 0;
     //   payload.IsDQ = payload.IsDQ ? 1 : 0;
+
+      // Trim whitespace-only cron values so they become empty (displays as "NULL")
+      payload.schedule_cron = (payload.schedule_cron || "").trim() || null;
       
+      // Combine the split date and time fields into backend format "YYYY-MM-DD HH:MM:00"
+      let formattedRunAt = "";
+      if (payload._otr_date && payload._otr_time) {
+        formattedRunAt = `${payload._otr_date} ${payload._otr_time}:00`;
+      } else if (payload._otr_date) {
+        formattedRunAt = `${payload._otr_date} 00:00:00`;
+      }
+      // Clean up helper fields before saving to local state
+      delete payload._otr_date;
+      delete payload._otr_time;
+      payload.one_time_run_at = formattedRunAt;
+
       const res = await fetch(`/api/pipelines/${payload.pipeline_name}/schedule`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             "is_active": payload.is_active,
             "schedule_cron": payload.schedule_cron,
-            "one_time_run_at": payload.one_time_run_at
+            "one_time_run_at": formattedRunAt
         }),
       });
 
@@ -275,11 +300,18 @@ const PipelineMetadata = () => {
                     </td>
                     <td className="one_time_run_at">
                         {isEditing ? (
-                          <input
-                            type="datetime-local"
-                            value={data.one_time_run_at || ""}
-                            onChange={(e) => handleEditChange("one_time_run_at", e.target.value)}
-                          />
+                          <div className="otr-datetime-wrap">
+                            <input
+                              type="date"
+                              value={data._otr_date || ""}
+                              onChange={(e) => handleEditChange("_otr_date", e.target.value)}
+                            />
+                            <input
+                              type="time"
+                              value={data._otr_time || ""}
+                              onChange={(e) => handleEditChange("_otr_time", e.target.value)}
+                            />
+                          </div>
                         ) : (
                           p.one_time_run_at || 'NULL'
                         )}

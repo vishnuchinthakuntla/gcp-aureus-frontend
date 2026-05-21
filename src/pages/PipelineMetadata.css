@@ -468,6 +468,21 @@ input[type="number"]{
   width: 100px;
 }
 
+/* Split date + time picker for one_time_run_at */
+.otr-datetime-wrap {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.otr-datetime-wrap input[type="date"],
+.otr-datetime-wrap input[type="time"] {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  padding: 5px 8px;
+}
+
 td:last-child button + button {
   margin-left: 6px;
 }
