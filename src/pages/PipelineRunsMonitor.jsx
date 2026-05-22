@@ -20,25 +20,25 @@ const CustomSelect = ({ options, value, onChange, placeholder, id }) => {
 
   return (
     <div className="custom-dropdown" ref={dropdownRef} id={id}>
-      <div 
-        className={`fi dropdown-header ${isOpen ? 'open' : ''}`} 
+      <div
+        className={`fi dropdown-header ${isOpen ? 'open' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
       >
         <span>{selectedOption ? selectedOption.label : placeholder}</span>
         <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
       {isOpen && (
         <div className="dropdown-list">
-          <div 
+          <div
             className={`dropdown-item ${value === "" ? 'selected' : ''}`}
             onClick={() => { onChange(""); setIsOpen(false); }}
           >
             {placeholder}
           </div>
           {options.map((opt) => (
-            <div 
+            <div
               key={opt.value}
               className={`dropdown-item ${value === opt.value ? 'selected' : ''}`}
               onClick={() => { onChange(opt.value); setIsOpen(false); }}
@@ -53,15 +53,15 @@ const CustomSelect = ({ options, value, onChange, placeholder, id }) => {
 };
 
 const AGENT_BADGE = {
-  Observer:    { label: 'Observer',      cls: 'agent-badge--observer' },
-  RCA:         { label: 'RCA',           cls: 'agent-badge--rca' },
-  Decision:    { label: 'Decision',      cls: 'agent-badge--decision' },
-  SelfHealing: { label: 'Self-Healing',  cls: 'agent-badge--healing' },
-  DataQuality: { label: 'Data Quality',  cls: 'agent-badge--quality' },
+  Observer: { label: 'Observer', cls: 'agent-badge--observer' },
+  RCA: { label: 'RCA', cls: 'agent-badge--rca' },
+  Decision: { label: 'Decision', cls: 'agent-badge--decision' },
+  SelfHealing: { label: 'Self-Healing', cls: 'agent-badge--healing' },
+  DataQuality: { label: 'Data Quality', cls: 'agent-badge--quality' },
   system: { label: 'System', cls: 'agent-badge--system' },
-  audit:  { label: 'Audit', cls: 'agent-badge--audit' },
-  join:  { label: 'Join', cls: 'agent-badge--join' },
-  "Self-Service":  { label: 'Self-Service', cls: 'agent-badge--selfservice' }
+  audit: { label: 'Audit', cls: 'agent-badge--audit' },
+  join: { label: 'Join', cls: 'agent-badge--join' },
+  "Self-Service": { label: 'Self-Service', cls: 'agent-badge--selfservice' }
 }
 
 const PipelineRunsMonitor = () => {
@@ -90,7 +90,7 @@ const PipelineRunsMonitor = () => {
         'Content-Type': 'application/json',
       },
     });
-    if(!response.ok || !response) {
+    if (!response.ok || !response) {
       setTimeout(() => fetchPipelineRuns(search), 3000)
       return
     }

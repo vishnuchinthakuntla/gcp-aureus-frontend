@@ -63,8 +63,11 @@ export default function GovernanceDashboard() {
   return (
     <>
       {/* Header */}
-      <div className="gov-header">
-        <div className="title">ACTIVE TICKET LIFECYCLES</div>
+      <div className="ph">
+        <div className="ph-title">
+          <div className="ph-bar"></div>
+          ACTIVE TICKET LIFECYCLES
+        </div>
 
         <div className="header-right">
           <span className="view-text">Click row to view pipeline</span>

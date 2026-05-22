@@ -208,6 +208,7 @@ body {
   color: #1c2b3a;
   min-height: 100vh;
   transition: background 0.35s, color 0.35s;
+  line-height: 1.5;
 }
 
 

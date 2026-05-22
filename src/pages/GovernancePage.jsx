@@ -13,27 +13,27 @@ export default function GovernancePage() {
 
   useEffect(() => {
     fetchGovernanceDashboard()
-  }, []); 
+  }, []);
 
   const isLoading = !data;
 
   return (
     <>
-        {/* TOP SECTION (2 columns) */}
-        <div className="gov-layout">
-          <div className="left-panel">
-            {isLoading ? <div className="gov-skeleton" style={{ height: "350px" }} /> : <GovernanceDashboard />}
-          </div>
-
-          <div className="right-panel">
-            {isLoading ? <div className="gov-skeleton" style={{ height: "350px" }} /> : <ComplianceCard />}
-          </div>
+      {/* TOP SECTION (2 columns) */}
+      <div className="gov-layout">
+        <div className="panel">
+          {isLoading ? <div className="gov-skeleton" style={{ height: "350px" }} /> : <GovernanceDashboard />}
         </div>
 
-        {/* 🔥 BOTTOM SECTION (3 charts) */}
-        {isLoading ? <div className="gov-skeleton" style={{ height: "300px", margin: "0 0 20px" }} /> : <InsightsDashboard />}
+        <div className="panel">
+          {isLoading ? <div className="gov-skeleton" style={{ height: "350px" }} /> : <ComplianceCard />}
+        </div>
+      </div>
 
-        {isLoading ? <div className="gov-skeleton" style={{ height: "300px", margin: "0 0 20px" }} /> : <KnowledgeGrowth />}
+      {/* 🔥 BOTTOM SECTION (3 charts) */}
+      {isLoading ? <div className="gov-skeleton" style={{ height: "300px", margin: "0 0 20px" }} /> : <InsightsDashboard />}
+
+      {isLoading ? <div className="gov-skeleton" style={{ height: "300px", margin: "0 0 20px" }} /> : <KnowledgeGrowth />}
     </>
   );
 };
