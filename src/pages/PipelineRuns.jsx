@@ -4,7 +4,7 @@ import './PipelineRuns.css';
 
 // --- Subcomponents ---
 
-const ScoreGrid = ({summary}) => {
+const ScoreGrid = ({ summary }) => {
 
   return (
     <div className="pr-score-grid">
@@ -45,22 +45,22 @@ const Filters = ({ filters, setFilters, pipelineOptions, onExport }) => {
     <div className="pr-filters">
       <div className="pr-filter-group">
         <div className="pr-filter-label">From</div>
-        <input type="date" className="pr-fi" value={filters.dateFrom} onChange={e => setFilters({...filters, dateFrom: e.target.value})} />
+        <input type="date" className="pr-fi" value={filters.dateFrom} onChange={e => setFilters({ ...filters, dateFrom: e.target.value })} />
       </div>
       <div className="pr-filter-group">
         <div className="pr-filter-label">To</div>
-        <input type="date" className="pr-fi" value={filters.dateTo} onChange={e => setFilters({...filters, dateTo: e.target.value})} />
+        <input type="date" className="pr-fi" value={filters.dateTo} onChange={e => setFilters({ ...filters, dateTo: e.target.value })} />
       </div>
       <div className="pr-filter-group">
         <div className="pr-filter-label">Pipeline</div>
-        <select className="pr-fi" value={filters.pipeline} onChange={e => setFilters({...filters, pipeline: e.target.value})}>
+        <select className="pr-fi" value={filters.pipeline} onChange={e => setFilters({ ...filters, pipeline: e.target.value })}>
           <option value="">All Pipelines</option>
           {pipelineOptions.map(p => <option key={p} value={p}>{p}</option>)}
         </select>
       </div>
       <div className="pr-filter-group">
         <div className="pr-filter-label">Status</div>
-        <select className="pr-fi" value={filters.status} onChange={e => setFilters({...filters, status: e.target.value})}>
+        <select className="pr-fi" value={filters.status} onChange={e => setFilters({ ...filters, status: e.target.value })}>
           <option value="">All Statuses</option>
           <option value="succeeded">Success</option>
           <option value="failed">Failure</option>
@@ -69,13 +69,13 @@ const Filters = ({ filters, setFilters, pipelineOptions, onExport }) => {
       <div className="pr-filter-group" style={{ flex: 1 }}>
         <div className="pr-filter-label">Search</div>
         <div className="pr-search-wrap">
-          <input 
-            type="text" 
-            className="pr-fi" 
-            placeholder="Search by name, ID or trigger..." 
-            value={localSearch} 
-            onChange={e => setLocalSearch(e.target.value)} 
-            onKeyDown={handleKeyDown} 
+          <input
+            type="text"
+            className="pr-fi"
+            placeholder="Search by name, ID or trigger..."
+            value={localSearch}
+            onChange={e => setLocalSearch(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <button className="pr-search-btn-icon" onClick={handleSearch} aria-label="Search">
             <Search size={14} strokeWidth={2.5} color="white" style={{ flexShrink: 0, minWidth: 14, minHeight: 14 }} />
@@ -139,72 +139,72 @@ const PipelineModal = ({ isOpen, onClose, runId, pipelineName, agentStages, runD
           <button className="pr-close-btn" onClick={onClose}>✕</button>
         </div>
         <div className="pr-modal-body">
-              <div className="pr-workflow-section">
-                <div className="pr-section-title">Run Summary</div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                  <div style={{ padding: '14px', background: '#f8faff', border: '1px solid #e8edf5', borderRadius: '10px' }}>
-                    <div style={{ fontSize: '9.5px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Status</div>
-                    <div style={{ marginTop: '4px' }}>
-                      {(() => {
-                        const colors = getStatusColor(runData?.status);
-                        return (
-                          <span style={{ display: 'inline-flex', padding: '4px 10px', borderRadius: '5px', background: colors.bg, color: colors.text, fontSize: '11px', fontWeight: 700, border: `1px solid ${colors.bg}` }}>
-                            {formatStatus(runData?.status)}
-                          </span>
-                        );
-                      })()}
-                    </div>
-                  </div>
-                  <div style={{ padding: '14px', background: '#f8faff', border: '1px solid #e8edf5', borderRadius: '10px' }}>
-                    <div style={{ fontSize: '9.5px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Duration</div>
-                    <div style={{ fontSize: '20px', fontWeight: 700, color: '#0f2040' }}>{runData?.duration || 0} <span style={{ fontSize: '12px', color: '#94a3b8' }}>sec</span></div>
-                  </div>
+          <div className="pr-workflow-section">
+            <div className="pr-section-title">Run Summary</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div style={{ padding: '14px', background: '#f8faff', border: '1px solid #e8edf5', borderRadius: '10px' }}>
+                <div style={{ fontSize: '9.5px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Status</div>
+                <div style={{ marginTop: '4px' }}>
+                  {(() => {
+                    const colors = getStatusColor(runData?.status);
+                    return (
+                      <span style={{ display: 'inline-flex', padding: '4px 10px', borderRadius: '5px', background: colors.bg, color: colors.text, fontSize: '11px', fontWeight: 700, border: `1px solid ${colors.bg}` }}>
+                        {formatStatus(runData?.status)}
+                      </span>
+                    );
+                  })()}
                 </div>
               </div>
+              <div style={{ padding: '14px', background: '#f8faff', border: '1px solid #e8edf5', borderRadius: '10px' }}>
+                <div style={{ fontSize: '9.5px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Duration</div>
+                <div style={{ fontSize: '20px', fontWeight: 700, color: '#0f2040' }}>{runData?.duration || 0} <span style={{ fontSize: '12px', color: '#94a3b8' }}>sec</span></div>
+              </div>
+            </div>
+          </div>
 
-              <div className="pr-workflow-section">
-                <div className="pr-section-title">Data Flow</div>
-                <div className="pr-timeline">
-                  {agentStages.length === 0 ? (
-                    <div style={{ textAlign: 'center', width: '100%', color: '#64748b', fontSize: '13px', padding: '20px' }}>No activity log found for this run.</div>
-                  ) : (
-                    agentStages.map((s, idx) => {
-                      let timeLabel = s.created_at || '';
-                      if (timeLabel) {
-                        try {
-                           const d = new Date(timeLabel);
-                           if (!isNaN(d.getTime())) timeLabel = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                        } catch(e) {}
-                      }
-                      const statusClass = (s.status || '').toLowerCase().replace(/[^a-z_]/g, '');
-                      let prettyState = s.state;
-                      try { prettyState = JSON.stringify(JSON.parse(s.state), null, 2); } catch { }
+          <div className="pr-workflow-section">
+            <div className="pr-section-title">Data Flow</div>
+            <div className="pr-timeline">
+              {agentStages.length === 0 ? (
+                <div style={{ textAlign: 'center', width: '100%', color: '#64748b', fontSize: '13px', padding: '20px' }}>No activity log found for this run.</div>
+              ) : (
+                agentStages.map((s, idx) => {
+                  let timeLabel = s.created_at || '';
+                  if (timeLabel) {
+                    try {
+                      const d = new Date(timeLabel);
+                      if (!isNaN(d.getTime())) timeLabel = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    } catch (e) { }
+                  }
+                  const statusClass = (s.status || '').toLowerCase().replace(/[^a-z_]/g, '');
+                  let prettyState = s.state;
+                  try { prettyState = JSON.stringify(JSON.parse(s.state), null, 2); } catch { }
 
-                      return (
-                        <div className="pr-timeline-item" key={idx}>
-                          <div className="pr-timeline-dot"></div>
-                          <div className="pr-timeline-content">
-                            <div className="pr-timeline-top">
-                              <span className="pr-timeline-agent">{s.agent || 'system'}</span>
-                              <span className="pr-timeline-time">{timeLabel}</span>
-                            </div>
-                            <div className="pr-timeline-stage">{s.stage || '—'}</div>
-                            <span className={`pr-timeline-status ${statusClass}`}>{formatStatus(s.status)}</span>
-                            {s.state && (
-                              <>
-                                <div className="pr-state-toggle" onClick={() => handleToggleState(idx)}>
-                                  <span style={{ transition: 'transform 0.2s', display: 'inline-block', transform: openStates[idx] ? 'rotate(90deg)' : 'none' }}>▶</span> View Data
-                                </div>
-                                <pre className={`pr-state-block ${openStates[idx] ? 'open' : ''}`}>{prettyState}</pre>
-                              </>
-                            )}
-                          </div>
+                  return (
+                    <div className="pr-timeline-item" key={idx}>
+                      <div className="pr-timeline-dot"></div>
+                      <div className="pr-timeline-content">
+                        <div className="pr-timeline-top">
+                          <span className="pr-timeline-agent">{s.stage_name || 'system'}</span>
+                          <span className="pr-timeline-time">{timeLabel}</span>
                         </div>
-                      )
-                    })
-                  )}
-                </div>
-              </div>
+                        <div className="pr-timeline-stage">{s.total_duration || '—'}</div>
+                        <span className={`pr-timeline-status ${statusClass}`}>{formatStatus(s.status)}</span>
+                        {s.state && (
+                          <>
+                            <div className="pr-state-toggle" onClick={() => handleToggleState(idx)}>
+                              <span style={{ transition: 'transform 0.2s', display: 'inline-block', transform: openStates[idx] ? 'rotate(90deg)' : 'none' }}>▶</span> View Data
+                            </div>
+                            <pre className={`pr-state-block ${openStates[idx] ? 'open' : ''}`}>{prettyState}</pre>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -218,7 +218,7 @@ const PipelineRuns = () => {
   const [summary, setSummary] = useState(null);
   const [filteredRuns, setFilteredRuns] = useState([]);
   const [pipelineOptions, setPipelineOptions] = useState([]);
-  
+
   const [filters, setFilters] = useState({
     dateFrom: '2026-04-18',
     dateTo: '2026-04-20',
@@ -245,7 +245,7 @@ const PipelineRuns = () => {
       if (apiStatus === 'failure') apiStatus = 'failed';
 
       const res = await fetch(`/api/pipelines/run-log?pipeline=${pipeline}&status=${apiStatus}&from=${dateFrom}&to=${dateTo}`);
-      if(!res.ok){
+      if (!res.ok) {
         setTimeout(() => fetchRuns(), 3000);
       }
       const data = await res.json();
@@ -272,11 +272,11 @@ const PipelineRuns = () => {
   useEffect(() => {
     // Apply search and sort
     let result = [...runs];
-    
+
     if (filters.search) {
       const q = filters.search.toLowerCase();
-      result = result.filter(r => 
-        (r.pipeline && r.pipeline.toLowerCase().includes(q)) || 
+      result = result.filter(r =>
+        (r.pipeline && r.pipeline.toLowerCase().includes(q)) ||
         (r.id && r.id.toLowerCase().includes(q))
       );
     }
@@ -284,13 +284,13 @@ const PipelineRuns = () => {
     result.sort((a, b) => {
       let av = a[sortConfig.key];
       let bv = b[sortConfig.key];
-      
+
       if (sortConfig.key === 'duration') {
         av = parseFloat(av) || 0;
         bv = parseFloat(bv) || 0;
         return (av - bv) * sortConfig.direction;
       }
-      
+
       return String(av || '').localeCompare(String(bv || '')) * sortConfig.direction;
     });
 
@@ -337,7 +337,7 @@ const PipelineRuns = () => {
       </div>
 
       <ScoreGrid runs={filteredRuns} />
-      
+
       <Filters filters={filters} setFilters={setFilters} pipelineOptions={pipelineOptions} onExport={exportCSV} />
 
       <div className="pr-card">
@@ -368,13 +368,13 @@ const PipelineRuns = () => {
                 return (
                   <tr key={r.id || i}>
                     <td className="pr-td-date">{r.date} <span style={{ marginLeft: '8px', color: '#94a3b8', fontSize: '10px' }}>{r.time}</span></td>
-                    <td style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <td style={{ display: 'flex', alignItems: 'center', gap: '12px', maxHeight: '32px', overflow: 'hidden' }}>
                       <div style={{ display: 'inline-flex', flexDirection: 'column', justifyContent: 'center', gap: '2px', width: '12px', height: '14px' }}>
                         <div style={{ width: '12px', height: '2px', background: '#0072e5' }}></div>
                         <div style={{ width: '12px', height: '2px', background: '#0072e5' }}></div>
                         <div style={{ width: '12px', height: '2px', background: '#0072e5' }}></div>
                       </div>
-                      <span className="pr-pipeline-link" onClick={() => setModalState({ isOpen: true, runId: r.id, pipelineName: r.pipeline, agentStages: r.agentStages, runData: {pipeline: r.pipeline, startTime: r.date, status: r.status, duration: r.duration} })}>
+                      <span className="pr-pipeline-link" onClick={() => setModalState({ isOpen: true, runId: r.id, pipelineName: r.pipeline, agentStages: r.agentStages, runData: { pipeline: r.pipeline, startTime: r.date, status: r.status, duration: r.duration } })}>
                         {r.pipeline}
                       </span>
                     </td>
@@ -398,7 +398,7 @@ const PipelineRuns = () => {
             </tbody>
           </table>
         </div>
-        
+
         {totalPages > 0 && (
           <div className="pr-pagination">
             <div className="pr-pag-info">
@@ -415,8 +415,8 @@ const PipelineRuns = () => {
         )}
       </div>
 
-      <PipelineModal 
-        isOpen={modalState.isOpen} 
+      <PipelineModal
+        isOpen={modalState.isOpen}
         onClose={() => setModalState({ isOpen: false, runId: null, pipelineName: '', agentStages: [], runData: {} })}
         runId={modalState.runId}
         pipelineName={modalState.pipelineName}
