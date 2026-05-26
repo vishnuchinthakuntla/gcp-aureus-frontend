@@ -213,6 +213,10 @@ const PipelineModal = ({ isOpen, onClose, runId, pipelineName, agentStages, runD
 
 // --- Main Page Component ---
 
+const toDateStr = (d) => d.toISOString().split('T')[0]
+const todayStr = toDateStr(new Date())
+const sevenDaysAgoStr = toDateStr(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))
+
 const PipelineRuns = () => {
   const [runs, setRuns] = useState([]);
   const [summary, setSummary] = useState(null);
@@ -220,8 +224,8 @@ const PipelineRuns = () => {
   const [pipelineOptions, setPipelineOptions] = useState([]);
 
   const [filters, setFilters] = useState({
-    dateFrom: '2026-04-18',
-    dateTo: '2026-04-20',
+    dateFrom: sevenDaysAgoStr,
+    dateTo: todayStr,
     pipeline: '',
     status: '',
     search: ''

@@ -64,9 +64,13 @@ const AGENT_BADGE = {
   "Self-Service": { label: 'Self-Service', cls: 'agent-badge--selfservice' }
 }
 
+const toDateStr = (d) => d.toISOString().split('T')[0]
+const todayStr = toDateStr(new Date())
+const sevenDaysAgoStr = toDateStr(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))
+
 const PipelineRunsMonitor = () => {
-  const [dateFrom, setDateFrom] = useState('2026-04-18')
-  const [dateTo, setDateTo] = useState('2026-04-20')
+  const [dateFrom, setDateFrom] = useState(sevenDaysAgoStr)
+  const [dateTo, setDateTo] = useState(todayStr)
   const [searchValue, setSearchValue] = useState('')
   const [pipeline, setPipeline] = useState('')
   const [liveEnabled, setLiveEnabled] = useState(true)

@@ -30,15 +30,19 @@ const PipelineHistory = () => {
   const [pipelineOptions, setPipelineOptions] = useState([])
   const [loading, setLoading] = useState(false)
 
+  const today = new Date()
+  const sevenDaysAgo = new Date(today)
+  sevenDaysAgo.setDate(today.getDate() - 7)
+
   // Draft state (UI-only, not yet applied)
   const [draftPipeline, setDraftPipeline] = useState('')
-  const [draftFromDate, setDraftFromDate] = useState(new Date())
-  const [draftToDate, setDraftToDate] = useState(new Date())
+  const [draftFromDate, setDraftFromDate] = useState(sevenDaysAgo)
+  const [draftToDate, setDraftToDate] = useState(today)
 
   // Applied state (used for fetching)
   const [appliedPipeline, setAppliedPipeline] = useState('')
-  const [appliedFromDate, setAppliedFromDate] = useState(new Date())
-  const [appliedToDate, setAppliedToDate] = useState(new Date())
+  const [appliedFromDate, setAppliedFromDate] = useState(sevenDaysAgo)
+  const [appliedToDate, setAppliedToDate] = useState(today)
 
   const handleApplyFilters = () => {
     setAppliedPipeline(draftPipeline)
