@@ -3,8 +3,18 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import PipelineCharts from '../components/PipelineHistory/PipelineCharts'
 import ThreadGroup from '../components/PipelineHistory/ThreadGroup'
+import usePersistedState from '../hooks/usePersistedState'
 import '../App.css'
 import './PipelineHistory.css'
+
+// Defaults: end = today, start = 7 days ago (used when nothing is stored yet)
+const _today = new Date()
+const _sevenDaysAgo = new Date(_today)
+_sevenDaysAgo.setDate(_today.getDate() - 7)
+
+// Date serialization helpers for usePersistedState
+const serializeDate = d => (d instanceof Date ? d.toISOString() : '')
+const deserializeDate = s => (s ? new Date(s) : null)
 
 const AGENT_OPTIONS = [
   { value: '', label: 'All Agents' },
@@ -26,23 +36,19 @@ function getAgentNodeParam(agentId) {
 
 const PipelineHistory = () => {
   const [pipelineData, setPipelineData] = useState({})
-  const [selectedAgent, setSelectedAgent] = useState('')
+  const [selectedAgent, setSelectedAgent] = usePersistedState('ph-selectedAgent', '')
   const [pipelineOptions, setPipelineOptions] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const today = new Date()
-  const sevenDaysAgo = new Date(today)
-  sevenDaysAgo.setDate(today.getDate() - 7)
-
   // Draft state (UI-only, not yet applied)
-  const [draftPipeline, setDraftPipeline] = useState('')
-  const [draftFromDate, setDraftFromDate] = useState(sevenDaysAgo)
-  const [draftToDate, setDraftToDate] = useState(today)
+  const [draftPipeline, setDraftPipeline] = usePersistedState('ph-draftPipeline', '')
+  const [draftFromDate, setDraftFromDate] = usePersistedState('ph-draftFromDate', _sevenDaysAgo, { serialize: serializeDate, deserialize: deserializeDate })
+  const [draftToDate, setDraftToDate] = usePersistedState('ph-draftToDate', _today, { serialize: serializeDate, deserialize: deserializeDate })
 
   // Applied state (used for fetching)
-  const [appliedPipeline, setAppliedPipeline] = useState('')
-  const [appliedFromDate, setAppliedFromDate] = useState(sevenDaysAgo)
-  const [appliedToDate, setAppliedToDate] = useState(today)
+  const [appliedPipeline, setAppliedPipeline] = usePersistedState('ph-appliedPipeline', '')
+  const [appliedFromDate, setAppliedFromDate] = usePersistedState('ph-appliedFromDate', _sevenDaysAgo, { serialize: serializeDate, deserialize: deserializeDate })
+  const [appliedToDate, setAppliedToDate] = usePersistedState('ph-appliedToDate', _today, { serialize: serializeDate, deserialize: deserializeDate })
 
   const handleApplyFilters = () => {
     setAppliedPipeline(draftPipeline)

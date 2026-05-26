@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import usePersistedState from '../hooks/usePersistedState'
 import { Search } from 'lucide-react'
 import './PipelineRunsMonitor.css'
 
@@ -69,12 +70,12 @@ const todayStr = toDateStr(new Date())
 const sevenDaysAgoStr = toDateStr(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))
 
 const PipelineRunsMonitor = () => {
-  const [dateFrom, setDateFrom] = useState(sevenDaysAgoStr)
-  const [dateTo, setDateTo] = useState(todayStr)
+  const [dateFrom, setDateFrom] = usePersistedState('prm-dateFrom', sevenDaysAgoStr)
+  const [dateTo, setDateTo] = usePersistedState('prm-dateTo', todayStr)
   const [searchValue, setSearchValue] = useState('')
-  const [pipeline, setPipeline] = useState('')
-  const [liveEnabled, setLiveEnabled] = useState(true)
-  const [agent, setAgent] = useState('')
+  const [pipeline, setPipeline] = usePersistedState('prm-pipeline', '')
+  const [liveEnabled, setLiveEnabled] = usePersistedState('prm-liveEnabled', true)
+  const [agent, setAgent] = usePersistedState('prm-agent', '')
   const [pipelineOptions, setPipelineOptions] = useState([])
   const [rows, setRows] = useState([])
   const [currentPage, setCurrentPage] = useState(1)

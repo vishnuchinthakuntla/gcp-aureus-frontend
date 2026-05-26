@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import './PipelineRuns.css';
 
+const toDateStr = (d) => d.toISOString().split('T')[0]
+const todayStr = toDateStr(new Date())
+const sevenDaysAgoStr = toDateStr(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))
+
 // --- Subcomponents ---
 
 const ScoreGrid = ({ summary }) => {
@@ -213,22 +217,21 @@ const PipelineModal = ({ isOpen, onClose, runId, pipelineName, agentStages, runD
 
 // --- Main Page Component ---
 
-const toDateStr = (d) => d.toISOString().split('T')[0]
-const todayStr = toDateStr(new Date())
-const sevenDaysAgoStr = toDateStr(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))
-
 const PipelineRuns = () => {
   const [runs, setRuns] = useState([]);
   const [summary, setSummary] = useState(null);
   const [filteredRuns, setFilteredRuns] = useState([]);
   const [pipelineOptions, setPipelineOptions] = useState([]);
 
-  const [filters, setFilters] = useState({
-    dateFrom: sevenDaysAgoStr,
-    dateTo: todayStr,
-    pipeline: '',
-    status: '',
-    search: ''
+  const [filters, setFilters] = useState(() => {
+    try {
+      const stored = localStorage.getItem('pr-filters')
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        return { ...parsed, search: '' } // search is never restored
+      }
+    } catch { /* ignore */ }
+    return { dateFrom: sevenDaysAgoStr, dateTo: todayStr, pipeline: '', status: '', search: '' }
   });
 
   const [sortConfig, setSortConfig] = useState({ key: 'date', direction: -1 });
@@ -236,6 +239,14 @@ const PipelineRuns = () => {
   const rowsPerPage = 10;
 
   const [modalState, setModalState] = useState({ isOpen: false, runId: null, pipelineName: '', agentStages: [], runData: {} });
+
+  // Persist filters (excluding transient search) to localStorage
+  useEffect(() => {
+    try {
+      const { search, ...toSave } = filters
+      localStorage.setItem('pr-filters', JSON.stringify(toSave))
+    } catch { /* ignore */ }
+  }, [filters])
 
   useEffect(() => {
     fetchRuns();
