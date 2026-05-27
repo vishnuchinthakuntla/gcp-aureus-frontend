@@ -92,42 +92,58 @@ const StuckWorkflows = () => {
 
   return (
     <>
-        <div className="sw-page-title">Stuck Workflows</div>
+      <div className="pages-header" style={{ marginBottom: "1.5rem", paddingLeft: "1rem" }}>
+        <h1 className="pages-title">Stuck Workflows</h1>
+      </div>
 
-        <div className="sw-table-wrapper">
-          {loading ? (
-            <div className="sw-loading-state">Loading stuck workflows…</div>
-          ) : error ? (
-            <div className="sw-error-state">
-              Error: {error}
-              <br />
-              <button
-                className="sw-reprocess-btn"
-                style={{ marginTop: 12 }}
-                onClick={fetchStuckWorkflows}
-              >
-                Retry
-              </button>
-            </div>
-          ) : workflows.length === 0 ? (
-            <div className="sw-empty-state">No stuck workflows found 🎉</div>
-          ) : (
-            <>
-            <table className="sw-table">
-              <thead>
-                <tr>
-                  <th>Thread ID</th>
-                  <th>Pipeline</th>
-                  <th>Severity</th>
-                  <th>Current Node</th>
-                  <th>Event Type</th>
-                  <th>Status</th>
-                  <th>Age</th>
-                  <th>Created At</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
+      <div className="sw-table-wrapper">
+        <table className="sw-table">
+          <thead>
+            <tr>
+              <th>Thread ID</th>
+              <th>Pipeline</th>
+              <th>Severity</th>
+              <th>Current Node</th>
+              <th>Event Type</th>
+              <th>Status</th>
+              <th>Age</th>
+              <th>Created At</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td colSpan={9} className="sw-loading-state" style={{ textAlign: "center", padding: "30px", display: "table-cell" }}>
+                  <div className="loader-container">
+                    <div className="spinner"></div>
+                  </div>
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td colSpan={9} className="sw-error-state" style={{ display: "table-cell" }}>
+                  Error: {error}
+                  <br />
+                  <button
+                    className="sw-reprocess-btn"
+                    style={{ marginTop: 12 }}
+                    onClick={fetchStuckWorkflows}
+                  >
+                    Retry
+                  </button>
+                </td>
+              </tr>
+            ) : workflows.length === 0 ? (
+              <tr>
+                <td colSpan={9} style={{ display: "table-cell" }}>
+                  <div className="sw-empty-state">
+                    No stuck workflows found 🎉
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              <>
                 {paginatedWorkflows.map((wf, idx) => {
                   const id = wf.thread_id || ((currentPage - 1) * rowsPerPage + idx)
                   const isReprocessing = !!reprocessingIds[id]
@@ -180,50 +196,50 @@ const StuckWorkflows = () => {
                     </tr>
                   )
                 })}
-              </tbody>
-            </table>
 
-            {totalPages > 1 && (
-              <div className="sw-pagination">
-                <span className="sw-pagination-info">
-                  Showing {(currentPage - 1) * rowsPerPage + 1}–{Math.min(currentPage * rowsPerPage, workflows.length)} of {workflows.length}
-                </span>
-                <div className="sw-pagination-controls">
-                  <button
-                    className="sw-page-btn"
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(p => p - 1)}
-                    aria-label="Previous page"
-                  >
-                    ‹
-                  </button>
-                  {getPageNumbers().map((pg, i) =>
-                    pg === '...' ? (
-                      <span key={`ellipsis-${i}`} className="sw-page-ellipsis">…</span>
-                    ) : (
+                {totalPages > 1 && (
+                  <div className="sw-pagination">
+                    <span className="sw-pagination-info">
+                      Showing {(currentPage - 1) * rowsPerPage + 1}–{Math.min(currentPage * rowsPerPage, workflows.length)} of {workflows.length}
+                    </span>
+                    <div className="sw-pagination-controls">
                       <button
-                        key={pg}
-                        className={`sw-page-btn ${pg === currentPage ? 'sw-page-active' : ''}`}
-                        onClick={() => setCurrentPage(pg)}
+                        className="sw-page-btn"
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage(p => p - 1)}
+                        aria-label="Previous page"
                       >
-                        {pg}
+                        ‹
                       </button>
-                    )
-                  )}
-                  <button
-                    className="sw-page-btn"
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage(p => p + 1)}
-                    aria-label="Next page"
-                  >
-                    ›
-                  </button>
-                </div>
-              </div>
+                      {getPageNumbers().map((pg, i) =>
+                        pg === '...' ? (
+                          <span key={`ellipsis-${i}`} className="sw-page-ellipsis">…</span>
+                        ) : (
+                          <button
+                            key={pg}
+                            className={`sw-page-btn ${pg === currentPage ? 'sw-page-active' : ''}`}
+                            onClick={() => setCurrentPage(pg)}
+                          >
+                            {pg}
+                          </button>
+                        )
+                      )}
+                      <button
+                        className="sw-page-btn"
+                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage(p => p + 1)}
+                        aria-label="Next page"
+                      >
+                        ›
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
-            </>
-          )}
-        </div>
+          </tbody>
+        </table>
+      </div>
     </>
   )
 }

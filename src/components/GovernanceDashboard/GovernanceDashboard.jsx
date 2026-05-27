@@ -105,14 +105,10 @@ export default function GovernanceDashboard() {
           </div>
         ) : */
               data?.length === 0 ? (
-                <tr className="table-row no-data-row">
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>No Data Available</td>
-                  <td>-</td>
-                  <td>-</td>
+                <tr className="table-row">
+                  <td colSpan={7} style={{ display: "table-cell" }}>
+                    <div className="no-data-row">No Active Ticket Found</div>
+                  </td>
                 </tr>
               ) : (
                 data?.map((item, index) => {

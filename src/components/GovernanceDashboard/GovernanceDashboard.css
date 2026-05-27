@@ -133,6 +133,10 @@
 }
 
 .no-data-row {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
   padding: 10px 12px;
 }
 

@@ -1,13 +1,6 @@
 /* ── StuckWorkflows.css ── */
 /* All classes prefixed with `sw-` to avoid conflicts */
 
-.sw-page-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-heading, #0e1726);
-  margin-bottom: 20px;
-}
-
 .sw-table-wrapper {
   background: var(--bg-card, #ffffff);
   border: 1px solid var(--border, #dde3ee);
@@ -34,7 +27,7 @@
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--text-secondary, #4a5568);
+  color: white;
   border-bottom: 1px solid var(--border, #dde3ee);
   white-space: nowrap;
 }
@@ -138,7 +131,7 @@
 /* ── Empty / Loading states ── */
 .sw-empty-state {
   text-align: center;
-  padding: 60px 20px;
+  padding: 32px 20px;
   color: var(--text-secondary, #4a5568);
   font-size: 14px;
   font-weight: 500;
@@ -232,7 +225,8 @@
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
-.sw-page-btn:first-child, .sw-page-btn:last-child {
+.sw-page-btn:first-child,
+.sw-page-btn:last-child {
   font-size: 18px;
   font-weight: 600;
   color: white;
@@ -265,4 +259,3 @@
   font-size: 14px;
   user-select: none;
 }
-

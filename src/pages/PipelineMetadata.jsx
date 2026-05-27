@@ -5,7 +5,7 @@ const PipelineMetadata = () => {
   const [pipelines, setPipelines] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 12;
   const [sortConfig, setSortConfig] = useState({ key: null, direction: true });
@@ -15,7 +15,7 @@ const PipelineMetadata = () => {
     const fetchPipelines = async () => {
       try {
         const res = await fetch("/api/pipelines/metadata");
-        if (!res.ok || !res) { setTimeout(() => fetchPipelines(),3000); return;}
+        if (!res.ok || !res) { setTimeout(() => fetchPipelines(), 3000); return; }
         const data = await res.json();
         setPipelines(data.data || []);
       } catch (err) {
@@ -43,7 +43,7 @@ const PipelineMetadata = () => {
       valB = Number(valB);
       return sortConfig.direction ? valA - valB : valB - valA;
     }
-    
+
     return sortConfig.direction
       ? String(valA).localeCompare(String(valB))
       : String(valB).localeCompare(String(valA));
@@ -92,12 +92,12 @@ const PipelineMetadata = () => {
       // Ensure specific fields are 1/0 integers based on backend expectations from html file
       const payload = { ...editData };
       payload.is_active = payload.is_active ? 1 : 0;
-    //   payload.IsRetry = payload.IsRetry ? 1 : 0;
-    //   payload.IsDQ = payload.IsDQ ? 1 : 0;
+      //   payload.IsRetry = payload.IsRetry ? 1 : 0;
+      //   payload.IsDQ = payload.IsDQ ? 1 : 0;
 
       // Trim whitespace-only cron values so they become empty (displays as "NULL")
       payload.schedule_cron = (payload.schedule_cron || "").trim() || null;
-      
+
       // Combine the split date and time fields into backend format "YYYY-MM-DD HH:MM:00"
       let formattedRunAt = "";
       if (payload._otr_date && payload._otr_time) {
@@ -114,9 +114,9 @@ const PipelineMetadata = () => {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            "is_active": payload.is_active,
-            "schedule_cron": payload.schedule_cron,
-            "one_time_run_at": formattedRunAt
+          "is_active": payload.is_active,
+          "schedule_cron": payload.schedule_cron,
+          "one_time_run_at": formattedRunAt
         }),
       });
 
@@ -141,12 +141,20 @@ const PipelineMetadata = () => {
   };
 
   return (
-    <div className="panel">
-      <div className="meta-page-header">
-        <div className="meta-page-title-block">
-          <h1>Pipeline Metadata</h1>
-          <p>Review and update pipeline attributes with the same structured, high-contrast table treatment used in the tickets view.</p>
+    <div className="panel" style={{ padding: '24px' }}>
+      {/* <div style={{ background: '#ffffff', border: '1px solid #dde3ee', borderRadius: '8px', padding: '16px 20px', marginBottom: '20px', boxShadow: '0 1px 3px rgba(14,23,38,0.04), 0 4px 20px rgba(14,23,38,0.07)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+          <div style={{ width: '4px', height: '18px', background: 'linear-gradient(180deg, #3b82f6, #a78bfa)', borderRadius: '2px' }}></div>
+          <div style={{ marginBottom: 0, color: '#0c58b7', fontSize: '14px', letterSpacing: '0.3px', fontWeight: 600 }}>Pipeline Metadata</div>
         </div>
+        <div style={{ marginBottom: 0, paddingLeft: '14px', fontSize: '11px', color: '#64748b' }}>Review and update pipeline attributes with the same structured, high-contrast table treatment used in the tickets view.</div>
+      </div> */}
+
+      <div className="pages-header">
+        <h1 className="pages-title">Pipeline Metadata</h1>
+        <p className="pages-description">
+          Review and update pipeline attributes with the same structured, high-contrast table treatment used in the tickets view
+        </p>
       </div>
 
       <div className="meta-table-shell">
@@ -175,130 +183,137 @@ const PipelineMetadata = () => {
             </thead>
 
             <tbody>
-              {displayedPipelines.map((p) => {
-                const rowId = p.pipeline_name;
-                const isEditing = editingId != null && editingId === rowId;
-                const data = isEditing ? editData : p;
+              {displayedPipelines.length === 0 ? (
+                <tr>
+                  <td colSpan="9" style={{ textAlign: "center", padding: "30px", color: "#64748b" }}>
+                    No pipeline metadata found
+                  </td>
+                </tr>
+              ) : (
+                displayedPipelines.map((p) => {
+                  const rowId = p.pipeline_name;
+                  const isEditing = editingId != null && editingId === rowId;
+                  const data = isEditing ? editData : p;
 
-                const isActiveChecked =
-                  data.is_active === 1 ||
-                  data.is_active === "1" ||
-                  data.is_active === true ||
-                  data.is_active === "true" ||
-                  data.is_active === "True";
-                
-                // const isRetryChecked = data.IsRetry == 1 || data.IsRetry === true;
-                // const isDqChecked = data.IsDQ == 1 || data.IsDQ === true;
+                  const isActiveChecked =
+                    data.is_active === 1 ||
+                    data.is_active === "1" ||
+                    data.is_active === true ||
+                    data.is_active === "true" ||
+                    data.is_active === "True";
 
-                return (
-                  <tr key={rowId} data-id={rowId} data-editing={isEditing}>
-                    <td className="PipelineName">
-                      {/* {isEditing ? (
-                        <input
-                          value={data.PipelineName || ""}
-                          onChange={(e) => handleEditChange("PipelineName", e.target.value)}
-                        />
-                      ) : (
-                    )} */}
-                    {p.pipeline_name}
-                    </td>
-                    <td className="PipelineType">
-                      {/* {isEditing ? (
-                        <input
-                          value={data.PipelineType || ""}
-                          onChange={(e) => handleEditChange("PipelineType", e.target.value)}
-                        />
-                      ) : (
-                    )} */}
-                    {p.category}
-                    </td>
-                    <td className="DataFactoryName">
-                      {/* {isEditing ? (
-                        <input
-                          value={data.DataFactoryName || ""}
-                          onChange={(e) => handleEditChange("DataFactoryName", e.target.value)}
-                        />
-                      ) : (
-                    )} */}
-                    {p.factory_name}
-                    </td>
-                    {/* <td className="Domain">
-                      {isEditing ? (
-                        <input
-                          value={data.Domain || ""}
-                          onChange={(e) => handleEditChange("Domain", e.target.value)}
-                        />
-                      ) : (
-                        p.domain || p.category
-                        )}
-                    </td> */}
-                    <td className="Criticality">
-                      {/* {isEditing ? (
-                        <input
-                          value={data.Criticality || ""}
-                          onChange={(e) => handleEditChange("Criticality", e.target.value)}
-                        />
-                      ) : (
+                  // const isRetryChecked = data.IsRetry == 1 || data.IsRetry === true;
+                  // const isDqChecked = data.IsDQ == 1 || data.IsDQ === true;
+
+                  return (
+                    <tr key={rowId} data-id={rowId} data-editing={isEditing}>
+                      <td className="PipelineName">
+                        {/* {isEditing ? (
+                          <input
+                            value={data.PipelineName || ""}
+                            onChange={(e) => handleEditChange("PipelineName", e.target.value)}
+                          />
+                        ) : (
                       )} */}
+                        {p.pipeline_name}
+                      </td>
+                      <td className="PipelineType">
+                        {/* {isEditing ? (
+                          <input
+                            value={data.PipelineType || ""}
+                            onChange={(e) => handleEditChange("PipelineType", e.target.value)}
+                          />
+                        ) : (
+                      )} */}
+                        {p.category}
+                      </td>
+                      <td className="DataFactoryName">
+                        {/* {isEditing ? (
+                          <input
+                            value={data.DataFactoryName || ""}
+                            onChange={(e) => handleEditChange("DataFactoryName", e.target.value)}
+                          />
+                        ) : (
+                      )} */}
+                        {p.factory_name}
+                      </td>
+                      {/* <td className="Domain">
+                        {isEditing ? (
+                          <input
+                            value={data.Domain || ""}
+                            onChange={(e) => handleEditChange("Domain", e.target.value)}
+                          />
+                        ) : (
+                          p.domain || p.category
+                          )}
+                      </td> */}
+                      <td className="Criticality">
+                        {/* {isEditing ? (
+                          <input
+                            value={data.Criticality || ""}
+                            onChange={(e) => handleEditChange("Criticality", e.target.value)}
+                          />
+                        ) : (
+                        )} */}
                         <span className={`t-prio ${p.Criticality ? p.Criticality.toLowerCase() : p.priority?.toLowerCase() || ""}`}>
                           {p.Criticality || p.priority}
                         </span>
-                    </td>
-                    <td className="SLA_Minutes">
-                      {/* {isEditing ? (
-                        <input
-                          type="number"
-                          value={data.SLA_Minutes || ""}
-                          onChange={(e) => handleEditChange("SLA_Minutes", e.target.value)}
-                        />
-                      ) : (
-                    )} */}
-                    {p.sla_minutes}
-                    </td>
-                    <td className="is_active">
-                      <label className="switch">
-                        <input
-                          type="checkbox"
-                          disabled={!isEditing}
-                          checked={isActiveChecked}
-                          onChange={(e) => handleEditChange("is_active", e.target.checked ? 1 : 0)}
-                        />
-                        <span className="slider"></span>
-                      </label>
-                    </td>
-                    {/* <td className="IsRetry">
-                      {isEditing ? (
-                        <input
-                          type="checkbox"
-                          checked={isRetryChecked}
-                          onChange={(e) => handleEditChange("IsRetry", e.target.checked ? 1 : 0)}
-                        />
-                      ) : (
-                        p.IsRetry || 'Not Set'
-                      )}
-                    </td>
-                    <td className="IsDQ">
-                      {isEditing ? (
-                        <input
-                          type="checkbox"
-                          checked={isDqChecked}
-                          onChange={(e) => handleEditChange("IsDQ", e.target.checked ? 1 : 0)}
-                        />
-                      ) : (
-                        p.IsDQ || 'Not Set'
-                      )}
-                    </td> */}
-                    <td className="schedule_cron">
-                      {isEditing ? (
-                        <input
-                          value={data.schedule_cron || ""}
-                          onChange={(e) => handleEditChange("schedule_cron", e.target.value)}
-                        />
-                      ) : (
-                        p.schedule_cron || 'NULL'
-                      )}
-                    </td>
-                    <td className="one_time_run_at">
+                      </td>
+                      <td className="SLA_Minutes">
+                        {/* {isEditing ? (
+                          <input
+                            type="number"
+                            value={data.SLA_Minutes || ""}
+                            onChange={(e) => handleEditChange("SLA_Minutes", e.target.value)}
+                          />
+                        ) : (
+                      )} */}
+                        {p.sla_minutes}
+                      </td>
+                      <td className="is_active">
+                        <label className="switch">
+                          <input
+                            type="checkbox"
+                            disabled={!isEditing}
+                            checked={isActiveChecked}
+                            onChange={(e) => handleEditChange("is_active", e.target.checked ? 1 : 0)}
+                          />
+                          <span className="slider"></span>
+                        </label>
+                      </td>
+                      {/* <td className="IsRetry">
+                        {isEditing ? (
+                          <input
+                            type="checkbox"
+                            checked={isRetryChecked}
+                            onChange={(e) => handleEditChange("IsRetry", e.target.checked ? 1 : 0)}
+                          />
+                        ) : (
+                          p.IsRetry || 'Not Set'
+                        )}
+                      </td>
+                      <td className="IsDQ">
+                        {isEditing ? (
+                          <input
+                            type="checkbox"
+                            checked={isDqChecked}
+                            onChange={(e) => handleEditChange("IsDQ", e.target.checked ? 1 : 0)}
+                          />
+                        ) : (
+                          p.IsDQ || 'Not Set'
+                        )}
+                      </td> */}
+                      <td className="schedule_cron">
+                        {isEditing ? (
+                          <input
+                            value={data.schedule_cron || ""}
+                            onChange={(e) => handleEditChange("schedule_cron", e.target.value)}
+                          />
+                        ) : (
+                          p.schedule_cron || 'NULL'
+                        )}
+                      </td>
+                      <td className="one_time_run_at">
                         {isEditing ? (
                           <div className="otr-datetime-wrap">
                             <input
@@ -315,26 +330,27 @@ const PipelineMetadata = () => {
                         ) : (
                           p.one_time_run_at || 'NULL'
                         )}
-                    </td>
-                    <td>
-                      {isEditing ? (
-                        <>
-                          <button className="save-btn" onClick={saveEdit}>
-                            Save
+                      </td>
+                      <td>
+                        {isEditing ? (
+                          <>
+                            <button className="save-btn" onClick={saveEdit}>
+                              Save
+                            </button>
+                            <button className="cancel-btn" onClick={cancelEdit}>
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
+                          <button className="edit-btn" onClick={() => startEdit(p)}>
+                            Edit
                           </button>
-                          <button className="cancel-btn" onClick={cancelEdit}>
-                            Cancel
-                          </button>
-                        </>
-                      ) : (
-                        <button className="edit-btn" onClick={() => startEdit(p)}>
-                          Edit
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>

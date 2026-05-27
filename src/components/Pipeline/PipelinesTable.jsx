@@ -33,7 +33,7 @@ export default function PipelinesTable() {
       console.error("Fetch error:", err);
       toast.error("Failed to load pipelines ❌");
     } finally {
-      setLoading(false);
+      setLoading(true);
     }
   };
 
@@ -258,7 +258,7 @@ export default function PipelinesTable() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="5" style={{ textAlign: "center" }}>
+                    <td colSpan={5} style={{ textAlign: "center", display: "table-cell" }}>
                       <div className="loader-container">
                         <div className="spinner"></div>
                       </div>
@@ -266,8 +266,10 @@ export default function PipelinesTable() {
                   </tr>
                 ) : pipelines.length === 0 ? (
                   <tr>
-                    <td className="no-data">
-                      No pipelines available
+                    <td colSpan={5} style={{ textAlign: "center", display: "table-cell" }}>
+                      <div className="no-data">
+                        No pipelines available
+                      </div>
                     </td>
                   </tr>
                 ) : (

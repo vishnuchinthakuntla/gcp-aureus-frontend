@@ -3,7 +3,6 @@ import "./TicketsTable.css";
 import useAgentStore from "../../stores/useAgentStore";
 import { STATUS_CLS } from "./TicketsDrawer";
 
-/* Helper: convert time → "2h 10m ago" */
 function timeAgo(dateStr) {
   if (!dateStr) return "—";
 
@@ -54,10 +53,10 @@ function TicketsTable() {
         pipeline: t.title,
         slABreach: t.sla_breached ? "YES" : "NO",
 
-       
+
         ticketType: 0,
 
-        raw: t, // keep original (useful for drawer)
+        raw: t,
       };
     });
   }, [tickets]);

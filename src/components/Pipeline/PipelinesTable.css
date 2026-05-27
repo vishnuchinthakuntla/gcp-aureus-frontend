@@ -4,7 +4,7 @@
   border-radius: 12px;
   padding: 12px;
   margin-top: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .main-content {
@@ -171,11 +171,13 @@
   gap: 6px;
   flex-wrap: wrap;
 }
+
 /* LOADER */
 .loader-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
   padding: 30px 0;
 }
 
@@ -217,6 +219,7 @@
 .logs-btn:hover {
   background: #1d4ed8;
 }
+
 .stop-btn {
   background-color: #ff4d4f;
   color: white;

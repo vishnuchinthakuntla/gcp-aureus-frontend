@@ -32,11 +32,11 @@ const ScoreGrid = ({ summary }) => {
   );
 };
 
-const Filters = ({ filters, setFilters, pipelineOptions, onExport }) => {
-  const [localSearch, setLocalSearch] = useState(filters.search || '');
+const Filters = ({ filters, setFilters, pipelineOptions, onExport, onApply, onSearch }) => {
+  const [localSearch, setLocalSearch] = useState('');
 
   const handleSearch = () => {
-    setFilters({ ...filters, search: localSearch });
+    onSearch(localSearch);
   };
 
   const handleKeyDown = (e) => {
@@ -70,6 +70,10 @@ const Filters = ({ filters, setFilters, pipelineOptions, onExport }) => {
           <option value="failed">Failure</option>
         </select>
       </div>
+      <div className="pr-filter-group">
+        <div className="pr-filter-label">&nbsp;</div>
+        <button className="pr-btn-primary" onClick={() => onApply && onApply()} style={{ height: '34px', padding: '0 16px', borderRadius: '6px', border: 'none', background: '#0c58b7', color: 'white', cursor: 'pointer', fontWeight: 500, fontSize: '13px' }}>Apply</button>
+      </div>
       <div className="pr-filter-group" style={{ flex: 1 }}>
         <div className="pr-filter-label">Search</div>
         <div className="pr-search-wrap">
@@ -95,21 +99,6 @@ const Filters = ({ filters, setFilters, pipelineOptions, onExport }) => {
 
 const PipelineModal = ({ isOpen, onClose, runId, pipelineName, agentStages, runData }) => {
   const [openStates, setOpenStates] = useState({});
-
-  /*
-  useEffect(() => {
-    if (isOpen && runId) {
-      setLoading(true);
-      Promise.all([
-        fetch(`/api/pipeline-run/${runId}`).then(res => res.json()).catch(() => ({})),
-        fetch(`/api/pipeline-run-stages/${runId}`).then(res => res.json()).catch(() => [])
-      ]).then(([run, stgs]) => {
-        setRunData(run);
-        setStages(Array.isArray(stgs) ? stgs : []);
-        setLoading(false);
-      });
-    }
-  }, [isOpen, runId]); */
 
   if (!isOpen) return null;
 
@@ -223,16 +212,19 @@ const PipelineRuns = () => {
   const [filteredRuns, setFilteredRuns] = useState([]);
   const [pipelineOptions, setPipelineOptions] = useState([]);
 
-  const [filters, setFilters] = useState(() => {
+  const [draftFilters, setDraftFilters] = useState(() => {
     try {
       const stored = localStorage.getItem('pr-filters')
       if (stored) {
         const parsed = JSON.parse(stored)
-        return { ...parsed, search: '' } // search is never restored
+        return { ...parsed, search: '' }
       }
     } catch { /* ignore */ }
     return { dateFrom: sevenDaysAgoStr, dateTo: todayStr, pipeline: '', status: '', search: '' }
   });
+
+  const [appliedFilters, setAppliedFilters] = useState(draftFilters);
+  const [activeSearch, setActiveSearch] = useState('');
 
   const [sortConfig, setSortConfig] = useState({ key: 'date', direction: -1 });
   const [currentPage, setCurrentPage] = useState(1);
@@ -240,21 +232,25 @@ const PipelineRuns = () => {
 
   const [modalState, setModalState] = useState({ isOpen: false, runId: null, pipelineName: '', agentStages: [], runData: {} });
 
+  const handleApply = () => {
+    setAppliedFilters(draftFilters);
+  };
+
   // Persist filters (excluding transient search) to localStorage
   useEffect(() => {
     try {
-      const { search, ...toSave } = filters
+      const { search, ...toSave } = appliedFilters
       localStorage.setItem('pr-filters', JSON.stringify(toSave))
     } catch { /* ignore */ }
-  }, [filters])
+  }, [appliedFilters])
 
   useEffect(() => {
     fetchRuns();
-  }, [filters.dateFrom, filters.dateTo, filters.pipeline, filters.status]);
+  }, [appliedFilters.dateFrom, appliedFilters.dateTo, appliedFilters.pipeline, appliedFilters.status]);
 
   const fetchRuns = async () => {
     try {
-      const { pipeline, status, dateFrom, dateTo } = filters;
+      const { pipeline, status, dateFrom, dateTo } = appliedFilters;
       let apiStatus = status;
       if (apiStatus === 'success') apiStatus = 'succeeded';
       if (apiStatus === 'failure') apiStatus = 'failed';
@@ -262,6 +258,7 @@ const PipelineRuns = () => {
       const res = await fetch(`/api/pipelines/run-log?pipeline=${pipeline}&status=${apiStatus}&from=${dateFrom}&to=${dateTo}`);
       if (!res.ok) {
         setTimeout(() => fetchRuns(), 3000);
+        return;
       }
       const data = await res.json();
       const mappedRuns = data.execution_runs.map(r => ({
@@ -288,8 +285,8 @@ const PipelineRuns = () => {
     // Apply search and sort
     let result = [...runs];
 
-    if (filters.search) {
-      const q = filters.search.toLowerCase();
+    if (activeSearch) {
+      const q = activeSearch.toLowerCase();
       result = result.filter(r =>
         (r.pipeline && r.pipeline.toLowerCase().includes(q)) ||
         (r.id && r.id.toLowerCase().includes(q))
@@ -311,7 +308,7 @@ const PipelineRuns = () => {
 
     setFilteredRuns(result);
     setCurrentPage(1); // reset to page 1 on filter/sort change
-  }, [runs, filters.search, sortConfig]);
+  }, [runs, activeSearch, sortConfig]);
 
   const handleSort = (key) => {
     setSortConfig(prev => ({
@@ -342,18 +339,18 @@ const PipelineRuns = () => {
   };
 
   return (
-    <div>
-      <div style={{ background: '#ffffff', border: '1px solid #dde3ee', borderRadius: '8px', padding: '16px 20px', marginBottom: '20px', boxShadow: '0 1px 3px rgba(14,23,38,0.04), 0 4px 20px rgba(14,23,38,0.07)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-          <div style={{ width: '4px', height: '18px', background: 'linear-gradient(180deg, #3b82f6, #a78bfa)', borderRadius: '2px' }}></div>
-          <div className="pr-page-title" style={{ marginBottom: 0, color: '#0c58b7', fontSize: '14px', letterSpacing: '0.3px' }}>Pipeline Run Log</div>
-        </div>
-        <div className="pr-page-sub" style={{ marginBottom: 0, paddingLeft: '14px', fontSize: '11px' }}>Pipeline-wise execution history — click any pipeline name to view its data flow</div>
+    <>
+      {/* ─── Main Header ─── */}
+      <div className="pages-header">
+        <h1 className="pages-title">Pipeline Runs Log</h1>
+        <p className="pages-description">
+          Pipeline-wise execution history — click any pipeline name to view its data flow
+        </p>
       </div>
 
-      <ScoreGrid runs={filteredRuns} />
+      <ScoreGrid summary={summary} />
 
-      <Filters filters={filters} setFilters={setFilters} pipelineOptions={pipelineOptions} onExport={exportCSV} />
+      <Filters filters={draftFilters} setFilters={setDraftFilters} pipelineOptions={pipelineOptions} onExport={exportCSV} onApply={handleApply} onSearch={setActiveSearch} />
 
       <div className="pr-card">
         <div className="pr-card-head">
@@ -438,7 +435,7 @@ const PipelineRuns = () => {
         agentStages={modalState.agentStages}
         runData={modalState.runData}
       />
-    </div>
+    </>
   );
 };
 

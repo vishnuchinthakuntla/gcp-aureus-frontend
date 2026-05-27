@@ -302,6 +302,10 @@
   vertical-align: middle;
 }
 
+.pr-table :is(td, th):nth-child(3) {
+  width: 250px;
+}
+
 .pr-td-date {
   font-size: 11px;
   color: #64748b;
@@ -327,7 +331,7 @@
 .pr-status-badge {
   display: inline-flex;
   align-items: center;
-  width: 100px;
+  width: 150px;
   gap: 6px;
   padding: 4px 10px;
   border-radius: 5px;

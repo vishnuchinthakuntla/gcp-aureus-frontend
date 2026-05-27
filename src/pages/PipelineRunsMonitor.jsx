@@ -70,43 +70,61 @@ const todayStr = toDateStr(new Date())
 const sevenDaysAgoStr = toDateStr(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))
 
 const PipelineRunsMonitor = () => {
+  const [draftDateFrom, setDraftDateFrom] = usePersistedState('prm-draftDateFrom', sevenDaysAgoStr)
+  const [draftDateTo, setDraftDateTo] = usePersistedState('prm-draftDateTo', todayStr)
+  const [draftPipeline, setDraftPipeline] = usePersistedState('prm-draftPipeline', '')
+  const [draftAgent, setDraftAgent] = usePersistedState('prm-draftAgent', '')
+
   const [dateFrom, setDateFrom] = usePersistedState('prm-dateFrom', sevenDaysAgoStr)
   const [dateTo, setDateTo] = usePersistedState('prm-dateTo', todayStr)
-  const [searchValue, setSearchValue] = useState('')
   const [pipeline, setPipeline] = usePersistedState('prm-pipeline', '')
-  const [liveEnabled, setLiveEnabled] = usePersistedState('prm-liveEnabled', true)
   const [agent, setAgent] = usePersistedState('prm-agent', '')
+  const [liveEnabled, setLiveEnabled] = usePersistedState('prm-liveEnabled', true)
+  const [searchValue, setSearchValue] = useState('')
   const [pipelineOptions, setPipelineOptions] = useState([])
   const [rows, setRows] = useState([])
+  const [loading, setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const rowsPerPage = 10
 
+  const handleApplyFilters = () => {
+    setDateFrom(draftDateFrom)
+    setDateTo(draftDateTo)
+    setPipeline(draftPipeline)
+    setAgent(draftAgent)
+  }
+
   const fetchPipelineRuns = async (search = '') => {
-    const queryParams = new URLSearchParams();
-    queryParams.append('start_date', dateFrom);
-    queryParams.append('end_date', dateTo);
-    queryParams.append('pipeline_name', pipeline);
-    queryParams.append('agent', agent)
-    if (search) queryParams.append('search', search);
-    const url = `/api/pipelines/monitoring?${queryParams.toString()}`
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!response.ok || !response) {
-      setTimeout(() => fetchPipelineRuns(search), 3000)
-      return
+    setLoading(true);
+    try {
+      const queryParams = new URLSearchParams();
+      queryParams.append('start_date', dateFrom);
+      queryParams.append('end_date', dateTo);
+      queryParams.append('pipeline_name', pipeline);
+      queryParams.append('agent', agent)
+      if (search) queryParams.append('search', search);
+      const url = `/api/pipelines/monitoring?${queryParams.toString()}`
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok || !response) {
+        setTimeout(() => fetchPipelineRuns(search), 3000)
+        return
+      }
+      const data = await response.json()
+      setRows(data.logs || [])
+      setPipelineOptions(data.pipelines || [])
+    } finally {
+      setLoading(false);
     }
-    const data = await response.json()
-    setRows(data.logs || [])
-    setPipelineOptions(data.pipelines || [])
   }
 
   useEffect(() => {
     fetchPipelineRuns()
-  }, [dateFrom, dateTo, pipeline])
+  }, [dateFrom, dateTo, pipeline, agent])
 
   // useEffect(() => {
   //   loadPipelines();
@@ -158,6 +176,14 @@ const PipelineRunsMonitor = () => {
 
   return (
     <>
+      {/* ─── Main Header ─── */}
+      <div className="pages-header">
+        <h1 className="pages-title">Pipeline Runs Monitor</h1>
+        <p className="pages-description">
+          Monitor running pipelines, their status, and execution details.
+        </p>
+      </div>
+
       {/* ─── Filter Bar ─── */}
       <div className="filters">
         <div className="filter-group">
@@ -166,8 +192,8 @@ const PipelineRunsMonitor = () => {
             type="date"
             className="fi"
             id="dateFrom"
-            value={dateFrom}
-            onChange={(e) => setDateFrom(e.target.value)}
+            value={draftDateFrom}
+            onChange={(e) => setDraftDateFrom(e.target.value)}
           />
         </div>
 
@@ -177,8 +203,8 @@ const PipelineRunsMonitor = () => {
             type="date"
             className="fi"
             id="dateTo"
-            value={dateTo}
-            onChange={(e) => setDateTo(e.target.value)}
+            value={draftDateTo}
+            onChange={(e) => setDraftDateTo(e.target.value)}
           />
         </div>
 
@@ -186,8 +212,8 @@ const PipelineRunsMonitor = () => {
           <div className="filter-label">Pipeline</div>
           <CustomSelect
             id="pipeFilter"
-            value={pipeline}
-            onChange={(val) => setPipeline(val)}
+            value={draftPipeline}
+            onChange={(val) => setDraftPipeline(val)}
             placeholder="All Pipelines"
             options={pipelineOptions.map(p => ({ label: p, value: p }))}
           />
@@ -197,8 +223,8 @@ const PipelineRunsMonitor = () => {
           <div className="filter-label">Agent</div>
           <CustomSelect
             id="agentFilter"
-            value={agent}
-            onChange={(val) => setAgent(val)}
+            value={draftAgent}
+            onChange={(val) => setDraftAgent(val)}
             placeholder="All Agents"
             options={[
               { label: "Observer", value: "observer" },
@@ -208,6 +234,11 @@ const PipelineRunsMonitor = () => {
               { label: "Data Quality", value: "dataquality" }
             ]}
           />
+        </div>
+
+        <div className="filter-group">
+          <div className="filter-label">&nbsp;</div>
+          <button className="pr-btn-primary" onClick={handleApplyFilters} style={{ height: '34px', padding: '0 16px', borderRadius: '6px', border: 'none', background: '#0c58b7', color: 'white', cursor: 'pointer', fontWeight: 500, fontSize: '13px' }}>Apply</button>
         </div>
 
         <div className="filter-group" style={{ flex: 1 }}>
@@ -279,18 +310,34 @@ const PipelineRunsMonitor = () => {
               </tr>
             </thead>
             <tbody id="tableBody">
-              {paginatedRows?.map((row, idx) => (
-                <tr key={row.id ?? idx}>
-                  <td>{row.date}</td>
-                  <td>{row.pipeline.toString()}</td>
-                  <td>
-                    <span className={`agent-badge ${AGENT_BADGE[row.agent]?.cls}`}>
-                      {AGENT_BADGE[row.agent]?.label}
-                    </span>
+              {loading ? (
+                <tr>
+                  <td colSpan="4" style={{ textAlign: 'center', padding: '30px' }}>
+                    <div className="loader-container">
+                      <div className="spinner"></div>
+                    </div>
                   </td>
-                  <td>{row.message}</td>
                 </tr>
-              ))}
+              ) : paginatedRows?.length === 0 ? (
+                <tr>
+                  <td colSpan="4" style={{ textAlign: 'center', padding: '30px', color: '#64748b' }}>
+                    No live events found
+                  </td>
+                </tr>
+              ) : (
+                paginatedRows?.map((row, idx) => (
+                  <tr key={row.id ?? idx}>
+                    <td>{row.date}</td>
+                    <td>{row.pipeline.toString()}</td>
+                    <td>
+                      <span className={`agent-badge ${AGENT_BADGE[row.agent]?.cls}`}>
+                        {AGENT_BADGE[row.agent]?.label}
+                      </span>
+                    </td>
+                    <td>{row.message}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

@@ -120,9 +120,9 @@ const PipelineHistory = () => {
 
   return (
     <>
-      <div id="ph-header">
-        <h1 id="ph-title">Pipeline History</h1>
-        <p id="ph-description">Explore performance metrics and execution details for all your data pipelines</p>
+      <div className="pages-header">
+        <h1 className="pages-title">Pipeline History</h1>
+        <p className="pages-description">Explore performance metrics and execution details for all your data pipelines</p>
       </div>
 
       {/* ── FILTER ROW ── */}

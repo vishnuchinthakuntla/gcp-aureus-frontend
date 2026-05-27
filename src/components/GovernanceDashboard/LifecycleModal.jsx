@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import "./LifecycleModal.css";
 
 export default function LifecycleModal({ data, onClose }) {
@@ -29,7 +30,7 @@ export default function LifecycleModal({ data, onClose }) {
     fetchStages();
   }, [data.threadId]); */
 
-  return (
+  return createPortal(
     <div className="modal-overlay">
       <div className="modal">
         {/* Header */}
@@ -120,7 +121,7 @@ export default function LifecycleModal({ data, onClose }) {
                   statusLower === "completed"
                     ? "done"
                     : statusLower === "in_progress" ||
-                        statusLower === "breached"
+                      statusLower === "breached"
                       ? "active"
                       : "idle";
 
@@ -156,81 +157,80 @@ export default function LifecycleModal({ data, onClose }) {
           </div>
 
           {/* ✅ Cards NEXT LINE */}
-         <div className="modal-timeline" id="modal-timeline">
-  {(() => {
-    const steps = Array.isArray(data.steps) ? data.steps : [];
+          <div className="modal-timeline" id="modal-timeline">
+            {(() => {
+              const steps = Array.isArray(data.steps) ? data.steps : [];
 
-    return steps.map((step, i) => {
-      const statusLower = step.status
-        ? step.status.toLowerCase()
-        : "idle";
+              return steps.map((step, i) => {
+                const statusLower = step.status
+                  ? step.status.toLowerCase()
+                  : "idle";
 
-      const state =
-        statusLower === "completed"
-          ? "done"
-          : statusLower === "running" || statusLower === "in_progress"
-          ? "active"
-          : "idle";
+                const state =
+                  statusLower === "completed"
+                    ? "done"
+                    : statusLower === "running" || statusLower === "in_progress"
+                      ? "active"
+                      : "idle";
 
-      return (
-        <React.Fragment key={i}>
-          {/* ✅ CARD */}
-          <div
-            className={`mt-card ${
-              state === "done"
-                ? "done-card"
-                : state === "active"
-                ? "active-card"
-                : ""
-            }`}
-          >
-            <div
-              className={`mt-stage ${state} truncate-text`}
-              data-fulltext={step.step_name}
-            >
-              {step.step_name.split(".")[0]}
-            </div>
+                return (
+                  <React.Fragment key={i}>
+                    {/* ✅ CARD */}
+                    <div
+                      className={`mt-card ${state === "done"
+                          ? "done-card"
+                          : state === "active"
+                            ? "active-card"
+                            : ""
+                        }`}
+                    >
+                      <div
+                        className={`mt-stage ${state} truncate-text`}
+                        data-fulltext={step.stage}
+                      >
+                        {step.stage.split(".")[0]}
+                      </div>
 
-            <div
-              className="mt-agent truncate-text"
-              data-fulltext={step.step_name}
-            >
-              {step.step_name.toLowerCase()}
-            </div>
+                      <div
+                        className="mt-agent truncate-text"
+                        data-fulltext={step.stage}
+                      >
+                        {step.stage.toLowerCase()}
+                      </div>
 
-            <div className={`mt-duration ${state}`}>--</div>
+                      <div className={`mt-duration ${state}`}>--</div>
 
-            <div className="mt-status">
-              <span
-                className={`lcm-status ${
-                  state === "done"
-                    ? "ok"
-                    : state === "active"
-                    ? "info"
-                    : ""
-                }`}
-              >
-                {state === "done"
-                  ? "✔ Done"
-                  : state === "active"
-                  ? "● Running"
-                  : "Queued"}
-              </span>
-            </div>
+                      <div className="mt-status">
+                        <span
+                          className={`lcm-status ${state === "done"
+                              ? "ok"
+                              : state === "active"
+                                ? "info"
+                                : ""
+                            }`}
+                        >
+                          {state === "done"
+                            ? "✔ Done"
+                            : state === "active"
+                              ? "● Running"
+                              : "Queued"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* ✅ ARROW (not after last item) */}
+                    {i < steps.length - 1 && (
+                      <div className="step-arrow">→</div>
+                    )}
+                  </React.Fragment>
+                );
+              });
+            })()}
           </div>
-
-          {/* ✅ ARROW (not after last item) */}
-          {i < steps.length - 1 && (
-            <div className="step-arrow">→</div>
-          )}
-        </React.Fragment>
-      );
-    });
-  })()}
-</div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

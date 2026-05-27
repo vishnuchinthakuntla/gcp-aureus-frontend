@@ -85,167 +85,167 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
 
     return (
       <>
-      <div className="agent-run-card">
-        {/* ── Card Header ── */}
-        <div className="arc-header">
-          <div className="arc-header-left">
-            <span className="arc-date">{dateLabel}{timeLabel ? ` · ${timeLabel}` : ''}</span>
-            {duration && <span className="arc-duration">{duration} duration</span>}
-          </div>
-          <div className="arc-header-right">
-            {confPct != null && (
-              <>
-                <span className="arc-conf-label">Confidence</span>
-                <div className="arc-conf-bar">
-                  <div
-                    className="arc-conf-fill"
-                    style={{
-                      width: `${confPct}%`,
-                      background: confPct >= 70 ? '#10d9a0' : confPct >= 40 ? '#f5a524' : '#e02d46',
-                    }}
-                  />
-                </div>
-                <span className="arc-conf-val" style={{ color: confPct >= 70 ? '#10d9a0' : confPct >= 40 ? '#f5a524' : '#e02d46' }}>
-                  {confidence}
-                </span>
-              </>
-            )}
-            {healable != null && (
-              <span className={`arc-heal-badge ${healable ? 'healable' : 'not-healable'}`}>
-                {healable ? 'Healable' : 'Not healable'}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* ── Body ── */}
-        <div className="arc-body">
-          {selectedAgent === "rca" || selectedAgent === "decision" ? (
-            <button className="arc-button" onClick={() => setIsAnalysisModalOpen(true)}>Show History</button>
-          ) : null}
-          {/* RCA-specific fields */}
-          {rootCause && (
-            <>
-              <div className="arc-section-label">ROOT CAUSE</div>
-              <div className="arc-root-cause">
-                <span className="arc-rc-text">{rootCause}</span>
-                {category && <span className="arc-cat-badge">{category}</span>}
-              </div>
-            </>
-          )}
-
-          {/* Decision-agent fallback */}
-          {!rootCause && action && (
-            <>
-              <div className="arc-section-label">DECISION</div>
-              <div className="arc-root-cause">
-                <span className="arc-rc-text" style={{ textTransform: 'capitalize' }}>{action}</span>
-                {priority && <span className="arc-cat-badge">{priority}</span>}
-              </div>
-              {reasoning && <div className="arc-reasoning">{reasoning}</div>}
-              {businessImpact && (
+        <div className="agent-run-card">
+          {/* ── Card Header ── */}
+          <div className="arc-header">
+            <div className="arc-header-left">
+              <span className="arc-date">{dateLabel}{timeLabel ? ` · ${timeLabel}` : ''}</span>
+              {duration && <span className="arc-duration">{duration} duration</span>}
+            </div>
+            <div className="arc-header-right">
+              {confPct != null && (
                 <>
-                  <div className="arc-section-label" style={{ marginTop: '12px' }}>BUSINESS IMPACT</div>
-                  <div className="arc-reasoning">{businessImpact}</div>
+                  <span className="arc-conf-label">Confidence</span>
+                  <div className="arc-conf-bar">
+                    <div
+                      className="arc-conf-fill"
+                      style={{
+                        width: `${confPct}%`,
+                        background: confPct >= 70 ? '#10d9a0' : confPct >= 40 ? '#f5a524' : '#e02d46',
+                      }}
+                    />
+                  </div>
+                  <span className="arc-conf-val" style={{ color: confPct >= 70 ? '#10d9a0' : confPct >= 40 ? '#f5a524' : '#e02d46' }}>
+                    {confidence}
+                  </span>
                 </>
               )}
-            </>
-          )}
-
-          {/* Recommended Actions */}
-          {actions.length > 0 && (
-            <>
-              <div className="arc-section-label">RECOMMENDED ACTIONS</div>
-              <ol className="arc-actions-list">
-                {actions.map((a, i) => (
-                  <li key={i}>
-                    <span className="arc-action-num">{i + 1}</span>
-                    <span>{a}</span>
-                  </li>
-                ))}
-              </ol>
-            </>
-          )}
-
-          {isSelfHeal && agentInfo && (
-            <>
-              <div className="arc-section-label">SELF-HEAL SUMMARY</div>
-              <div className="arc-root-cause">
-                <span className="arc-rc-text">{selfHealActionTaken || 'Self-heal attempted'}</span>
-                <span className={`arc-cat-badge ${selfHealSuccess ? 'healable' : selfHealNeedsRetry ? 'not-healable' : 'not-healable'}`}>
-                  {selfHealSuccess ? 'Success' : selfHealNeedsRetry ? 'Retry pending' : 'Failed'}
+              {healable != null && (
+                <span className={`arc-heal-badge ${healable ? 'healable' : 'not-healable'}`}>
+                  {healable ? 'Healable' : 'Not healable'}
                 </span>
-              </div>
-              <div className="arc-reasoning">
-                Attempt {selfHealAttemptCount ?? 'N/A'}{selfHealJobId ? ` · Job ID: ${selfHealJobId}` : ''}
-              </div>
-              {selfHealError && (
-                <div className="arc-reasoning" style={{ marginTop: '8px', color: '#e02d46' }}>
-                  {selfHealError}
-                </div>
               )}
-            </>
-          )}
+            </div>
+          </div>
 
-          {/* Show internal steps */}
-          {agentLogs.length > 0 && (
-            <>
-              <button className="arc-steps-toggle" onClick={() => togglePanel('steps')}>
-                {openPanels.steps ? '▲' : '▼'} {openPanels.steps ? 'Hide' : 'Show'} internal steps
-              </button>
+          {/* ── Body ── */}
+          <div className="arc-body">
+            {selectedAgent === "rca" || selectedAgent === "decision" ? (
+              <button className="arc-button" onClick={() => setIsAnalysisModalOpen(true)}>Show History</button>
+            ) : null}
+            {/* RCA-specific fields */}
+            {rootCause && (
+              <>
+                <div className="arc-section-label">ROOT CAUSE</div>
+                <div className="arc-root-cause">
+                  <span className="arc-rc-text">{rootCause}</span>
+                  {category && <span className="arc-cat-badge">{category}</span>}
+                </div>
+              </>
+            )}
 
-              {openPanels.steps && (
-                <div className="arc-steps">
-                  {agentLogs.map((log, i) => {
-                    const level = (log.level || 'info').toLowerCase()
-                    const isError = level === 'error' || level === 'critical'
-                    const time = new Date(log.logged_at).toLocaleTimeString()
-                    const id = log.log_id || `${groupKey}-${i}`
-                    const isExpanded = !!expandedLogs[id]
+            {/* Decision-agent fallback */}
+            {!rootCause && action && (
+              <>
+                <div className="arc-section-label">DECISION</div>
+                <div className="arc-root-cause">
+                  <span className="arc-rc-text" style={{ textTransform: 'capitalize' }}>{action}</span>
+                  {priority && <span className="arc-cat-badge">{priority}</span>}
+                </div>
+                {reasoning && <div className="arc-reasoning">{reasoning}</div>}
+                {businessImpact && (
+                  <>
+                    <div className="arc-section-label" style={{ marginTop: '12px' }}>BUSINESS IMPACT</div>
+                    <div className="arc-reasoning">{businessImpact}</div>
+                  </>
+                )}
+              </>
+            )}
 
-                    let agentColorVar = 'var(--text-primary)'
-                    let agentBgVar = 'var(--bg-elevated)'
-                    const nodeLower = (log.agent_node || '').toLowerCase()
-                    if (nodeLower.includes('observer')) { agentColorVar = 'var(--observer)'; agentBgVar = 'var(--observer-lt)' }
-                    else if (nodeLower.includes('rca')) { agentColorVar = 'var(--rca)'; agentBgVar = 'var(--rca-lt)' }
-                    else if (nodeLower.includes('decision')) { agentColorVar = 'var(--decision)'; agentBgVar = 'var(--decision-lt)' }
-                    else if (nodeLower.includes('heal') || nodeLower.includes('ticket')) { agentColorVar = 'var(--healing)'; agentBgVar = 'var(--healing-lt)' }
-                    else if (nodeLower.includes('quality')) { agentColorVar = 'var(--quality)'; agentBgVar = 'var(--quality-lt)' }
-                    else if (nodeLower.includes('gov')) { agentColorVar = 'var(--governance)'; agentBgVar = 'var(--governance-lt)' }
+            {/* Recommended Actions */}
+            {actions.length > 0 && (
+              <>
+                <div className="arc-section-label">RECOMMENDED ACTIONS</div>
+                <ol className="arc-actions-list">
+                  {actions.map((a, i) => (
+                    <li key={i}>
+                      <span className="arc-action-num">{i + 1}</span>
+                      <span>{a}</span>
+                    </li>
+                  ))}
+                </ol>
+              </>
+            )}
 
-                    return (
-                      <div
-                        key={id}
-                        className="tl-row"
-                        style={{ borderLeft: `2px solid ${agentColorVar}`, marginBottom: '2px' }}
-                        onClick={() => toggleLogExpansion(id)}
-                      >
-                        <span
-                          className={isError ? 'err-badge' : 'badge'}
-                          style={!isError ? { color: agentColorVar, backgroundColor: agentBgVar, border: `1px solid ${agentColorVar}` } : {}}
+            {isSelfHeal && agentInfo && (
+              <>
+                <div className="arc-section-label">SELF-HEAL SUMMARY</div>
+                <div className="arc-root-cause">
+                  <span className="arc-rc-text">{selfHealActionTaken || 'Self-heal attempted'}</span>
+                  <span className={`arc-cat-badge ${selfHealSuccess ? 'healable' : selfHealNeedsRetry ? 'not-healable' : 'not-healable'}`}>
+                    {selfHealSuccess ? 'Success' : selfHealNeedsRetry ? 'Retry pending' : 'Failed'}
+                  </span>
+                </div>
+                <div className="arc-reasoning">
+                  Attempt {selfHealAttemptCount ?? 'N/A'}{selfHealJobId ? ` · Job ID: ${selfHealJobId}` : ''}
+                </div>
+                {selfHealError && (
+                  <div className="arc-reasoning" style={{ marginTop: '8px', color: '#e02d46' }}>
+                    {selfHealError}
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Show internal steps */}
+            {agentLogs.length > 0 && (
+              <>
+                <button className="arc-steps-toggle" onClick={() => togglePanel('steps')}>
+                  {openPanels.steps ? '▲' : '▼'} {openPanels.steps ? 'Hide' : 'Show'} internal steps
+                </button>
+
+                {openPanels.steps && (
+                  <div className="arc-steps">
+                    {agentLogs.map((log, i) => {
+                      const level = (log.level || 'info').toLowerCase()
+                      const isError = level === 'error' || level === 'critical'
+                      const time = new Date(log.logged_at).toLocaleTimeString()
+                      const id = log.log_id || `${groupKey}-${i}`
+                      const isExpanded = !!expandedLogs[id]
+
+                      let agentColorVar = 'var(--text-primary)'
+                      let agentBgVar = 'var(--bg-elevated)'
+                      const nodeLower = (log.agent_node || '').toLowerCase()
+                      if (nodeLower.includes('observer')) { agentColorVar = 'var(--observer)'; agentBgVar = 'var(--observer-lt)' }
+                      else if (nodeLower.includes('rca')) { agentColorVar = 'var(--rca)'; agentBgVar = 'var(--rca-lt)' }
+                      else if (nodeLower.includes('decision')) { agentColorVar = 'var(--decision)'; agentBgVar = 'var(--decision-lt)' }
+                      else if (nodeLower.includes('heal') || nodeLower.includes('ticket')) { agentColorVar = 'var(--healing)'; agentBgVar = 'var(--healing-lt)' }
+                      else if (nodeLower.includes('quality')) { agentColorVar = 'var(--quality)'; agentBgVar = 'var(--quality-lt)' }
+                      else if (nodeLower.includes('gov')) { agentColorVar = 'var(--governance)'; agentBgVar = 'var(--governance-lt)' }
+
+                      return (
+                        <div
+                          key={id}
+                          className="tl-row"
+                          style={{ borderLeft: `2px solid ${agentColorVar}`, marginBottom: '2px' }}
+                          onClick={() => toggleLogExpansion(id)}
                         >
-                          {log.agent_node}
-                        </span>
-                        <span className={`tl-msg ${isExpanded ? 'expanded' : ''}`} title={!isExpanded ? log.message : ''}>
-                          {log.message}
-                        </span>
-                        <span className="tl-time">{time}</span>
-                      </div>
-                    )
-                  })}
-                </div>
-              )}
-            </>
-          )}
+                          <span
+                            className={isError ? 'err-badge' : 'badge'}
+                            style={!isError ? { color: agentColorVar, backgroundColor: agentBgVar, border: `1px solid ${agentColorVar}` } : {}}
+                          >
+                            {log.agent_node}
+                          </span>
+                          <span className={`tl-msg ${isExpanded ? 'expanded' : ''}`} title={!isExpanded ? log.message : ''}>
+                            {log.message}
+                          </span>
+                          <span className="tl-time">{time}</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
-      </div>
-      {isAnalysisModalOpen && (
-        <AnalysisModal 
-          threadId={groupKey} 
-          agentType={selectedAgent} 
-          onClose={() => setIsAnalysisModalOpen(false)} 
-        />
-      )}
+        {isAnalysisModalOpen && (
+          <AnalysisModal
+            threadId={groupKey}
+            agentType={selectedAgent}
+            onClose={() => setIsAnalysisModalOpen(false)}
+          />
+        )}
       </>
     )
   }
@@ -415,7 +415,7 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
                                 <span className="step-number">{i + 1}</span>
                                 <div className="step-icon">{getStepIcon(step.status)}</div>
                                 <div className="step-info">
-                                  <span className="step-name">{step.step_name || step.step}</span>
+                                  <span className="step-name">{step.stage}</span>
                                   <span className={`step-status ${cls}`}>{step.status}</span>
                                   {step.wall_time && (
                                     <span className="step-time">⏱ {step.wall_time}</span>
@@ -447,10 +447,10 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
       )}
 
       {isAnalysisModalOpen && (
-        <AnalysisModal 
-          threadId={groupKey} 
-          agentType={selectedAgent} 
-          onClose={() => setIsAnalysisModalOpen(false)} 
+        <AnalysisModal
+          threadId={groupKey}
+          agentType={selectedAgent}
+          onClose={() => setIsAnalysisModalOpen(false)}
         />
       )}
     </>
