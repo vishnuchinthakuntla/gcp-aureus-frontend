@@ -465,8 +465,10 @@
 
 .modal-timeline {
   display: flex;
-  flex-wrap: nowrap;        /* ❌ remove wrapping */
-  overflow-x: auto;         /* ✅ enable horizontal scroll */
+  flex-wrap: nowrap;
+  /* ❌ remove wrapping */
+  overflow-x: auto;
+  /* ✅ enable horizontal scroll */
   gap: 12px;
   padding-block: 8px 16px;
   align-items: center;
@@ -477,17 +479,24 @@
 .modal-timeline::-webkit-scrollbar {
   height: 6px;
 }
+
 .modal-timeline::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 10px;
 }
 
 .mt-card {
+  width: 160px;
+  height: 100px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
   background: var(--panel2);
   border: 1px solid var(--edge);
   border-radius: 8px;
   padding: 10px 12px;
-  
 }
 
 .mt-card.active-card {
@@ -505,7 +514,6 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  margin-bottom: 4px;
 }
 
 .mt-stage.done {
@@ -517,7 +525,7 @@
 }
 
 .mt-stage.idle {
-  color: var(--t4);
+  color: var(--t2);
 }
 
 .mt-agent {
@@ -544,10 +552,6 @@
 
 .mt-duration.idle {
   color: var(--t4);
-}
-
-.mt-status {
-  margin-top: 5px;
 }
 
 .lcm-status {
@@ -706,27 +710,10 @@
 .modal-timeline {
   display: flex;
   gap: 10px;
-  flex-wrap: nowrap;   /* ✅ FIX */
-  overflow-x: auto;    /* ✅ FIX */
-}
-
-/* Smaller cards */
-.mt-card {
-  width: 160px;     /* ⬅ reduced */
-  height: 110px;    /* ⬅ reduced */
-  padding: 8px;
-  overflow: hidden;
-    flex-shrink: 0; 
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
-}
-
-/* Reduce text spacing */
-.mt-stage {
-  font-size: 11px;
-  margin-bottom: 4px;
+  flex-wrap: nowrap;
+  /* ✅ FIX */
+  overflow-x: auto;
+  /* ✅ FIX */
 }
 
 .mt-agent {
@@ -737,16 +724,6 @@
 .mt-duration {
   font-size: 11px;
   margin-bottom: 6px;
-}
-/* 🔥 FIX CARD SIZE */
-.mt-card {
-  width: 170px;
-  height: 100px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
 }
 
 /* 🔥 TEXT TRUNCATE */
@@ -760,7 +737,7 @@
 }
 
 /* 🔥 TOOLTIP ON HOVER */
-.truncate-text:hover::after {
+/* .truncate-text:hover::after {
   content: attr(data-fulltext);
   position: absolute;
   background: #1f2937;
@@ -773,7 +750,8 @@
   z-index: 999;
   top: 100%;
   left: 0;
-}
+} */
+
 .step-arrow {
   display: flex;
   align-items: center;
@@ -782,6 +760,7 @@
   color: #94a3b8;
   margin: 0 6px;
 }
+
 /* 🔥 Hide scrollbar but keep scroll working */
 /* .modal-timeline {
   scrollbar-width: none;     

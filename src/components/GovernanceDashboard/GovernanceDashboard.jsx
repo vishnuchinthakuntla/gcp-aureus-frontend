@@ -9,6 +9,7 @@ export default function GovernanceDashboard() {
   const data = useAgentStore(s => s.governanceDashData?.activeTickets?.items) || [];
 
   function getSLAClass(status) {
+    if (!status) return "info";
     switch (toTitleCase(status)) {
       case "Breached": return "err";
       case "At Risk": return "warn";
@@ -78,6 +79,15 @@ export default function GovernanceDashboard() {
       {/* Table */}
       <div className="table-container">
         <table className="gov-table">
+          <colgroup>
+            <col style={{ width: "10%" }} />
+            <col style={{ width: "15%" }} />
+            <col style={{ width: "12%" }} />
+            <col style={{ width: "13%" }} />
+            <col style={{ width: "20%" }} />
+            <col style={{ width: "10%" }} />
+            <col style={{ width: "20%" }} />
+          </colgroup>
 
           {/* Header Row */}
           <thead>

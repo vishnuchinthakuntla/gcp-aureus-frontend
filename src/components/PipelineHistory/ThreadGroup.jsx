@@ -301,7 +301,7 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
         <>
           <div className="ph-collapsible-panels">
             <div className={`ph-collapsible-panel ${openPanels.agent_steps ? 'open' : ''}`}>
-              <button className="ph-collapsible-header" onClick={() => togglePanel('logs')}>
+              <button className="ph-collapsible-header" onClick={() => togglePanel('agent_steps')}>
                 <span>AGENT STEPS</span>
                 <span className="ph-collapsible-icon">{openPanels.agent_steps ? '▲' : '▼'}</span>
               </button>
@@ -415,7 +415,7 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
                                 <span className="step-number">{i + 1}</span>
                                 <div className="step-icon">{getStepIcon(step.status)}</div>
                                 <div className="step-info">
-                                  <span className="step-name">{step.stage}</span>
+                                  <span className="step-name">{step.step_name.split('.').join('\n')}</span>
                                   <span className={`step-status ${cls}`}>{step.status}</span>
                                   {step.wall_time && (
                                     <span className="step-time">⏱ {step.wall_time}</span>

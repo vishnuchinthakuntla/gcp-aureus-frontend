@@ -178,35 +178,36 @@ export default function LifecycleModal({ data, onClose }) {
                     {/* ✅ CARD */}
                     <div
                       className={`mt-card ${state === "done"
-                          ? "done-card"
-                          : state === "active"
-                            ? "active-card"
-                            : ""
+                        ? "done-card"
+                        : state === "active"
+                          ? "active-card"
+                          : ""
                         }`}
                     >
                       <div
                         className={`mt-stage ${state} truncate-text`}
-                        data-fulltext={step.stage}
+                        data-fulltext={step.step_name}
+                        title={step.step_name.split(".").join('\n')}
                       >
-                        {step.stage.split(".")[0]}
+                        {step.step_name.split(".").join('\n')}
                       </div>
 
-                      <div
+                      {/* <div
                         className="mt-agent truncate-text"
-                        data-fulltext={step.stage}
+                        data-fulltext={step.step_name}
                       >
-                        {step.stage.toLowerCase()}
-                      </div>
+                        {step.step_name.toLowerCase()}
+                      </div> */}
 
                       <div className={`mt-duration ${state}`}>--</div>
 
                       <div className="mt-status">
                         <span
                           className={`lcm-status ${state === "done"
-                              ? "ok"
-                              : state === "active"
-                                ? "info"
-                                : ""
+                            ? "ok"
+                            : state === "active"
+                              ? "info"
+                              : ""
                             }`}
                         >
                           {state === "done"
