@@ -17,23 +17,31 @@ export default function GovernancePage() {
 
   const isLoading = !data;
 
+  if (isLoading) {
+    return (
+      <div className="gov-loader-container">
+        <div className="gov-spinner"></div>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* TOP SECTION (2 columns) */}
       <div className="gov-layout">
         <div className="panel">
-          {isLoading ? <div className="gov-skeleton" style={{ height: "350px" }} /> : <GovernanceDashboard />}
+          <GovernanceDashboard />
         </div>
 
         <div className="panel">
-          {isLoading ? <div className="gov-skeleton" style={{ height: "350px" }} /> : <ComplianceCard />}
+          <ComplianceCard />
         </div>
       </div>
 
       {/* 🔥 BOTTOM SECTION (3 charts) */}
-      {isLoading ? <div className="gov-skeleton" style={{ height: "300px", margin: "0 0 20px" }} /> : <InsightsDashboard />}
+      <InsightsDashboard />
 
-      {isLoading ? <div className="gov-skeleton" style={{ height: "300px", margin: "0 0 20px" }} /> : <KnowledgeGrowth />}
+      <KnowledgeGrowth />
     </>
   );
 };

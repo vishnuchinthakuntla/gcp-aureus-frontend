@@ -236,83 +236,89 @@ export default function TicketDrawer() {
 
           {/* ROOT CAUSE */}
           <div className="td-section-title">Root Cause</div>
-          <div className="td-card scroll">
-            {run ? run.error_message : "No error info"}
-          </div>
+          {workflow ? (
+            <div className="td-card scroll">
+              {workflow.root_cause || workflow.error_message || "No error info"}
+            </div>
+          ) : (
+            <div className="td-card scroll" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+              <div className="td-loader"></div> Loading Data...
+            </div>
+          )}
 
           {/* RCA DETAILS */}
           <div className="td-section-title">RCA Details</div>
           {
             workflow && run ? (
 
-          <div className="td-card scroll">
-            <p>
-              <b>Pipeline:</b> {run.pipeline_name}
-            </p>
-            <p>
-              <b>Status:</b> {workflow.status}
-            </p>
-            <p>
-              <b>Severity:</b> {workflow.severity}
-            </p>
-              {rcaConfidence && (
-                <p><b>Confidence:</b> {rcaConfidence}</p>
-              )}
-            {/* <p>
+              <div className="td-card scroll">
+                <p>
+                  <b>Pipeline:</b> {run.pipeline_name}
+                </p>
+                <p>
+                  <b>Status:</b> {workflow.status}
+                </p>
+                <p>
+                  <b>Severity:</b> {workflow.severity}
+                </p>
+                {rcaConfidence && (
+                  <p><b>Confidence:</b> {rcaConfidence}</p>
+                )}
+                {/* <p>
               <b>SLA Breach:</b> {workflow.sla_breached ? "YES" : "NO"}
             </p> */}
-            
-  {(() => {
-    try {
-      const factors = JSON.parse(workflow.contributing_factors || "[]");
 
-      return factors.length > 0
-        ? <p>
-  <b>Immediate Recommendations:</b>{factors.join(", ")}</p>
-        : null;
-    } catch (e) {
-      return null;
-    }
-  })()}
+                {(() => {
+                  try {
+                    const factors = JSON.parse(workflow.contributing_factors || "[]");
+
+                    return factors.length > 0
+                      ? <p>
+                        <b>Immediate Recommendations:</b>{factors.join(", ")}</p>
+                      : null;
+                  } catch (e) {
+                    return null;
+                  }
+                })()}
 
 
-            {/* <p>
+                {/* <p>
               <b>Recommended Actions:</b>
             </p> */}
 
-            {(() => {
-              try {
-                const action = JSON.parse(workflow.recommended_action || "{}");
+                {(() => {
+                  try {
+                    const action = JSON.parse(workflow.recommended_action || "{}");
 
-                return (
-                  <div>
-                    <p>
-                      <b>Action:</b> {action.action || "N/A"}
-                    </p>
-                    <p>
-                      <b>Requires Approval:</b>{" "}
-                      {action.requires_approval ? "Yes" : "No"}
-                    </p>
-                    <p>
-                      <b>SLA Impact:</b> {action.sla_impact || "N/A"}
-                    </p>
-                    <p>
-                      <b>Business Impact:</b> {action.business_impact || "N/A"}
-                    </p>
-                    <p>
-                      <b>Reasoning:</b> {action.reasoning || "N/A"}
-                    </p>
-                  </div>
-                );
-              } catch (e) {
-                return <p>No recommended actions available</p>;
-              }
-            })()}
-          </div> ) : (
-            <div className="td-card scroll" style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
-              <div className="td-loader"></div> Loading Data...
-            </div>
-          )}
+                    return (
+                      <div>
+                        <p>
+                          <b>Action:</b> {action.action || "N/A"}
+                        </p>
+                        <p>
+                          <b>Requires Approval:</b>{" "}
+                          {action.requires_approval ? "Yes" : "No"}
+                        </p>
+                        <p>
+                          <b>SLA Impact:</b> {action.sla_impact || "N/A"}
+                        </p>
+                        <p>
+                          <b>Business Impact:</b> {action.business_impact || "N/A"}
+                        </p>
+                        <p>
+                          <b>Reasoning:</b> {action.reasoning || "N/A"}
+                        </p>
+                      </div>
+                    );
+                  } catch (e) {
+                    return <p>No recommended actions available</p>;
+                  }
+                })()}
+              </div>) : (
+              <div className="td-card scroll" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+                <div className="td-loader"></div> Loading Data...
+              </div>
+            )}
 
           {/* 🔥 EXECUTION FLOW */}
           {/* <div className="td-section-title">Execution Flow</div>

@@ -33,7 +33,7 @@ export default function PipelinesTable() {
       console.error("Fetch error:", err);
       toast.error("Failed to load pipelines ❌");
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
 
