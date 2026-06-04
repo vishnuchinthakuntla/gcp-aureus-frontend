@@ -10,6 +10,7 @@ import TopNav from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
 import LogsPage from "./components/Pipeline/LogsPage";
 import PipelineRunsMonitor from "./pages/PipelineRunsMonitor";
+import Observability from "./pages/Observability";
 import PipelineRuns from "./pages/PipelineRuns";
 import useAgentStore from "./stores/useAgentStore";
 import PipelineMetadata from "./pages/PipelineMetadata";
@@ -37,6 +38,7 @@ function App() {
             <Route path="/stuck-workflows" element={<StuckWorkflows />} />
             <Route path="/logs" element={<LogsPage />} />
             <Route path="/pipeline-monitor" element={<PipelineRunsMonitor />} />
+            <Route path="/observability" element={<Observability />} />
             <Route path="/pipeline-runs" element={<PipelineRuns />} />
             <Route path="/pipeline-metadata" element={<PipelineMetadata />} />
           </Routes>

@@ -96,6 +96,13 @@ export default function Sidebar({ open }) {
         <span className="icon">🖥️</span>
         Pipeline Monitoring
       </button>
+      <button
+        className={location.pathname === "/observability" ? "active" : ""}
+        onClick={() => navigate("/observability")}
+      >
+        <span className="icon">🔎</span>
+        Observability
+      </button>
 
       <div className="sidebar-section">Admin</div>
 
