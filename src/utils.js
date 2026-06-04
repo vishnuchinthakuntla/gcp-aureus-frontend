@@ -25,7 +25,9 @@ export function formatElapsedTime(createdAt) {
 }
 
 export function toTitleCase(str) {
-    return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+    return str.replace(/\w\S*/g, (txt) =>
+        txt.charAt(0).toUpperCase() + txt.substr(1)
+    );
 }
 
 export function getOrdinal(day) {
@@ -114,9 +116,5 @@ export function getTodayFormatted() {
 
 export function getUsername(email) {
     const userName = email ? email.split('@')[0] : 'firstname.lastname';
-    return userName
-        .replace('.', ' ')
-        .split(' ')
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(' ');
+    return toTitleCase(userName.replace('.', ' '));
 }

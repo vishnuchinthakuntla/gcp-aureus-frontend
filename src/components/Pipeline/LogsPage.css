@@ -41,12 +41,12 @@
 }
 
 .spinner {
-  width: 45px;
-  height: 45px;
-  border: 4px solid #333;
-  border-top: 4px solid #22c55e;
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--edge, #e2e8f0);
+  border-top-color: var(--blue, #1d6ef5);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: gov-spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .loader-wrapper p {
@@ -87,6 +87,7 @@
   color: #888;
   margin-top: 50px;
 }
+
 .header h2 {
   font-size: 24px;
   font-weight: 700;
@@ -117,13 +118,16 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px; /* reduced spacing */
+  gap: 12px;
+  /* reduced spacing */
 }
 
 /* SMALL CARD */
 .card {
-  width: 120px;              /* smaller */
-  min-height: 110px;         /* smaller */
+  width: 120px;
+  /* smaller */
+  min-height: 110px;
+  /* smaller */
   border-radius: 14px;
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -133,7 +137,8 @@
   align-items: center;
   justify-content: center;
 
-  padding: 10px;             /* reduced */
+  padding: 10px;
+  /* reduced */
   gap: 5px;
 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -146,7 +151,8 @@
 
 /* ICON */
 .icon {
-  font-size: 22px; /* smaller */
+  font-size: 22px;
+  /* smaller */
 }
 
 /* TITLE */
@@ -253,7 +259,15 @@
 
 /* RUNNING ANIMATION */
 @keyframes pulse {
-  0% { opacity: 0.5; }
-  50% { opacity: 1; }
-  100% { opacity: 0.5; }
+  0% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.5;
+  }
 }

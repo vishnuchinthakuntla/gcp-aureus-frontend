@@ -15,7 +15,6 @@ const StuckWorkflows = () => {
     try {
       setLoading(true)
       setError(null)
-      // TODO: Replace with actual API path
       const response = await fetch('/api/workflows/stuck')
       if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`)
       const data = await response.json()
