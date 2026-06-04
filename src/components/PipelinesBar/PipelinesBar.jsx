@@ -2,26 +2,24 @@ import React from 'react'
 import useAgentStore from '../../stores/useAgentStore'
 import './PipelinesBar.css'
 
-/* ── sub-components ── */
-
 const TicketBadge = ({ label, count, border_color, num_color, pill_class }) => {
     const setActiveFilter = useAgentStore(s => s.setActiveFilter)
     const selectAgent = useAgentStore(s => s.selectAgent)
     const selectedAgent = useAgentStore(s => s.selectedAgent)
 
     return (
-        <div className={`p-pill ${pill_class === 'SLA Breach' ? 'sla-pill' : pill_class === 'Human' ? 'p1-human' : `${pill_class.toLowerCase()}-pill`}`} 
-        onClick={() => { 
-            if (label === 'Human'){
-                if(selectedAgent === 'approval'){
-                    selectAgent(null)
-                }else{
-                    selectAgent('approval')
+        <div className={`p-pill ${pill_class === 'SLA Breach' ? 'sla-pill' : pill_class === 'Human' ? 'p1-human' : `${pill_class.toLowerCase()}-pill`}`}
+            onClick={() => {
+                if (label === 'Human') {
+                    if (selectedAgent === 'approval') {
+                        selectAgent(null)
+                    } else {
+                        selectAgent('approval')
+                    }
+                    return;
                 }
-                return;
-            }
-            setActiveFilter(label === 'SLA Breach' ? 'SLA' : label) 
-        }}>
+                setActiveFilter(label === 'SLA Breach' ? 'SLA' : label)
+            }}>
             <span className="p-label">{label}</span>
             <span className="p-count" style={{ color: num_color }}>{count}</span>
         </div>

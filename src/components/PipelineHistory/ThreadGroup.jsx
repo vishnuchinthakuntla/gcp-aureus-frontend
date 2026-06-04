@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react'
 import AnalysisModal from './AnalysisModal'
 
 const AGENT_DATA_KEYS = {
-  selfhealing: 'self_heal',
+  "self_healing": 'self_heal',
 }
 
 function normalizeAgentName(value = '') {
@@ -75,7 +75,7 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
     const priority = agentInfo?.priority
     const businessImpact = agentInfo?.business_impact
 
-    const isSelfHeal = selectedAgent === 'selfhealing'
+    const isSelfHeal = selectedAgent === 'self_healing'
     const selfHealAttemptCount = agentInfo?.attempt_count
     const selfHealActionTaken = agentInfo?.action_taken
     const selfHealSuccess = agentInfo?.success

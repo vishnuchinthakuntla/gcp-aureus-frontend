@@ -3,7 +3,7 @@ import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 
 const AGENT_DATA_KEYS = {
-  selfhealing: 'self_heal',
+  "self_healing": 'self_heal',
 }
 
 function normalizeAgentName(value = '') {
@@ -23,12 +23,12 @@ function matchesAgentNode(node, agentId) {
 
 /* ── colour look-up shared with ThreadGroup ── */
 const AGENT_META = {
-  rca:         { label: 'RCA Agent',          color: 'var(--rca)',        colorHex: '#f5a524', lt: 'var(--rca-lt)' },
-  observer:    { label: 'Observer Agent',      color: 'var(--observer)',   colorHex: '#4f8ef7', lt: 'var(--observer-lt)' },
-  decision:    { label: 'Decision Agent',      color: 'var(--decision)',   colorHex: '#a78bfa', lt: 'var(--decision-lt)' },
-  selfhealing: { label: 'Self-Healing Agent',  color: 'var(--healing)',    colorHex: '#10d9a0', lt: 'var(--healing-lt)' },
-  dataquality: { label: 'Data Quality Agent',  color: 'var(--quality)',    colorHex: '#22d3ee', lt: 'var(--quality-lt)' },
-  governance:  { label: 'Governance Agent',    color: 'var(--governance)', colorHex: '#f43f5e', lt: 'var(--governance-lt)' },
+  rca: { label: 'RCA Agent', color: 'var(--rca)', colorHex: '#f5a524', lt: 'var(--rca-lt)' },
+  observer: { label: 'Observer Agent', color: 'var(--observer)', colorHex: '#4f8ef7', lt: 'var(--observer-lt)' },
+  decision: { label: 'Decision Agent', color: 'var(--decision)', colorHex: '#a78bfa', lt: 'var(--decision-lt)' },
+  "self_healing": { label: 'Self-Healing Agent', color: 'var(--healing)', colorHex: '#10d9a0', lt: 'var(--healing-lt)' },
+  "data_quality": { label: 'Data Quality Agent', color: 'var(--quality)', colorHex: '#22d3ee', lt: 'var(--quality-lt)' },
+  governance: { label: 'Governance Agent', color: 'var(--governance)', colorHex: '#f43f5e', lt: 'var(--governance-lt)' },
 }
 
 /* ── helper: compute agent-level aggregates from threads ── */
@@ -324,11 +324,6 @@ const PipelineCharts = ({ pipelineData, selectedAgent, loading }) => {
                 <div className="summary-value">{agentSummary.avgConfidence ?? 'N/A'}</div>
                 <div className="summary-sub sub-amber">{confSub}</div>
               </div>
-              {/* <div className="summary-card">
-                <div className="summary-label">Root Cause</div>
-                <div className="summary-value summary-value-sm">{agentSummary.topRootCause}</div>
-                <div className="summary-sub sub-amber">{rcSub}</div>
-              </div> */}
               <div className="summary-card">
                 <div className="summary-label">Avg LLM Prompt</div>
                 <div className="summary-value">{agentSummary.avgPrompt ?? 'N/A'}</div>
@@ -341,7 +336,7 @@ const PipelineCharts = ({ pipelineData, selectedAgent, loading }) => {
             <>
               <div className="summary-card">
                 <div className="summary-label">Top Action</div>
-                <div className="summary-value summary-value-sm" style={{textTransform: 'capitalize'}}>{agentSummary.topAction}</div>
+                <div className="summary-value summary-value-sm" style={{ textTransform: 'capitalize' }}>{agentSummary.topAction}</div>
                 <div className="summary-sub sub-amber">{agentSummary.topActionCount} occurrences</div>
               </div>
               <div className="summary-card">
@@ -357,7 +352,7 @@ const PipelineCharts = ({ pipelineData, selectedAgent, loading }) => {
             </>
           )}
 
-          {selectedAgent === 'selfhealing' ? (
+          {selectedAgent === 'self_healing' ? (
             <>
               <div className="summary-card">
                 <div className="summary-label">Auto-Heal Rate</div>

@@ -102,64 +102,54 @@ export default function GovernanceDashboard() {
             </tr>
           </thead>
           <tbody>
+
             {/* ✅ Loading State INSIDE table */}
-            {/* loading ? (
-          <div className="table-row loading-row">
-            <span>Loading...</span>
-            <span>Loading...</span>
-            <span>Loading...</span>
-            <span>Loading...</span>
-            <span>Loading...</span>
-            <span>Loading...</span>
-            <span>Loading...</span>
-          </div>
-        ) : */
-              data?.length === 0 ? (
-                <tr className="table-row">
-                  <td colSpan={7} style={{ display: "table-cell" }}>
-                    <div className="no-data-row">No Active Ticket Found</div>
-                  </td>
-                </tr>
-              ) : (
-                data?.map((item, index) => {
-                  const slaStatusClass = getSLAClass(item.status);
-                  return (
-                    <tr
-                      className="table-row"
-                      key={index}
-                      onClick={() => handleRowClick(item)}
-                    >
-                      <td><div>{item.lifecycle || 'LC-UNK'}</div></td>
-                      <td><div>{item.ticket_id}</div></td>
+            {data?.length === 0 ? (
+              <tr className="table-row">
+                <td colSpan={7} style={{ display: "table-cell" }}>
+                  <div className="no-data-row">No Active Ticket Found</div>
+                </td>
+              </tr>
+            ) : (
+              data?.map((item, index) => {
+                const slaStatusClass = getSLAClass(item.status);
+                return (
+                  <tr
+                    className="table-row"
+                    key={index}
+                    onClick={() => handleRowClick(item)}
+                  >
+                    <td><div>{item.lifecycle || 'LC-UNK'}</div></td>
+                    <td><div>{item.ticket_id}</div></td>
 
-                      <td>
-                        <div>
-                          <span className={`priority ${item.severity}`}>
-                            • {item.severity}
-                          </span>
-                        </div>
-                      </td>
+                    <td>
+                      <div>
+                        <span className={`priority ${item.severity}`}>
+                          • {item.severity}
+                        </span>
+                      </div>
+                    </td>
 
-                      <td>
-                        <div>
-                          <span className="stage">{item.stage || 'DETECT'}</span>
-                        </div>
-                      </td>
+                    <td>
+                      <div>
+                        <span className="stage">{item.stage || 'DETECT'}</span>
+                      </div>
+                    </td>
 
-                      <td className="assigned"><div>{item.assigned_to || 'Unassigned'}</div></td>
-                      <td><div>{item.eta || '00:00:00'}</div></td>
+                    <td className="assigned"><div>{item.assigned_to || 'Unassigned'}</div></td>
+                    <td><div>{item.eta || '00:00:00'}</div></td>
 
-                      <td>
-                        <div>
-                          <span className={`status ${slaStatusClass}`}>
-                            {item.status || 'None'}
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })
-              )}
+                    <td>
+                      <div>
+                        <span className={`status ${slaStatusClass}`}>
+                          {item.status || 'None'}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })
+            )}
           </tbody>
         </table>
       </div>

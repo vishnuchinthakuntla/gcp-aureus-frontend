@@ -2,7 +2,6 @@ import React from "react";
 import "./InsightsDashboard.css";
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-// import { confidenceOptions, failurePatternsOptions, agentPerformanceOptions } from './chartOptions';
 import "highcharts/highcharts-more"
 import useAgentStore from "../../stores/useAgentStore";
 
@@ -47,7 +46,6 @@ export default function InsightsDashboard() {
     yAxis: {
       title: { text: null },
       min: 0,
-      // tickInterval: 2,
       tickAmount: 5,
       // gridLineColor: '#e2e8f0',
       lineColor: '#e2e8f0',
@@ -136,7 +134,6 @@ export default function InsightsDashboard() {
       polar: true,
       backgroundColor: 'transparent',
       height: 200,
-      // width: 200,
     },
     title: { text: undefined },
     accessibility: { enabled: false },
@@ -166,7 +163,6 @@ export default function InsightsDashboard() {
       lineWidth: 0,
       min: 0,
       max: 100,
-      // tickInterval: 10,
       tickAmount: 8,
       labels: {
         format: '{value}%',
@@ -193,7 +189,7 @@ export default function InsightsDashboard() {
     },
     series: agentPerformance?.map(item => ({
       type: 'line',
-        name: item.agentName,
+      name: item.agentName,
       data: ['Accuracy', 'Speed', 'Coverage', 'Recovery', 'Uptime'].map(key => item.radarMetrics?.[key.toLowerCase()] || 0),
       color: agentColors[item.agentName],
       fillOpacity: 0.07,

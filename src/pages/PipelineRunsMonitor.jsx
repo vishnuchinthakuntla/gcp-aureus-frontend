@@ -57,12 +57,13 @@ const AGENT_BADGE = {
   Observer: { label: 'Observer', cls: 'agent-badge--observer' },
   RCA: { label: 'RCA', cls: 'agent-badge--rca' },
   Decision: { label: 'Decision', cls: 'agent-badge--decision' },
-  SelfHealing: { label: 'Self-Healing', cls: 'agent-badge--healing' },
+  "Self-Healing": { label: 'Self-Healing', cls: 'agent-badge--healing' },
   DataQuality: { label: 'Data Quality', cls: 'agent-badge--quality' },
   system: { label: 'System', cls: 'agent-badge--system' },
   audit: { label: 'Audit', cls: 'agent-badge--audit' },
   join: { label: 'Join', cls: 'agent-badge--join' },
-  "Self-Service": { label: 'Self-Service', cls: 'agent-badge--selfservice' }
+  "Self-Service": { label: 'Self-Service', cls: 'agent-badge--selfservice' },
+  email: { label: 'Email', cls: 'agent-badge--email' }
 }
 
 const toDateStr = (d) => d.toISOString().split('T')[0]
@@ -230,8 +231,8 @@ const PipelineRunsMonitor = () => {
               { label: "Observer", value: "observer" },
               { label: "RCA", value: "rca" },
               { label: "Decision", value: "decision" },
-              { label: "Self-Healing", value: "selfhealing" },
-              { label: "Data Quality", value: "dataquality" }
+              { label: "Self-Healing", value: "self_healing" },
+              { label: "Data Quality", value: "data_quality" }
             ]}
           />
         </div>

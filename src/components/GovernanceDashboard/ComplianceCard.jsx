@@ -34,7 +34,7 @@ export default function ComplianceCard() {
         </div>
       </div> */}
 
-      {/* Hero Section */}
+      {/* Compliance Section */}
       <div className="comp-hero">
         <div className="comp-hero-chart">
           <canvas id="complianceDonut" width="110" height="110"></canvas>

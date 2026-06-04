@@ -23,7 +23,7 @@ function Ticker() {
     }
 
     const tickerTickets = getTopTickets(allTickets, 5);
-    
+
 
     if (!tickerTickets || tickerTickets.length === 0) {
         return (
@@ -44,7 +44,6 @@ function Ticker() {
             <div className="ticker-scroll-zone">
                 <div className="ticker-inner">
                     {tickerTickets.map((ticket, i) => {
-                        //   console.log("TICKET DATA:", ticket); 
                         const isP1 = ticket.severity === 'P1';
                         const priorityClass = isP1 ? 'p1-event' : 'p2-event';
                         const dotColor = isP1 ? '#f43f5e' : '#f59e0b';
@@ -72,9 +71,9 @@ function Ticker() {
                                 <span className={`aging-badge ${agingClass}`}>
                                     ⏱ {formatElapsedTime(ticket.created_at)}
                                 </span>
-                               Owner: {ticket.assigned_to ?? 'Unassigned'}
+                                Owner: {ticket.assigned_to ?? 'Unassigned'}
                             </span>
-                            
+
                         );
                     })}
                 </div>

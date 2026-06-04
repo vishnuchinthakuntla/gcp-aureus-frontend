@@ -21,13 +21,13 @@ const AGENT_OPTIONS = [
   { value: 'observer', label: 'Observer Agent' },
   { value: 'rca', label: 'RCA Agent' },
   { value: 'decision', label: 'Decision Agent' },
-  { value: 'selfhealing', label: 'Self-Healing Agent' },
-  // { value: 'dataquality', label: 'Data Quality Agent' },
+  { value: 'self_healing', label: 'Self-Healing Agent' },
+  // { value: 'data_quality', label: 'Data Quality Agent' },
   // { value: 'governance', label: 'Governance Agent' },
 ]
 
 const AGENT_NODE_KEYS = {
-  selfhealing: 'self_heal',
+  "self_healing": 'self_heal',
 }
 
 function getAgentNodeParam(agentId) {

@@ -1,7 +1,7 @@
 export const AGENTS = [
   {
     id: "observer",
-    label: "OBSERVER AGENT",
+    label: "Observer Agent",
     count: 0,
     icon: "👁️",
     bg: "#eef3ff",
@@ -12,7 +12,7 @@ export const AGENTS = [
   },
   {
     id: "rca",
-    label: "RCA AGENT",
+    label: "RCA Agent",
     count: 0,
     icon: "🔍",
     bg: "#fff8ee",
@@ -23,7 +23,7 @@ export const AGENTS = [
   },
   {
     id: "decision",
-    label: "DECISION AGENT",
+    label: "Decision Agent",
     count: 0,
     icon: "🧠",
     bg: "#f9f0ff",
@@ -33,8 +33,8 @@ export const AGENTS = [
     badge: "AUTO-ROUTING"
   },
   {
-    id: "selfhealing",
-    label: "SELF-HEALING AGENT",
+    id: "self_healing",
+    label: "Self-healing Agent",
     count: 0,
     icon: "🔧",
     bg: "#f0fff4",
@@ -44,8 +44,8 @@ export const AGENTS = [
     badge: "HEALING"
   },
   {
-    id: "dataquality",
-    label: "DATA QUALITY AGENT",
+    id: "data_quality",
+    label: "Data Quality Agent",
     count: 0,
     icon: "✅",
     bg: "#f0fff4",
@@ -55,8 +55,8 @@ export const AGENTS = [
     badge: "MONITORING"
   },
   {
-    id: "selfservice",
-    label: "SELF-SERVICE AGENT",
+    id: "self_service",
+    label: "Self-service Agent",
     count: 0,
     icon: "💬",
     bg: "#fff0f6",
@@ -65,10 +65,10 @@ export const AGENTS = [
     numColor: "#c2255c",
     badge: "ACTIVE"
   },
-  
+
   {
     id: "approval",
-    label: "HUMAN APPROVAL",
+    label: "Human Approval",
     count: 0,
     icon: "🧑‍⚖️",
     bg: "#f0fff4",
@@ -78,7 +78,7 @@ export const AGENTS = [
   },
   {
     id: "governance",
-    label: "GOVERNANCE AGENT",
+    label: "Governance Agent",
     count: 0,
     icon: "🛡️",
     bg: "#fff0f6",

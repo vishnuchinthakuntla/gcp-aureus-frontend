@@ -193,7 +193,7 @@ export default function SelfServicePanel() {
   // =========================
   return (
     <div
-      className={`agent-panel card-selfservice ${selectedAgent === "selfservice" ? "visible" : ""}`}
+      className={`agent-panel card-selfservice ${selectedAgent === "self_service" ? "visible" : ""}`}
     >
       <div className="panel-header">
         <span style={{ fontSize: 22 }}>💬</span>

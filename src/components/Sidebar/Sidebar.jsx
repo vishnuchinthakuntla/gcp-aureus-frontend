@@ -14,33 +14,26 @@ import {
 import useAgentStore from "../../stores/useAgentStore";
 import React from "react";
 import pipelineIcon from "../../assets/pipeline-icon.png";
+import { toTitleCase } from "../../utils";
 
-function toTitleCase(str) {
-  return str.replace(
-    /\w\S*/g,
-    (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(),
-  );
-}
 
 const ICON_MAP = {
   observer: Eye,
   rca: Search,
   decision: Brain,
-  selfhealing: Wrench,
-  dataquality: CheckCircle,
-  selfservice: MessageSquare,
+  "self_healing": Wrench,
+  "data_quality": CheckCircle,
+  "self_service": MessageSquare,
   governance: Shield,
   approval: CheckCircle,
 };
 
 export default function Sidebar({ open }) {
-  // ✅ MOVE HOOKS INSIDE COMPONENT
   const navigate = useNavigate();
   const location = useLocation();
 
   const selectAgent = useAgentStore((s) => s.selectAgent);
   const selectedAgent = useAgentStore((s) => s.selectedAgent);
-  const fetchGovernanceDashboard = useAgentStore((s) => s.fetchGovernanceDashboard);
 
   return (
     <aside className={`sidebar${open ? " open" : ""}`}>
@@ -53,42 +46,38 @@ export default function Sidebar({ open }) {
         Overview
       </button>
       {location.pathname === "/dashboard" && (
-      <>
-      <div className="sidebar-section">Agents</div>
+        <>
+          <div className="sidebar-section">Agents</div>
 
-      {AGENTS.filter((agent) => agent.id !== "governance").map((agent) => {
-        return (
-          <button
-            key={agent.id}
-            onClick={() =>{
-              if(location.pathname === "/governance-dashboard"){
-                navigate("/dashboard")
-              }
-              selectAgent(agent.id === selectedAgent ? null : agent.id)
-            }
-            }
-          >
-            <span className="icon">{agent.icon}</span>
-            {toTitleCase(agent.label)}
-          </button>
-        );
-      })}
-      </>
+          {AGENTS.filter((agent) => agent.id !== "governance").map((agent) => {
+            return (
+              <button
+                key={agent.id}
+                onClick={() => {
+                  selectAgent(agent.id === selectedAgent ? null : agent.id)
+                }}
+              >
+                <span className="icon">{agent.icon}</span>
+                {toTitleCase(agent.label)}
+              </button>
+            );
+          })}
+        </>
       )}
       <div className="sidebar-section">DASHBOARD</div>
 
       {/* ✅ GOVERNANCE BUTTON */}
-     <button
-  className={
-    location.pathname === "/governance-dashboard" ? "active" : ""
-  }
-  onClick={() => {
-    navigate("/governance-dashboard")
-  }}
->
-  <span className="icon">🛡️</span>
-  Governance
-</button>
+      <button
+        className={
+          location.pathname === "/governance-dashboard" ? "active" : ""
+        }
+        onClick={() => {
+          navigate("/governance-dashboard")
+        }}
+      >
+        <span className="icon">🛡️</span>
+        Governance
+      </button>
       <button
         className={location.pathname === "/pipeline-monitor" ? "active" : ""}
         onClick={() => navigate("/pipeline-monitor")}
@@ -125,7 +114,7 @@ export default function Sidebar({ open }) {
         className={location.pathname === "/pipeline-runs" ? "active" : ""}
         onClick={() => navigate("/pipeline-runs")}
       >
-        <span className="icon"><img src={pipelineIcon} style={{height:"18px"}} alt="" /></span>
+        <span className="icon"><img src={pipelineIcon} style={{ height: "18px" }} alt="" /></span>
         Pipeline Runs
       </button>
       <button

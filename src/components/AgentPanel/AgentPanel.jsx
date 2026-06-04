@@ -4,10 +4,8 @@ import './AgentPanel.css'
 import SelfServicePanel from './SelfServicePanel';
 import GovernancePanel from './GovernancePanel';
 import ApprovalAgent from './ApprovalAgent';
+import { toTitleCase } from '../../utils';
 
-function toTitleCase(str) {
-  return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
-}
 /*
 
 // ── helpers ───────────────────────────────────────────────────────────────────
@@ -71,23 +69,6 @@ const RunTile = ({ item }) => {
   )
 }
 
-// ── FeedItem ──────────────────────────────────────────────────────────────────
-
-const FeedItem = ({ item }) => {
-  const time = item.timestamp
-    ? new Date(item.timestamp).toLocaleTimeString('en-GB', {
-      hour: '2-digit', minute: '2-digit', second: '2-digit',
-    })
-    : ''
-  return (
-    <div className="feed-item">
-      <span className={`feed-item__dot feed-item__dot--${item.level || 'info'}`} />
-      <span className="feed-item__text">{item.message}</span>
-      <span className="feed-item__time">{time}</span>
-    </div>
-  )
-}
-
 */
 
 // ── Shimmer ───────────────────────────────────────────────────────────────────
@@ -123,23 +104,6 @@ function EmptyState({ type }) {
 // ── JobList ───────────────────────────────────────────────────────────────────
 
 function JobList({ jobs, agent }) {
-  /*
-  const handleReprocess = (thread_id) => {
-    fetch(`/api/workflows/${thread_id}/reprocess`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        thread_id: thread_id,
-      }),
-    })
-      .then(response => response.json())
-      .catch(error => {
-        console.error('Error reprocessing job:', error);
-      });
-  };
-  */
   if (!jobs || jobs.length === 0) return <EmptyState type="queue" />;
   return (
     <>
@@ -193,12 +157,12 @@ function AgentPanel() {
   const selectedAgent = useAgentStore(s => s.selectedAgent);
   const selectAgent = useAgentStore(s => s.selectAgent);
   const agents = useAgentStore(s => s.agents);
-  
+
   const { queued, inProgress, processed, liveFeed, loading } = panel;
   const config = agents.find((a) => a.id === selectedAgent);
   if (!config) return null;
 
-  const isHealingOrQuality = selectedAgent === 'selfhealing' || selectedAgent === 'dataquality';
+  const isHealingOrQuality = selectedAgent === 'self_healing' || selectedAgent === 'data_quality';
 
   // For healing/quality agents, derive healed/passed and failed counts from processed items
   const processedItems = processed?.items || [];
@@ -209,13 +173,13 @@ function AgentPanel() {
     j.status?.toUpperCase() === 'AUTO_HEAL_FAILED' || j.status?.toUpperCase() === 'FAILED'
   ).length;
 
-  const col2Label = selectedAgent === 'selfhealing' ? 'Healing' : selectedAgent === 'dataquality' ? 'Validating' : 'In Progress';
-  const col1Label = selectedAgent === 'dataquality' ? 'Flagged' : 'Queued';
+  const col2Label = selectedAgent === 'self_healing' ? 'Healing' : selectedAgent === 'data_quality' ? 'Validating' : 'In Progress';
+  const col1Label = selectedAgent === 'data_quality' ? 'Flagged' : 'Queued';
   const col3Label = isHealingOrQuality
-    ? `${selectedAgent === 'selfhealing' ? 'Healed' : 'Passed'}(${healedCount}) / Failed(${failedCount})`
+    ? `${selectedAgent === 'self_healing' ? 'Healed' : 'Passed'} / Failed`
     : 'Live Feed';
 
-  if (selectedAgent === 'selfservice') return <SelfServicePanel />
+  if (selectedAgent === 'self_service') return <SelfServicePanel />
   if (selectedAgent === 'governance') return <GovernancePanel />
   if (selectedAgent === 'approval') return <ApprovalAgent />
 
