@@ -1,4 +1,4 @@
-.kg{
+.kg {
   background: white !important;
   padding: 16px;
   border-radius: 14px;
@@ -17,7 +17,7 @@
 /* LEFT CARD */
 .kg-left {
   border-radius: 14px;
-  height: 100%;   
+  height: 100%;
   min-width: 0px;
 }
 
@@ -146,8 +146,13 @@
   font-weight: 800;
 }
 
-.kg-color-purple { color: var(--purple); }
-.kg-color-amber  { color: var(--amber); }
+.kg-color-purple {
+  color: var(--purple);
+}
+
+.kg-color-amber {
+  color: var(--amber);
+}
 
 /* PROGRESS BAR */
 .kg-progress-track {
@@ -211,14 +216,220 @@
   animation: pulse 1.8s infinite;
 }
 
-.kg-offline{
+.kg-offline {
   color: var(--red);
   background: rgba(239, 68, 68, 0.09);
   border: 1px solid rgba(239, 68, 68, 0.22);
 }
-.kg-online{
+
+.kg-online {
   color: var(--green);
   background: rgba(4, 120, 87, 0.09);
   border: 1px solid rgba(4, 120, 87, 0.22);
 }
 
+.kg-meta {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.kg-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kg-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.kg-lbl {
+  font-size: 10px;
+  color: var(--t2);
+}
+
+.kg-val {
+  font-family: var(--display);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* NEW UNIQUE CLASSES FOR KNOWLEDGE GROWTH PANEL (LINES 185-289) */
+
+.kg-stats-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.kg-dot-purple {
+  background: var(--purple);
+}
+
+.kg-val-purple {
+  color: var(--purple);
+  font-family: var(--display);
+  font-weight: 800;
+}
+
+.kg-dot-cyan {
+  background: var(--cyan);
+}
+
+.kg-val-cyan {
+  color: var(--cyan);
+  font-family: var(--display);
+  font-weight: 800;
+}
+
+.kg-dot-amber {
+  background: var(--amber);
+}
+
+.kg-val-amber {
+  color: var(--amber);
+  font-family: var(--display);
+  font-weight: 800;
+}
+
+.kg-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 230px;
+  gap: 20px;
+  align-items: start;
+}
+
+.kg-chart-wrap {
+  min-width: 0;
+  width: 100%;
+  height: 160px;
+  position: relative;
+}
+
+.kg-progress-panel {
+  background: var(--panel2);
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.kg-progress-panel-header {
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--edge);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.kg-progress-panel-bar {
+  width: 3px;
+  height: 13px;
+  border-radius: 2px;
+  background: var(--purple);
+  flex-shrink: 0;
+}
+
+.kg-progress-panel-title {
+  font-family: var(--display);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--purple);
+}
+
+.kg-progress-panel-body {
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kg-progress-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 5px;
+}
+
+.kg-progress-label {
+  font-size: 10px;
+  color: var(--t2);
+}
+
+.kg-progress-value-purple {
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--purple);
+}
+
+.kg-progress-value-amber {
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--amber);
+}
+
+.kg-progress-bar-track {
+  height: 4px;
+  background: var(--edge);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.kg-progress-bar-fill-purple {
+  height: 100%;
+  background: linear-gradient(90deg, #a78bfa, #6d28d9);
+  border-radius: 4px;
+}
+
+.kg-progress-bar-fill-amber {
+  height: 100%;
+  background: linear-gradient(90deg, #fbbf24, #b45309);
+  border-radius: 4px;
+}
+
+.kg-progress-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid var(--edge);
+  margin-top: 2px;
+}
+
+.kg-progress-footer-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--t1);
+}
+
+.kg-progress-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--display);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--green);
+  background: rgba(4, 120, 87, 0.09);
+  border: 1px solid rgba(4, 120, 87, 0.22);
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+
+.kg-progress-badge-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 4px #34d399;
+  display: inline-block;
+  animation: pulse 1.8s infinite;
+}

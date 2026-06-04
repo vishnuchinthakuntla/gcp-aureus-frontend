@@ -8,21 +8,18 @@ import './Charts.css';
 /*
 export const initialTrendData = [
     { name: 'P1', y: 0, color: '#F43F5E' },
-    { name: 'P2', y: 0, color: '#F5A524' },
+    { name: 'P2', y: 0, color: '#F5A524' }, ...
 ];
 
 export const sampleTrendData = {
     categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     series: [
         { name: 'P1', data: [3, 2, 4, 1, 5, 2, 3] },
-        { name: 'P2', data: [5, 4, 6, 3, 7, 4, 5] },
-        { name: 'P3', data: [8, 7, 9, 6, 10, 8, 7] },
-        { name: 'P4', data: [2, 3, 1, 4, 2, 3, 2] },
+        { name: 'P2', data: [5, 4, 6, 3, 7, 4, 5] }, ...
     ],
 };
 */
 
-/** Build { categories, series } for the last-7-days bar chart from raw tickets. */
 function buildTrendData(tickets) {
     const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const PRIORITIES = ['P1', 'P2', 'P3', 'P4'];
@@ -38,12 +35,11 @@ function buildTrendData(tickets) {
 
     const categories = days.map(d => `${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`);
 
-    // Initialise counts: { P1: [0,0,0,0,0,0,0], P2: [...], ... }
     const counts = Object.fromEntries(PRIORITIES.map(p => [p, new Array(7).fill(0)]));
 
     (tickets || []).forEach(t => {
         const prio = t.severity || 'P3';
-        if (!counts[prio]) return; // ignore unknown priorities
+        if (!counts[prio]) return;
 
         const created = new Date(t.created_at);
         created.setHours(0, 0, 0, 0);
@@ -71,7 +67,7 @@ function Charts() {
         { name: 'P2', y: ticketStats.P2, color: '#F5A524' },
         { name: 'P3', y: ticketStats.P3, color: '#4F8EF7' },
         { name: 'P4', y: ticketStats.P4, color: '#10D9A0' },
-        
+
     ]
 
     const trendData = buildTrendData(ticketsData);
@@ -93,7 +89,7 @@ function Charts() {
         series: (trendData?.series || []).map((s) => ({ type: 'column', name: s.name, data: s.data })),
         plotOptions: { column: { stacking: 'normal', borderWidth: 0, borderRadius: 5 } },
         accessibility: { enabled: false },
-    credits: { enabled: false },
+        credits: { enabled: false },
     };
 
     const pieOptions = {
@@ -106,9 +102,9 @@ function Charts() {
                 slicedOffset: 5,
             },
         },
-        series: [{ type: 'pie', name: 'Tickets', data: pieChartData.map((d) => ({ name: d.name, y: d.y, color: d.color })) }],
+        series: [{ type: 'pie', name: 'Tickets', data: pieChartData.map((d) => d.y > 0 ? ({ name: d.name, y: d.y, color: d.color }) : null) }],
         accessibility: { enabled: false },
-    credits: { enabled: false },
+        credits: { enabled: false },
     };
 
     return (
@@ -118,7 +114,7 @@ function Charts() {
                 <HighchartsReact highcharts={Highcharts} options={barOptions} ref={barChartRef} />
             </div>
             <div className="chart-box">
-                <h3>Open Ticket (P1–P4)</h3>
+                <h3>Open Ticket (P1 – P4)</h3>
                 <HighchartsReact highcharts={Highcharts} options={pieOptions} ref={pieChartRef} />
             </div>
         </div>
