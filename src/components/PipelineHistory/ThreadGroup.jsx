@@ -306,107 +306,84 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
                 <span className="ph-collapsible-icon">{openPanels.agent_steps ? '▲' : '▼'}</span>
               </button>
 
-              {openPanels.agent_steps && (<div className="ph-collapsible-body" >
-                {/* <div className="modal-section-title">Pipeline Stages</div> */}
-                <div className="steps-section" data-theme="light">
-                  <div className="steps-pipeline modal-pipeline-strip">
-                    {agent_steps &&
-                      agent_steps.map((stage, i) => {
-                        const statusLower = stage.status
-                          ? stage.status.toLowerCase()
-                          : "idle";
-                        const state =
-                          statusLower === "completed"
-                            ? "done"
-                            : statusLower === "in_progress" ||
-                              statusLower === "breached"
-                              ? "active"
-                              : "idle";
+              {openPanels.agent_steps && (
+                <div className="ph-collapsible-body" >
+                  <div className="steps-section" data-theme="light">
+                    <div className="steps-pipeline modal-pipeline-strip">
+                      {(() => {
+                        const validAgentSteps = Array.isArray(agent_steps) ? agent_steps.filter((agent_step) => agent_step && agent_step.stage_name) : [];
+                        if (validAgentSteps.length === 0) {
+                          return (
+                            <div style={{ color: "#aaa", padding: "10px", textAlign: "center", width: "100%", fontStyle: "italic" }}>
+                              No Agent Steps found for this pipeline.
+                            </div>
+                          );
+                        }
 
-                        return (
-                          <React.Fragment key={i}>
-                            <div className="ps-node">
-                              <div className="ps-dot-wrap">
-                                <div className={`ps-dot ${state}`}>
-                                  {state === "completed"
-                                    ? "✓"
-                                    : stage.stage_name
-                                      ? stage.stage_name[0]
-                                      : ""}
-                                </div>
-                                <div className={`ps-label ${state}`}>
-                                  {stage.stage_name}
-                                </div>
-                                <div className={`ps-time ${state}`}>
-                                  {stage.total_duration || "00:00"}
+                        return validAgentSteps.map((stage, i) => {
+                          const statusLower = stage.status
+                            ? stage.status.toLowerCase()
+                            : "idle";
+                          const state =
+                            statusLower === "completed"
+                              ? "done"
+                              : statusLower === "in_progress" ||
+                                statusLower === "breached"
+                                ? "active"
+                                : "idle";
+
+                          return (
+                            <React.Fragment key={i}>
+                              <div className="ps-node">
+                                <div className="ps-dot-wrap">
+                                  <div className={`ps-dot ${state}`}>
+                                    {state === "completed"
+                                      ? "✓"
+                                      : stage.stage_name
+                                        ? stage.stage_name[0]
+                                        : ""}
+                                  </div>
+                                  <div className={`ps-label ${state}`}>
+                                    {stage.stage_name}
+                                  </div>
+                                  <div className={`ps-time ${state}`}>
+                                    {stage.total_duration || "00:00"}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            {i < agent_steps.length - 1 && (
-                              <div className="ps-arrow">›</div>
-                            )}
-                          </React.Fragment>
-                        );
-                      })}
-                  </div> </div> </div>
-                // Logs section
-                /* <div className="ph-collapsible-body">
-                 {groupLogs.map((log, i) => {
-                   const level = (log.level || "info").toLowerCase()
-                   const isError = level === 'error' || level === 'critical'
-                   const time = (new Date(log.logged_at).toLocaleDateString() + ' \t ' + new Date(log.logged_at).toLocaleTimeString())
-
-                   let agentColorVar = 'var(--text-primary)'
-                   let agentBgVar = 'var(--bg-elevated)'
-                   const nodeLower = (log.agent_node || '').toLowerCase()
-                   if (nodeLower.includes('observer')) { agentColorVar = 'var(--observer)'; agentBgVar = 'var(--observer-lt)' }
-                   else if (nodeLower.includes('rca')) { agentColorVar = 'var(--rca)'; agentBgVar = 'var(--rca-lt)' }
-                   else if (nodeLower.includes('decision')) { agentColorVar = 'var(--decision)'; agentBgVar = 'var(--decision-lt)' }
-                   else if (nodeLower.includes('heal') || nodeLower.includes('ticket')) { agentColorVar = 'var(--healing)'; agentBgVar = 'var(--healing-lt)' }
-                   else if (nodeLower.includes('quality')) { agentColorVar = 'var(--quality)'; agentBgVar = 'var(--quality-lt)' }
-                   else if (nodeLower.includes('gov')) { agentColorVar = 'var(--governance)'; agentBgVar = 'var(--governance-lt)' }
-
-                   const id = log.log_id || `${groupKey}-${i}`
-                   const isExpanded = !!expandedLogs[id]
-
-                   return (
-                     <div key={id} className="tl-row" style={{ borderLeft: `2px solid ${agentColorVar}`, marginBottom: '2px' }} onClick={() => toggleLogExpansion(id)}>
-                       <span
-                         className={isError ? "err-badge" : "badge"}
-                         style={!isError ? { color: agentColorVar, backgroundColor: agentBgVar, border: `1px solid ${agentColorVar}` } : {}}
-                       >
-                         {log.agent_node}
-                       </span>
-                       <span className={`tl-msg ${isExpanded ? 'expanded' : ''}`} title={!isExpanded ? log.message : ''}>
-                         {log.message}
-                       </span>
-                       <span className="tl-time">{time}</span>
-                     </div>
-                   )
-                 })}
-               </div> */
+                              {i < agent_steps.length - 1 && (
+                                <div className="ps-arrow">›</div>
+                              )}
+                            </React.Fragment>
+                          );
+                        })
+                      })()}
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
 
-            {steps.length > 0 && (
-              <div className={`ph-collapsible-panel ${openPanels.steps ? 'open' : ''}`}>
-                <button className="ph-collapsible-header" onClick={() => togglePanel('steps')}>
-                  <span>PIPELINE STEPS</span>
-                  <span className="ph-collapsible-icon">{openPanels.steps ? '▲' : '▼'}</span>
-                </button>
+            <div className={`ph-collapsible-panel ${openPanels.steps ? 'open' : ''}`}>
+              <button className="ph-collapsible-header" onClick={() => togglePanel('steps')}>
+                <span>PIPELINE STEPS</span>
+                <span className="ph-collapsible-icon">{openPanels.steps ? '▲' : '▼'}</span>
+              </button>
 
-                {openPanels.steps && (
-                  <div className="ph-collapsible-body">
-                    <div className="steps-section" data-theme="light">
-                      {/* <div className="steps-header">
-                        <h3>Pipeline Steps</h3>
-                        <div className="steps-meta">
-                          <span className="steps-count">{steps.length} steps</span>
-                        </div>
-                      </div> */}
-
-                      <div className="steps-pipeline">
-                        {steps.map((step, i) => {
+              {openPanels.steps && (
+                <div className="ph-collapsible-body">
+                  <div className="steps-section" data-theme="light">
+                    <div className="steps-pipeline">
+                      {(() => {
+                        const validsteps = Array.isArray(steps) ? steps.filter((step) => step && step.step_name) : [];
+                        if (validsteps.length === 0) {
+                          return (
+                            <div style={{ color: "#aaa", padding: "10px", textAlign: "center", width: "100%", fontStyle: "italic" }}>
+                              No Pipeline Steps found for this pipeline.
+                            </div>
+                          );
+                        }
+                        return validsteps.map((step, i) => {
                           const cls = getStepStatusClass(step.status)
                           const completed = formatCompletedAt(step.completed_at)
                           return (
@@ -435,13 +412,13 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
                               )}
                             </React.Fragment>
                           )
-                        })}
-                      </div>
+                        })
+                      })()}
                     </div>
                   </div>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </div>
         </>
       )}
@@ -458,3 +435,41 @@ const ThreadGroup = ({ groupKey, threadData, selectedAgent, pipeline_name, isFir
 }
 
 export default React.memo(ThreadGroup)
+
+{  // Logs section
+  /* <div className="ph-collapsible-body">
+   {groupLogs.map((log, i) => {
+     const level = (log.level || "info").toLowerCase()
+     const isError = level === 'error' || level === 'critical'
+     const time = (new Date(log.logged_at).toLocaleDateString() + ' \t ' + new Date(log.logged_at).toLocaleTimeString())
+
+     let agentColorVar = 'var(--text-primary)'
+     let agentBgVar = 'var(--bg-elevated)'
+     const nodeLower = (log.agent_node || '').toLowerCase()
+     if (nodeLower.includes('observer')) { agentColorVar = 'var(--observer)'; agentBgVar = 'var(--observer-lt)' }
+     else if (nodeLower.includes('rca')) { agentColorVar = 'var(--rca)'; agentBgVar = 'var(--rca-lt)' }
+     else if (nodeLower.includes('decision')) { agentColorVar = 'var(--decision)'; agentBgVar = 'var(--decision-lt)' }
+     else if (nodeLower.includes('heal') || nodeLower.includes('ticket')) { agentColorVar = 'var(--healing)'; agentBgVar = 'var(--healing-lt)' }
+     else if (nodeLower.includes('quality')) { agentColorVar = 'var(--quality)'; agentBgVar = 'var(--quality-lt)' }
+     else if (nodeLower.includes('gov')) { agentColorVar = 'var(--governance)'; agentBgVar = 'var(--governance-lt)' }
+
+     const id = log.log_id || `${groupKey}-${i}`
+     const isExpanded = !!expandedLogs[id]
+
+     return (
+       <div key={id} className="tl-row" style={{ borderLeft: `2px solid ${agentColorVar}`, marginBottom: '2px' }} onClick={() => toggleLogExpansion(id)}>
+         <span
+           className={isError ? "err-badge" : "badge"}
+           style={!isError ? { color: agentColorVar, backgroundColor: agentBgVar, border: `1px solid ${agentColorVar}` } : {}}
+         >
+           {log.agent_node}
+         </span>
+         <span className={`tl-msg ${isExpanded ? 'expanded' : ''}`} title={!isExpanded ? log.message : ''}>
+           {log.message}
+         </span>
+         <span className="tl-time">{time}</span>
+       </div>
+     )
+   })}
+ </div> */
+}

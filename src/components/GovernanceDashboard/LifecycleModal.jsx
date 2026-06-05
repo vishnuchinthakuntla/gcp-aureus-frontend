@@ -112,8 +112,19 @@ export default function LifecycleModal({ data, onClose }) {
         <div className="modal-body">
           <div className="modal-section-title">Pipeline Stages</div>
           <div className="modal-pipeline-strip" id="modal-pipeline-strip">
-            {data.pipeline_stages &&
-              data.pipeline_stages.map((stage, i) => {
+            {(() => {
+              const stages = Array.isArray(data.pipeline_stages) ? data.pipeline_stages : [];
+              const validStages = stages.filter((stage) => stage && stage.stage_name);
+
+              if (validStages.length === 0) {
+                return (
+                  <div style={{ color: "#aaa", padding: "10px", textAlign: "center", width: "100%", fontStyle: "italic" }}>
+                    There are no pipeline stages
+                  </div>
+                );
+              }
+
+              return validStages.map((stage, i) => {
                 const statusLower = stage.status
                   ? stage.status.toLowerCase()
                   : "idle";
@@ -144,12 +155,13 @@ export default function LifecycleModal({ data, onClose }) {
                         </div>
                       </div>
                     </div>
-                    {i < data.pipeline_stages.length - 1 && (
+                    {i < validStages.length - 1 && (
                       <div className="ps-arrow">›</div>
                     )}
                   </React.Fragment>
                 );
-              })}
+              });
+            })()}
           </div>
           {/* ✅ Title FIRST */}
           <div className="modal-section-title" style={{ marginTop: "16px" }}>
@@ -160,8 +172,17 @@ export default function LifecycleModal({ data, onClose }) {
           <div className="modal-timeline" id="modal-timeline">
             {(() => {
               const steps = Array.isArray(data.steps) ? data.steps : [];
+              const validSteps = steps.filter((step) => step && step.step_name);
 
-              return steps.map((step, i) => {
+              if (validSteps.length === 0) {
+                return (
+                  <div style={{ color: "#aaa", padding: "20px", textAlign: "center", width: "100%", fontStyle: "italic" }}>
+                    There are no steps in this pipeline
+                  </div>
+                );
+              }
+
+              return validSteps.map((step, i) => {
                 const statusLower = step.status
                   ? step.status.toLowerCase()
                   : "idle";
@@ -220,7 +241,7 @@ export default function LifecycleModal({ data, onClose }) {
                     </div>
 
                     {/* ✅ ARROW (not after last item) */}
-                    {i < steps.length - 1 && (
+                    {i < validSteps.length - 1 && (
                       <div className="step-arrow">→</div>
                     )}
                   </React.Fragment>
