@@ -4,6 +4,8 @@ import HighchartsReact from 'highcharts-react-official';
 import React from 'react';
 import useAgentStore from '../../stores/useAgentStore';
 import './Charts.css';
+import 'highcharts/modules/exporting';
+import 'highcharts/modules/export-data';
 
 /*
 export const initialTrendData = [
@@ -90,6 +92,21 @@ function Charts() {
         plotOptions: { column: { stacking: 'normal', borderWidth: 0, borderRadius: 5 } },
         accessibility: { enabled: false },
         credits: { enabled: false },
+        exporting: {
+            enabled: true,
+            buttons: {
+                contextButton: {
+                    menuItems: [
+                        'viewFullscreen',
+                        'printChart',
+                        'separator',
+                        'downloadPNG',
+                        'downloadJPEG',
+                        'downloadSVG'
+                    ]
+                }
+            }
+        },
     };
 
     const pieOptions = {
@@ -105,6 +122,21 @@ function Charts() {
         series: [{ type: 'pie', name: 'Tickets', data: pieChartData.map((d) => d.y > 0 ? ({ name: d.name, y: d.y, color: d.color }) : null) }],
         accessibility: { enabled: false },
         credits: { enabled: false },
+        exporting: {
+            enabled: true,
+            buttons: {
+                contextButton: {
+                    menuItems: [
+                        'viewFullscreen',
+                        'printChart',
+                        'separator',
+                        'downloadPNG',
+                        'downloadJPEG',
+                        'downloadSVG'
+                    ]
+                }
+            }
+        },
     };
 
     return (
