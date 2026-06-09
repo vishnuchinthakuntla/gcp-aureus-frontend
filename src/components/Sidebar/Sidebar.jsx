@@ -131,6 +131,13 @@ export default function Sidebar({ open }) {
         <span className="icon">⚠️</span>
         Stuck Workflows
       </button>
+      <button
+        className={location.pathname === "/data-quality-reports" ? "active" : ""}
+        onClick={() => navigate("/data-quality-reports")}
+      >
+        <span className="icon">📊</span>
+        Data Quality Reports
+      </button>
     </aside>
   );
 }

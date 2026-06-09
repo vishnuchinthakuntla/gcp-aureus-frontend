@@ -106,9 +106,9 @@
     overflow: hidden;
     box-shadow: var(--col-shadow);
     transition:
-    background 0.35s,
-    box-shadow 0.35s,
-    border-color 0.35s;
+        background 0.35s,
+        box-shadow 0.35s,
+        border-color 0.35s;
 }
 
 /* PATTERN TABLE */
@@ -573,7 +573,7 @@
     border-bottom: 1px solid #e0e6f1;
 }
 
-.chat-panel{
+.chat-panel {
     display: flex;
     flex-direction: column;
 }
@@ -734,4 +734,229 @@
 
 .job-action-btn:active {
     transform: translateY(0);
+}
+
+.feedback-icons-container {
+    display: flex;
+    gap: 25px;
+    margin-left: 15px;
+    margin-top: 10px;
+}
+
+.feedback-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.feedback-btn-box {
+    width: 55px;
+    height: 55px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.1s ease, filter 0.2s ease;
+}
+
+.feedback-btn-box:hover {
+    filter: brightness(1.1);
+    /* Slight highlight on hover */
+}
+
+.feedback-btn-box:active {
+    transform: scale(0.95);
+}
+
+.feedback-btn-box svg {
+    fill: white;
+}
+
+/* Grey default state */
+.like-btn,
+.dislike-btn {
+    background-color: #d1d5db;
+    border-radius: 10px;
+    /* Gives the SVG rounded corners */
+    transition: all 0.2s ease;
+}
+
+/* Colored active states */
+.like-btn.selected {
+    background-color: #0dd152;
+}
+
+.dislike-btn.selected {
+    background-color: #ff2a2a;
+}
+
+
+
+:is(.like-btn:hover, .dislike-btn:hover) path {
+    animation: wiggle 0.5s ease;
+}
+
+.dislike-btn:hover path {
+    transform-origin: 75% 50%;
+}
+
+.like-btn:hover path {
+    transform-origin: 25% 50%;
+}
+
+@keyframes wiggle {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: rotate(5deg);
+    }
+
+    50% {
+        transform: rotate(-20deg);
+    }
+
+    75% {
+        transform: rotate(5deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+/* FEEDBACK MODAL */
+.feedback-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.feedback-modal {
+    background: white;
+    width: 450px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+}
+
+.feedback-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.feedback-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #666;
+}
+
+.feedback-modal-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.feedback-modal-body p {
+    margin: 0;
+    text-align: center;
+    font-weight: 500;
+    color: #444;
+}
+
+.feedback-reasons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.reason-pill {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.reason-pill:hover {
+    background: #f5f5f5;
+}
+
+.reason-pill.active {
+    background: #e8f0fe;
+    border-color: #1a73e8;
+    color: #1a73e8;
+}
+
+.feedback-textarea {
+    width: 100%;
+    height: 80px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 14px;
+    resize: none;
+    box-sizing: border-box;
+}
+
+.feedback-textarea::placeholder {
+    color: #aaa;
+}
+
+.feedback-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 20px;
+    border-top: 1px solid #eaeaea;
+}
+
+.cancel-btn {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 8px 24px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+}
+
+.submit-btn {
+    background: linear-gradient(90deg, #8b3dff 0%, #17c1e8 100%);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 24px;
+    font-size: 14px;
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
 }
