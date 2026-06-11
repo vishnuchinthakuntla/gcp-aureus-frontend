@@ -53,6 +53,7 @@ export default function Sidebar({ open }) {
             return (
               <button
                 key={agent.id}
+                className={agent.id === selectedAgent ? "active" : ""}
                 onClick={() => {
                   selectAgent(agent.id === selectedAgent ? null : agent.id)
                 }}

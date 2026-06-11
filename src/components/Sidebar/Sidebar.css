@@ -11,11 +11,12 @@
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.35s, border-color 0.35s;
     z-index: 90;
     overflow-y: auto;
-     scrollbar-width: none;       
-    -ms-overflow-style: none; 
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
+
 .sidebar::-webkit-scrollbar {
-    display: none;               
+    display: none;
 }
 
 .sidebar.open {
@@ -59,10 +60,20 @@
     transform: translateX(3px);
 }
 
+.sidebar button.active {
+    background: var(--sidebar-link-hover-bg);
+    color: var(--sidebar-link-hover);
+    font-weight: 600;
+}
+
 .sidebar button svg {
     color: var(--sidebar-icon);
     transition: color 0.2s;
 }
+
+/* .sidebar button.active svg {
+    color: var(--sidebar-link-hover);
+} */
 
 
 
@@ -124,6 +135,7 @@
     color: #3b82f6;
     background: rgba(59, 130, 246, 0.12);
 }
+
 .icon.approval {
     color: #25c271;
     background: rgba(37, 194, 113, 0.12);
