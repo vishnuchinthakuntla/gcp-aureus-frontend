@@ -294,7 +294,7 @@
 }
 
 /* Status */
-.status {
+.gov-table .status {
   font-family: var(--display);
   font-size: 9px;
   font-weight: 700;
@@ -309,7 +309,7 @@
   text-align: center;
 }
 
-.status::before {
+.gov-table .status::before {
   content: "";
   width: 4px;
   height: 4px;
@@ -317,25 +317,25 @@
   background: currentColor;
 }
 
-.status.ok {
+.gov-table .status.ok {
   background: var(--green-dim);
   color: var(--green);
   border: 1px solid rgba(4, 120, 87, 0.18);
 }
 
-.status.warn {
+.gov-table .status.warn {
   background: var(--amber-dim);
   color: var(--amber);
   border: 1px solid rgba(180, 83, 9, 0.18);
 }
 
-.status.err {
+.gov-table .status.err {
   background: var(--red-dim);
   color: var(--red);
   border: 1px solid rgba(190, 18, 60, 0.18);
 }
 
-.status.info {
+.gov-table .status.info {
   background: var(--blue-dim);
   color: var(--blue);
   border: 1px solid rgba(29, 110, 245, 0.18);

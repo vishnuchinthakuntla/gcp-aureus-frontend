@@ -29,10 +29,10 @@
     --healing-lt: #eefbf5;
     --healing-glow: rgba(4, 120, 87, 0.18);
     --healing-grad: linear-gradient(140deg, #eefbf5 0%, #f6fdf9 100%);
-    --quality: #0776a4;
-    --quality-lt: #e8f7fc;
-    --quality-glow: rgba(7, 118, 164, 0.18);
-    --quality-grad: linear-gradient(140deg, #e8f7fc 0%, #f4fbfe 100%);
+    --quality: #c026d3;
+    --quality-lt: #fdf4ff;
+    --quality-glow: rgba(192, 38, 211, 0.18);
+    --quality-grad: linear-gradient(140deg, #fdf4ff 0%, #fffaff 100%);
     --governance: #c41e3a;
     --governance-lt: #fff0f3;
     --governance-glow: rgba(196, 30, 58, 0.18);
