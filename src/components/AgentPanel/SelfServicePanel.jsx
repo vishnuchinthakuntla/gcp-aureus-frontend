@@ -3,7 +3,7 @@ import useAgentStore from "../../stores/useAgentStore";
 import "./AgentPanel.css";
 import toast from "react-hot-toast";
 
-const SELF_SERVICE_BASE_URL = "/ngrok";
+const SELF_SERVICE_BASE_URL = "https://among-muscle-avon-poker.trycloudflare.com";
 
 export default function SelfServicePanel() {
   const selectedAgent = useAgentStore((s) => s.selectedAgent);
@@ -151,6 +151,28 @@ export default function SelfServicePanel() {
       console.log(`Feedback '${feedbackType}' submitted.`);
     } catch (err) {
       console.error("Feedback submission failed", err);
+    }
+  }
+
+  // =========================
+  // 🗑️ REMOVE FEEDBACK
+  // =========================
+  async function removeFeedback(question, answer) {
+    if (!sessionId) return;
+    try {
+      await fetch(`${SELF_SERVICE_BASE_URL}/api/feedback`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          session_id: sessionId,
+          question: question,
+          answer: answer
+        }),
+      });
+      console.log(`Feedback removed.`);
+    } catch (err) {
+      console.error("Feedback removal failed", err);
     }
   }
 
@@ -329,7 +351,17 @@ export default function SelfServicePanel() {
                         style={{ cursor: "pointer", fontSize: 16 }}
                         title="Like"
                         onClick={() => {
-                          if (m.feedback === "like") return; // Prevent clicking if already liked
+                          const question = messages[i - 1]?.text || "";
+                          if (m.feedback === "like") {
+                            // Reset state and remove feedback
+                            setMessages((prev) => {
+                              const updated = [...prev];
+                              delete updated[i].feedback;
+                              return updated;
+                            });
+                            removeFeedback(question, m.text);
+                            return;
+                          }
 
                           // Mark as liked in state
                           setMessages((prev) => {
@@ -338,7 +370,6 @@ export default function SelfServicePanel() {
                             return updated;
                           });
 
-                          const question = messages[i - 1]?.text || "";
                           submitFeedback(1, question, m.text);
                         }}
                       >
@@ -352,9 +383,18 @@ export default function SelfServicePanel() {
                         style={{ cursor: "pointer", fontSize: 16 }}
                         title="Dislike"
                         onClick={() => {
-                          if (m.feedback === "dislike") return; // Prevent clicking if already disliked
-
                           const question = messages[i - 1]?.text || "";
+                          if (m.feedback === "dislike") {
+                            // Reset state and remove feedback
+                            setMessages((prev) => {
+                              const updated = [...prev];
+                              delete updated[i].feedback;
+                              return updated;
+                            });
+                            removeFeedback(question, m.text);
+                            return;
+                          }
+
                           // Pass the index `i` to the modal so we know which message to update
                           setCurrentFeedbackData({ question, answer: m.text, index: i });
                           setFeedbackReason("");
