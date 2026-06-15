@@ -3,7 +3,7 @@ import useAgentStore from "../../stores/useAgentStore";
 import "./AgentPanel.css";
 import toast from "react-hot-toast";
 
-const SELF_SERVICE_BASE_URL = "https://among-muscle-avon-poker.trycloudflare.com";
+const SELF_SERVICE_BASE_URL = "https://sociology-franchise-occurrence-authorized.trycloudflare.com";
 
 export default function SelfServicePanel() {
   const selectedAgent = useAgentStore((s) => s.selectedAgent);

@@ -5,6 +5,7 @@ const PipelineMetadata = () => {
   const [pipelines, setPipelines] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 12;
@@ -18,8 +19,10 @@ const PipelineMetadata = () => {
         if (!res.ok || !res) { setTimeout(() => fetchPipelines(), 3000); return; }
         const data = await res.json();
         setPipelines(data.data || []);
+        setIsLoading(false);
       } catch (err) {
         console.error("Failed to load pipelines metadata", err);
+        setIsLoading(false);
       }
     };
     fetchPipelines();
@@ -183,7 +186,15 @@ const PipelineMetadata = () => {
             </thead>
 
             <tbody>
-              {displayedPipelines.length === 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={5} style={{ textAlign: "center", display: "table-cell" }}>
+                    <div className="loader-container">
+                      <div className="spinner"></div>
+                    </div>
+                  </td>
+                </tr>
+              ) : displayedPipelines.length === 0 ? (
                 <tr>
                   <td colSpan="9" style={{ textAlign: "center", padding: "30px", color: "#64748b" }}>
                     No pipeline metadata found
