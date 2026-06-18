@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.101.0",
     "highcharts": "^12.5.0",
     "highcharts-more": "^0.1.7",
     "highcharts-react-official": "^3.2.3",

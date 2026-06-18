@@ -940,7 +940,7 @@
     border-top: 1px solid #eaeaea;
 }
 
-.cancel-btn {
+.feedback-modal .cancel-btn {
     background: white;
     border: 1px solid #ccc;
     border-radius: 20px;
@@ -950,7 +950,7 @@
     cursor: pointer;
 }
 
-.submit-btn {
+.feedback-modal .submit-btn {
     background: linear-gradient(90deg, #8b3dff 0%, #17c1e8 100%);
     border: none;
     border-radius: 20px;
